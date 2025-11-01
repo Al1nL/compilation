@@ -7,7 +7,7 @@
 /*************/
 
 import java_cup.runtime.*;
-
+import java.lang.Math;
 /******************************/
 /* DOLLAR DOLLAR - DON'T TOUCH! */
 /******************************/
@@ -79,29 +79,19 @@ LineTerminator	= \r|\n|\r\n
 WhiteSpace		= {LineTerminator} | [ \t\f]
 INTEGER			= 0 | [1-9][0-9]*
 ID				= [a-zA-Z][0-9a-zA-Z]*
-CLASS           = "class"
-NIL             = "nil"
-ARRAY           = "array"
-WHILE           = "while"
-INT             = "int"
-VOID            = "void"
-EXTENDS         = "extends"
-RETURN          = "return"
-NEW             = "new"
-IF              = "if"
-ELSE            = "else"
-STRING          = "string"
 ERROR           = 0[0-9]*
 QUOTE           = "\""
 LETTERS         = [a-zA-z]*
-COMMENT         = [ [ \t\f] | INTEGER | LETTERS | "{" | "}" | "." | ";" | "/" | "+" | "-" | "?" | "!" | "(" | ")" | "[" | "]" ]*
+COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
+NOT_LETTERS		= [^LETTERS]
+
 
 /******************************/
 /* DOLLAR DOLLAR - DON'T TOUCH! */
 /******************************/
 %state YYSTRING
-$state YYCOMMENT1
-$state YYCOMMENT2
+%state YYCOMMENT1
+%state YYCOMMENT2
 %%
 
 /************************************************************/
@@ -122,32 +112,62 @@ $state YYCOMMENT2
 "/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
+"["                     { return symbol(TokenNames.LBRACK); }
+"]"                     { return symbol(TokenNames.RBRACK); }
+"{"                     { return symbol(TokenNames.LBRACE); }
+"}"                     { return symbol(TokenNames.RBRACE); }
+
+":="                    { return symbol(TokenNames.ASSIGN); }
+"="                     { return symbol(TokenNames.EQ); }
+"<"                     { return symbol(TokenNames.LT); }
+">"                     { return symbol(TokenNames.GT); }
+
+"*"                     { return symbol(TokenNames.TIMES); }
+"/"                     { return symbol(TokenNames.DIVIDE); }
+
+","                     { return symbol(TokenNames.COMMA); }
+"."                     { return symbol(TokenNames.DOT); }
+";"                     { return symbol(TokenNames.SEMICOLON); }
 "//"                { yybegin(YYCOMMENT1); }
 "/*"                { yybegin(YYCOMMENT2); }
 QUOTE               { yybegin(YYSTRING); }
-{INTEGER}			{ return symbol(TokenNames.NUMBER, Integer.valueOf(yytext())) <= 2**15-1 ? symbol(TokenNames.NUMBER, Integer.valueOf(yytext())) : throw new Error();}
+
+"array"                 { return symbol(TokenNames.ARRAY); }
+"class"                 { return symbol(TokenNames.CLASS); }
+"return"                { return symbol(TokenNames.RETURN); }
+"while"                 { return symbol(TokenNames.WHILE); }
+"if"                    { return symbol(TokenNames.IF); }
+"else"                  { return symbol(TokenNames.ELSE); }
+"new"                   { return symbol(TokenNames.NEW); }
+"extends"               { return symbol(TokenNames.EXTENDS); }
+"nil"                   { return symbol(TokenNames.NIL); }
+
+"int"                   { return symbol(TokenNames.TYPEINT); }
+"string"                { return symbol(TokenNames.TYPESTRING); }
+"void"                  { return symbol(TokenNames.TYPEVOID); }
+
+{INTEGER}			{ if (Integer.valueOf(yytext()) <= Math.pow(2,15)-1){return  symbol(TokenNames.NUMBER, Integer.valueOf(yytext()));} else throw new Error();}
 {ID}				{ return symbol(TokenNames.ID, yytext());}
-{WhiteSpace}		{ return symbol(TokenNames.WHITESPACE, yytext()) } /* todo: check if need to return yytext */
+{WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
 
 <YYSTRING> {
 QUOTE               { return symbol(TokenNames.STRING, yytext()); }
 {LETTERS}           { }
-{^LETTERS}          { throw new Error(); }
+{NOT_LETTERS}          { throw new Error(); }
 <<EOF>>             { throw new Error(); }
 }
 
 <YYCOMMENT1>{
-LineTerminator      { return; } /* todo: check if how to return correctly */
-{COMMENT | "*" }    {}
-
+LineTerminator      { yybegin(YYINITIAL); }
+([*]|{COMMENT})*     {}
 <<EOF>>             { throw new Error(); }
 }
 
 <YYCOMMENT2>{
-"*/"                { return; } /* todo: check if how to return correctly */
-{COMMENT}           {}
+"*/"                { yybegin(YYINITIAL); } 
+{COMMENT}+           {}
 "*"                 {}
 <<EOF>>             { throw new Error(); }
 }
