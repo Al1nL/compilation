@@ -90,8 +90,6 @@ NOT_LETTERS		= [^LETTERS]
 /* DOLLAR DOLLAR - DON'T TOUCH! */
 /******************************/
 %state YYSTRING
-%state YYCOMMENT1
-%state YYCOMMENT2
 %%
 
 /************************************************************/
@@ -128,9 +126,9 @@ NOT_LETTERS		= [^LETTERS]
 ","                     { return symbol(TokenNames.COMMA); }
 "."                     { return symbol(TokenNames.DOT); }
 ";"                     { return symbol(TokenNames.SEMICOLON); }
-"//"                { yybegin(YYCOMMENT1); }
-"/*"                { yybegin(YYCOMMENT2); }
-QUOTE               { yybegin(YYSTRING); }
+"//"([*]|{COMMENT})*     	{ }                
+"/*"([*]|{COMMENT})*"*/"   	{ }
+QUOTE              		 { yybegin(YYSTRING); }
 
 "array"                 { return symbol(TokenNames.ARRAY); }
 "class"                 { return symbol(TokenNames.CLASS); }
@@ -150,24 +148,13 @@ QUOTE               { yybegin(YYSTRING); }
 {ID}				{ return symbol(TokenNames.ID, yytext());}
 {WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
+
+.					{ throw new Error(); }
 }
 
 <YYSTRING> {
 QUOTE               { return symbol(TokenNames.STRING, yytext()); }
 {LETTERS}           { }
 {NOT_LETTERS}          { throw new Error(); }
-<<EOF>>             { throw new Error(); }
-}
-
-<YYCOMMENT1>{
-LineTerminator      { yybegin(YYINITIAL); }
-([*]|{COMMENT})*     {}
-<<EOF>>             { throw new Error(); }
-}
-
-<YYCOMMENT2>{
-"*/"                { yybegin(YYINITIAL); } 
-{COMMENT}+           {}
-"*"                 {}
 <<EOF>>             { throw new Error(); }
 }
