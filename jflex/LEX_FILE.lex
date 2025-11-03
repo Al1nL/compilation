@@ -60,6 +60,7 @@ import java.lang.Math;
 	/*********************************************************************************/
 	private Symbol symbol(int type)               {return new Symbol(type, yyline, yycolumn);}
 	private Symbol symbol(int type, Object value) {return new Symbol(type, yyline, yycolumn, value);}
+	private StringBuilder stringBuilder = new StringBuilder();
 
 	/*******************************************/
 	/* Enable line number extraction from main */
@@ -70,6 +71,9 @@ import java.lang.Math;
 	/* Enable token position extraction from main */
 	/**********************************************/
 	public int getTokenStartPosition() { return yycolumn + 1; } 
+	public String getPos(){
+		return "["+getLine()+","+getTokenStartPosition()+"]";
+	}
 %}
 
 /***********************/
@@ -81,15 +85,15 @@ INTEGER			= 0 | [1-9][0-9]*
 ID				= [a-zA-Z][0-9a-zA-Z]*
 ERROR           = 0[0-9]*
 QUOTE           = "\""
-LETTERS         = [a-zA-z]*
+LETTERS         = [a-zA-Z]
 COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
-NOT_LETTERS		= [^LETTERS]
-
+//NOT_LETTERS = [^a-zA-Z]
 
 /******************************/
 /* DOLLAR DOLLAR - DON'T TOUCH! */
 /******************************/
 %state YYSTRING
+%state YYCOMMENT2
 %%
 
 /************************************************************/
@@ -106,7 +110,7 @@ NOT_LETTERS		= [^LETTERS]
 
 "+"					{ return symbol(TokenNames.PLUS);}
 "-"					{ return symbol(TokenNames.MINUS);}
-"PPP"				{ return symbol(TokenNames.TIMES);}
+"*"				{ return symbol(TokenNames.TIMES);}
 "/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
@@ -126,10 +130,13 @@ NOT_LETTERS		= [^LETTERS]
 ","                     { return symbol(TokenNames.COMMA); }
 "."                     { return symbol(TokenNames.DOT); }
 ";"                     { return symbol(TokenNames.SEMICOLON); }
-"//"([*]|{COMMENT})*     	{ }                
-"/*"([*]|{COMMENT})*"*/"   	{ }
-QUOTE              		 { yybegin(YYSTRING); }
 
+"//"([*]|{COMMENT})*{LineTerminator}    { }                
+"/*"					{ yybegin(YYCOMMENT2);}
+
+
+{QUOTE}              	{  stringBuilder.setLength(0); // clear previous content
+							yybegin(YYSTRING); }
 "array"                 { return symbol(TokenNames.ARRAY); }
 "class"                 { return symbol(TokenNames.CLASS); }
 "return"                { return symbol(TokenNames.RETURN); }
@@ -140,21 +147,28 @@ QUOTE              		 { yybegin(YYSTRING); }
 "extends"               { return symbol(TokenNames.EXTENDS); }
 "nil"                   { return symbol(TokenNames.NIL); }
 
-"int"                   { return symbol(TokenNames.TYPEINT); }
-"string"                { return symbol(TokenNames.TYPESTRING); }
-"void"                  { return symbol(TokenNames.TYPEVOID); }
+"int"                   { return symbol(TokenNames.TYPE_INT); }
+"string"                { return symbol(TokenNames.TYPE_STRING); }
+"void"                  { return symbol(TokenNames.TYPE_VOID); }
 
-{INTEGER}			{ if (Integer.valueOf(yytext()) <= Math.pow(2,15)-1){return  symbol(TokenNames.NUMBER, Integer.valueOf(yytext()));} else throw new Error();}
+{INTEGER}			{ if (Integer.valueOf(yytext()) <= Math.pow(2,15)-1){return  symbol(TokenNames.INT, Integer.valueOf(yytext()));} else throw new Error("Illegal integer at "+getPos());}
 {ID}				{ return symbol(TokenNames.ID, yytext());}
 {WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 
-.					{ throw new Error(); }
+.					{ throw new Error("Did not match any rule at "+getPos()); }
 }
 
 <YYSTRING> {
-QUOTE               { return symbol(TokenNames.STRING, yytext()); }
-{LETTERS}           { }
-{NOT_LETTERS}          { throw new Error(); }
-<<EOF>>             { throw new Error(); }
+{QUOTE}             { yybegin(YYINITIAL);return symbol(TokenNames.STRING, "\""+stringBuilder.toString()+"\""); }
+{LETTERS}+          { stringBuilder.append(yytext()); }
+[^a-zA-Z"\""]+ 		{ throw new Error("Invalid characters \""+yytext()+"\" in string at "+getPos()); }
+<<EOF>>             { throw new Error("Unterminated string at "+getPos()); } 
+}
+
+<YYCOMMENT2> {
+"*/"				{ yybegin(YYINITIAL); }   
+({COMMENT}|{LineTerminator})+				{ }      
+"*"         		{ }                  
+<<EOF>>     		{ throw new Error("Unterminated comment at "+getPos()); }
 }
