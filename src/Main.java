@@ -22,8 +22,9 @@ public class Main {
         String inputFileName = argv[0];
         String outputFileName = argv[1];
         try {
-                            /* [2] Initialize a file writer */
-
+            /* [2] Initialize a file writer */
+            File outputFile = new File(outputFileName);
+            outputFile.getParentFile().mkdirs();
             fileWriter = new PrintWriter(outputFileName);
 
             try {
@@ -40,7 +41,6 @@ public class Main {
                 l = new Lexer(fileReader);
 
                 /* [4] Read next token */
-
                 s = l.next_token();
 
                 /* [5] Main reading tokens loop */
@@ -70,8 +70,7 @@ public class Main {
                 fileWriter.close();
                 try (PrintWriter errorWriter = new PrintWriter(outputFileName)) { // this truncates the file
                     errorWriter.print("ERROR");
-                } 
-                catch (Exception x) {
+                } catch (Exception x) {
                     System.err.println("Couldn't open output file1");
                 }
                 // debug
