@@ -30,12 +30,12 @@ public interface TokenNames {
     public static final int NEW        = 24;
     public static final int EXTENDS    = 25;
     public static final int NIL        = 26;
-    public static final int TYPEINT    = 27;
-    public static final int TYPESTRING = 28;
-    public static final int TYPEVOID   = 29;
+    public static final int TYPE_INT    = 27;
+    public static final int TYPE_STRING = 28;
+    public static final int TYPE_VOID   = 29;
 
     /* literals / identifiers */
-    public static final int NUMBER     = 30;  // integer literals
+    public static final int INT     = 30;  // integer literals
     public static final int STRING     = 31;  // string literals
     public static final int ID         = 32;  // identifiers
 }
