@@ -151,13 +151,22 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "string"                { return symbol(TokenNames.TYPE_STRING); }
 "void"                  { return symbol(TokenNames.TYPE_VOID); }
 
-{INTEGER}			{ if (Integer.valueOf(yytext()) <= Math.pow(2,15)-1){return  symbol(TokenNames.INT, Integer.valueOf(yytext()));} else throw new Error("Illegal integer at "+getPos());}
-{ID}				{ return symbol(TokenNames.ID, yytext());}
+{INTEGER}			{ try {
+							int val = Integer.parseInt(yytext());
+							if (val > Math.pow(2,15)-1)
+								return symbol(TokenNames.INT, Integer.valueOf(yytext()));
+							else
+								throw new Error("Illegal integer at "+getPos());
+					} 
+					 catch (NumberFormatException e) {
+					    throw new Error("Illegal integer at "+getPos());}
+					}}
+						
 {WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 
 .					{ throw new Error("Did not match any rule at "+getPos()); }
-}
+
 
 <YYSTRING> {
 {QUOTE}             { yybegin(YYINITIAL);return symbol(TokenNames.STRING, "\""+stringBuilder.toString()+"\""); }
