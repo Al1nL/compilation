@@ -1,0 +1,73 @@
+:=	  	  .  	 if    ,	string
+
+znzL 		"lJ"		 new 		nil  {
+
+
++	 		)		 while			if	 	 	 >
+
+
+*	( 	;	   .				new
+
+
+string  		:= 	 * else -
+
+
+=		string 	) 					 new 			-
+[			  "X" 		 	 }		 		void			class
+
+while	 	 	new  		 new     }  		;
+*  > 	=   		 int  <
+,  	   +		 	 ) 	   	)  ;
+
+int  -		 [				 void array
+
+
+>		 	 extends 	class	 		extends	:=
+*					extends		.		 array	 if
+
+int	 	. 	void	{			  	=
+else 	  	*	 	,	}	while
+
+)	 	string	     	- 			 	 array  					new
+=		*	  * 		[ 	-
+class			 class "" 	 			 return	 	 .
+
+
+* >		 	 ,	;   	diI
+new			 .	 	  	"C"	 			 [	   >
+
+. void 		  		/   	 :=  				int
+
+
+{		tv	)  		  (    <
+
+< 		 		{	  	void  	  / 		  return
+1849			   :=	 			 "" 	  		22323			  		=
+if	 qR   ; 	  		/   >
+
+
+; 			  nil	}	   	void   	  string
+
+.  		nil new		]  				void
+
+while				array	  	 	int   "QvX"  	  =
+
+int		} 	"wNl"	 		 		>	 	}
+
+)			 	void 			 	+	 		QUc		 {
+
+return 	 		int	 		{ 		 	]					  nil
+return	. 	while	nil   ]
+
+
+return	  	(			 	( + 		 [
+;			 void 				 string	 	   	while  	  		:=
+void     class 	array		 		  class  new
+
+
+new   	[				[	  	  	>	  	 	"jihziX"
+[		int		 [ 		 	 new  	   	<
+while					[  	]	 + 	     >
+
+string		/		]	 		 	] 	  	-
+:= 	 ] 	 	  / string	[

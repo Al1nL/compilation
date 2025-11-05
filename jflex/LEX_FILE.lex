@@ -131,7 +131,8 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "."                     { return symbol(TokenNames.DOT); }
 ";"                     { return symbol(TokenNames.SEMICOLON); }
 
-"//"([*]|{COMMENT})*{LineTerminator}    { }                
+"//"([*]|{COMMENT})*{LineTerminator}    { }
+"//" [^\n\r]* {LineTerminator}    {throw new Error("Illegal comment 1 "+getPos()); }                
 "/*"					{ yybegin(YYCOMMENT2);}
 
 
@@ -152,6 +153,7 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "void"                  { return symbol(TokenNames.TYPE_VOID); }
 
 {INTEGER}			{ if (Integer.valueOf(yytext()) <= Math.pow(2,15)-1){return  symbol(TokenNames.INT, Integer.valueOf(yytext()));} else throw new Error("Illegal integer at "+getPos());}
+
 {ID}				{ return symbol(TokenNames.ID, yytext());}
 {WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
@@ -171,4 +173,6 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 ({COMMENT}|{LineTerminator})+				{ }      
 "*"         		{ }                  
 <<EOF>>     		{ throw new Error("Unterminated comment at "+getPos()); }
+. 					{throw new Error("Illegal comment character at "+getPos()); }
 }
+
