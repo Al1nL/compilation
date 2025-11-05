@@ -60,7 +60,6 @@ import java.lang.Math;
 	/*********************************************************************************/
 	private Symbol symbol(int type)               {return new Symbol(type, yyline, yycolumn);}
 	private Symbol symbol(int type, Object value) {return new Symbol(type, yyline, yycolumn, value);}
-	private StringBuilder stringBuilder = new StringBuilder();
 
 	/*******************************************/
 	/* Enable line number extraction from main */
@@ -87,12 +86,10 @@ ERROR           = 0[0-9]*
 QUOTE           = "\""
 LETTERS         = [a-zA-Z]
 COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
-//NOT_LETTERS = [^a-zA-Z]
 
 /******************************/
 /* DOLLAR DOLLAR - DON'T TOUCH! */
 /******************************/
-%state YYSTRING
 %state YYCOMMENT2
 %%
 
@@ -135,8 +132,7 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "/*"					{ yybegin(YYCOMMENT2);}
 
 
-{QUOTE}              	{  stringBuilder.setLength(0); // clear previous content
-							yybegin(YYSTRING); }
+
 "array"                 { return symbol(TokenNames.ARRAY); }
 "class"                 { return symbol(TokenNames.CLASS); }
 "return"                { return symbol(TokenNames.RETURN); }
@@ -151,15 +147,19 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "string"                { return symbol(TokenNames.TYPE_STRING); }
 "void"                  { return symbol(TokenNames.TYPE_VOID); }
 
+{ID}					{return symbol(TokenNames.ID,yytext());}
+
+{QUOTE}{LETTERS}*{QUOTE} {return symbol(TokenNames.STRING,yytext());}
 {INTEGER}			{ try {
 							int val = Integer.parseInt(yytext());
-							if (val > Math.pow(2,15)-1)
+							
+							if (val <= Math.pow(2,15)-1)
 								return symbol(TokenNames.INT, Integer.valueOf(yytext()));
 							else
-								throw new Error("Illegal integer at "+getPos());
+								throw new Error("Lex Illegal integer at "+getPos());
 					} 
 					 catch (NumberFormatException e) {
-					    throw new Error("Illegal integer at "+getPos());}
+					    throw new Error("Java Illegal integer at "+getPos());}
 					}}
 						
 {WhiteSpace}		{  } 
@@ -167,13 +167,6 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 
 .					{ throw new Error("Did not match any rule at "+getPos()); }
 
-
-<YYSTRING> {
-{QUOTE}             { yybegin(YYINITIAL);return symbol(TokenNames.STRING, "\""+stringBuilder.toString()+"\""); }
-{LETTERS}+          { stringBuilder.append(yytext()); }
-[^a-zA-Z"\""]+ 		{ throw new Error("Invalid characters \""+yytext()+"\" in string at "+getPos()); }
-<<EOF>>             { throw new Error("Unterminated string at "+getPos()); } 
-}
 
 <YYCOMMENT2> {
 "*/"				{ yybegin(YYINITIAL); }   
