@@ -1,4 +1,4 @@
-int a:= 90; //asdsad
+"gjgjgjg"int a:= 90; //asdsad
 
 //sdfaef(jp)
 

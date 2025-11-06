@@ -1,3 +1,4 @@
 int 6
 the next line will fail.
-//*
+//sdfsdf
+   ,this will not //"pop"

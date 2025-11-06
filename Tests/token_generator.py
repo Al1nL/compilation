@@ -45,7 +45,7 @@ TOKEN_LEXEME = {
 }
 
 WHITESPACE_CHOICES = [' ', '\t']
-NEWLINE_CHOICES = ['\n', '\r', '\r\n']
+NEWLINE_CHOICES = ['\n']
 
 # helpers for generating special token lexemes
 def gen_int():
@@ -116,27 +116,23 @@ def main():
         i = 0
         while i < len(s):
             ch = s[i]
-            if ch == '\r':
-                # Check for Windows-style newline
-                if i + 1 < len(s) and s[i+1] == '\n':
+            if ch == '\r' or ch == '\n':
+                # Handle \r\n as a single newline
+                if ch == '\r' and i + 1 < len(s) and s[i+1] == '\n':
                     out_chars.append('\r')
                     out_chars.append('\n')
                     i += 2
                 else:
-                    out_chars.append('\r')
+                    out_chars.append(ch)
                     i += 1
-                # Treat any \r or \r\n as a single line increment
-                line += 1
-                col = 1
-            elif ch == '\n':
-                out_chars.append('\n')
-                i += 1
+                # Treat any newline style as one line break
                 line += 1
                 col = 1
             else:
                 out_chars.append(ch)
                 i += 1
                 col += 1
+
 
 
     # generate tokens
