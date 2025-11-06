@@ -1,0 +1,3 @@
+int x =123"abbu" //
+/**/
+int x =123"abbu"

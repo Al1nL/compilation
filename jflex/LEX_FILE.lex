@@ -85,7 +85,7 @@ ID				= [a-zA-Z][0-9a-zA-Z]*
 ERROR           = 0[0-9]*
 QUOTE           = "\""
 LETTERS         = [a-zA-Z]
-COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
+COMMENT         = [ \t0-9a-zA-Z{}.;/+\-?!()\[\]]*
 
 /******************************/
 /* DOLLAR DOLLAR - DON'T TOUCH! */
@@ -128,8 +128,11 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "."                     { return symbol(TokenNames.DOT); }
 ";"                     { return symbol(TokenNames.SEMICOLON); }
 
-"//"([*]|{COMMENT})*{LineTerminator}    { }                
+"//"([*]|{COMMENT})*{LineTerminator}    { }
+"//" [^\n\r]* {LineTerminator}    {throw new Error("Illegal comment 1 "+getPos()); }                
 "/*"					{ yybegin(YYCOMMENT2);}
+
+
 
 "array"                 { return symbol(TokenNames.ARRAY); }
 "class"                 { return symbol(TokenNames.CLASS); }
@@ -145,7 +148,7 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 "string"                { return symbol(TokenNames.TYPE_STRING); }
 "void"                  { return symbol(TokenNames.TYPE_VOID); }
 
-{ID}					{return symbol(TokenNames.ID,yytext());}
+{ID}				{ return symbol(TokenNames.ID, yytext());}
 
 {QUOTE}{LETTERS}*{QUOTE} {return symbol(TokenNames.STRING,yytext());}
 {INTEGER}				{ try {
@@ -158,10 +161,10 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 						} 
 						catch (NumberFormatException e) {
 							throw new Error("Java Illegal integer at "+getPos());}
-						}}
-						
-{WhiteSpace}			{  } 
-<<EOF>>					{ return symbol(TokenNames.EOF);}
+						}
+
+{WhiteSpace}		{  } 
+<<EOF>>				{ return symbol(TokenNames.EOF);}
 
 .						{ throw new Error("Did not match any rule at "+getPos()); }
 
@@ -169,6 +172,8 @@ COMMENT         = [ \t\f0-9a-zA-Z{}.;/+\-?!()\[\]]*
 <YYCOMMENT2> {
 "*/"					{ yybegin(YYINITIAL); }   
 ({COMMENT}|{LineTerminator})+				{ }      
-"*"         			{ }                  
-<<EOF>>     			{ throw new Error("Unterminated comment at "+getPos()); }
+"*"         		{ }                  
+<<EOF>>     		{ throw new Error("Unterminated comment at "+getPos()); }
+. 					{throw new Error("Illegal comment character at "+getPos()); }
 }
+
