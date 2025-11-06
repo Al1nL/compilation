@@ -105,12 +105,12 @@ COMMENT         = [ \t0-9a-zA-Z{}.;/+\-?!()\[\]]*
 
 <YYINITIAL> {
 
-"+"					{ return symbol(TokenNames.PLUS);}
-"-"					{ return symbol(TokenNames.MINUS);}
-"*"				{ return symbol(TokenNames.TIMES);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
-"("					{ return symbol(TokenNames.LPAREN);}
-")"					{ return symbol(TokenNames.RPAREN);}
+"+"						{ return symbol(TokenNames.PLUS);}
+"-"						{ return symbol(TokenNames.MINUS);}
+"*"						{ return symbol(TokenNames.TIMES);}
+"/"						{ return symbol(TokenNames.DIVIDE);}
+"("						{ return symbol(TokenNames.LPAREN);}
+")"						{ return symbol(TokenNames.RPAREN);}
 "["                     { return symbol(TokenNames.LBRACK); }
 "]"                     { return symbol(TokenNames.RBRACK); }
 "{"                     { return symbol(TokenNames.LBRACE); }
@@ -166,12 +166,11 @@ COMMENT         = [ \t0-9a-zA-Z{}.;/+\-?!()\[\]]*
 {WhiteSpace}		{  } 
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 
-.					{ throw new Error("Did not match any rule at "+getPos()); }
-}
+.						{ throw new Error("Did not match any rule at "+getPos()); }
 
 
 <YYCOMMENT2> {
-"*/"				{ yybegin(YYINITIAL); }   
+"*/"					{ yybegin(YYINITIAL); }   
 ({COMMENT}|{LineTerminator})+				{ }      
 "*"         		{ }                  
 <<EOF>>     		{ throw new Error("Unterminated comment at "+getPos()); }
