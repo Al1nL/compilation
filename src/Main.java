@@ -28,13 +28,8 @@ public class Main {
             fileWriter = new PrintWriter(outputFileName);
 
             try {
-                /**
-                 * *****************************
-                 */
                 /* [1] Initialize a file reader */
-                /**
-                 * *****************************
-                 */
+
                 fileReader = new FileReader(inputFileName);
 
                 /* [3] Initialize a new lexer */
@@ -68,17 +63,15 @@ public class Main {
 
             } catch (Error e) {
                 fileWriter.close();
-                try (PrintWriter errorWriter = new PrintWriter(outputFileName)) { // this truncates the file
+                try (PrintWriter errorWriter = new PrintWriter(outputFileName)) { // truncates the file
                     errorWriter.print("ERROR");
                 } catch (Exception x) {
-                    System.err.println("Couldn't open output file1");
+                    System.err.println("Couldn't open output file");
                 }
-                // debug
-                // fileWriter.print("error:"+e.getMessage());
-                // fileWriter.close();
             }
         } catch (Exception e) {
-            System.err.println("Couldn't open output file");
+            System.err.println("Error, see stack trace:");
+            e.printStackTrace();
         }
     }
 }
