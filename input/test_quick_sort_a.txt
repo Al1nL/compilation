@@ -1,2 +1,0 @@
-class Quicksort {
-    int[] a;

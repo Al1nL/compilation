@@ -1,9 +1,0 @@
-counter1 = 12345 //legal comments;
-tmp2 = counter1 + 99
-//another? legal comment?
-//more legal
-//this will "fale" though
-
-result = tmp2 * 2 - 3 / counter1 
-print(result)
-//not a comment ;can do "strings"
