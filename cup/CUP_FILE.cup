@@ -69,11 +69,27 @@ terminal RBRACE;
 terminal SEMICOLON;
 terminal ASSIGN;
 
+terminal GT;
+terminal LT;
+terminal COMMA;
+
+terminal ARRAY;
+terminal CLASS;
+terminal RETURN;
+terminal ELSE;
+terminal NEW;
+terminal EXTENDS;
+terminal NIL;
+terminal TYPE_INT;
+terminal TYPE_STRING;
+terminal VOID;
+
 /*************/
 /* TERMINALS */
 /*************/
 terminal Integer INT;
 terminal String ID;
+terminal String STRING;
 
 /*****************/
 /* NON TERMINALS */
@@ -82,15 +98,24 @@ non terminal AstExp exp;
 non terminal AstVar var;
 non terminal AstStmt stmt;
 non terminal AstStmtList stmtList;
+non terminal AstExp program;
+
+non terminal AstParam param;
+non terminal AstParamList paramList;
+non terminal AstDec cField;
+non terminal AstVarDec varDec;
 
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
+precedence left EQ;
+precedence left LT;
+precedence left GT;
 precedence left PLUS;
 precedence left MINUS;
 precedence left TIMES;
 precedence left DIVIDE;
-
+precedence left DOT;
 /************************/
 /* START WITH: stmtList */
 /************************/
@@ -99,6 +124,14 @@ start with stmtList;
 /********************/
 /* DERIVATION RULES */
 /********************/
+
+param 		::= 	type:t ID:name 		{: RESULT = new AstParam(t, name); :}
+    				;
+
+paramList 	::=		param:p paramList:l      {: RESULT = new AstParamList(p, l); :}
+					| param:p   			{: RESULT = new AstParamList(p, null); :}
+    				;
+
 
 stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l);    :}
 					| stmt:s				{: RESULT = new AstStmtList(s,null); :}
@@ -119,3 +152,34 @@ exp			::=		INT:i								{: RESULT = new AstExpInt(i);          :}
 					| exp:e1 PLUS  exp:e2				{: RESULT = new AstExpBinop(e1, e2, 0);:}
 					| exp:e1 MINUS exp:e2				{: RESULT = new AstExpBinop(e1, e2, 1);:}
 					;
+
+program 	::= 	dec									{: RESULT = new AstDec();   :}
+					| dec program 						{: RESULT = ??      :}
+					;
+
+type 		::= 	TYPE_INT                                {: RESULT =  new AstTypeInt(); :}
+					| TYPE_STRING 							{: RESULT =  new AstTypeString(); :}
+					| VOID 									{: RESULT =  new AstTypeVoid(); :}
+					| ID									{: RESULT =  new AstTypeID(); :}
+					;
+
+varDec 		::= 	type:t ID:name SEMICOLON        				{: RESULT =  new AstVarDec(t,name, null); :}
+					| type:t ID:name ASSIGN exp:e SEMICOLON 		{: RESULT =  new AstVarDec(t,name,e); :}
+					| type:t ID:name ASSIGN newExp:e SEMICOLON		{: RESULT =  new AstVarDec(t,name,e); :}
+					;
+
+funcDec 	::= 	type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE 					{: RESULT =  new AstFuncDec(t,name,null,l); :}
+					| type:t1 ID:name1 LPAREN paramList:pl RPAREN LBRACE stmtList:l RBRACE  {: RESULT =  new AstFuncDec(t,name,pl,l); :}
+					;
+
+classDec 	::= 	CLASS ID:name LBRACE cFieldList:l RBRACE						{: RESULT =  new AssClassDec(name,null, l); :}
+					| CLASS ID:name1 EXTENDS ID:name2 LBRACE cFieldList:l RBRACE			{: RESULT =  new AssClassDec(name1,name2, l); :}
+					;
+
+cField 		::= 	varDec:v 		{: RESULT = v; :}
+					| funcDec:f 	{: RESULT = f; :}
+					;
+
+cFieldList ::=		cField:c cFieldList:l {: RESULT = new AstDecList(c, l); :}
+					| cField:c {: RESULT = new AstDecList(c, null); :}
+    				;
