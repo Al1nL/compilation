@@ -144,7 +144,7 @@ COMMENT         = [ \t0-9a-zA-Z{}.;/+\-?!()\[\]]*
 
 "int"                   { return symbol(TokenNames.TYPE_INT); }
 "string"                { return symbol(TokenNames.TYPE_STRING); }
-"void"                  { return symbol(TokenNames.TYPE_VOID); }
+"void"                  { return symbol(TokenNames.VOID); }
 
 {ID}					{ return symbol(TokenNames.ID, yytext());}
 
