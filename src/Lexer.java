@@ -986,7 +986,7 @@ class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 71: break;
           case 33:
-            { return symbol(TokenNames.TYPE_VOID);
+            { return symbol(TokenNames.VOID);
             }
           // fall through
           case 72: break;

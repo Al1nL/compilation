@@ -38,8 +38,8 @@ public class TokenNames {
   public static final int EQ = 3;
   public static final int NEW = 25;
   public static final int EXTENDS = 26;
+  public static final int VOID = 30;
   public static final int ARRAY = 21;
-  public static final int TYPE_VOID = 30;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -71,7 +71,7 @@ public class TokenNames {
   "NIL",
   "TYPE_INT",
   "TYPE_STRING",
-  "TYPE_VOID",
+  "VOID",
   "INT",
   "ID",
   "STRING"
