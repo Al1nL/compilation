@@ -1,274 +1,57 @@
 digraph
 {
 graph [ordering = "out"]
-v56 [label = "FUNC DEC
-IsPrime"];
-v56 -> v0;
-v56 -> v3;
-v56 -> v55;
+v1 [label = "ARRAY
+IntArray"];
 v0 [label = "INT"];
-v2 [label = "PARAM
-p"];
-v2 -> v1;
-v1 [label = "INT"];
-v3 [label = "PARAM LIST"];
+v1 -> v0;
+v3 [label = "ARRAY
+FloatArray"];
+v2 [label = "INT"];
 v3 -> v2;
-v6 [label = "VAR DEC
-i"];
-v6 -> v5;
-v5 [label = "INT(2)"];
-v9 [label = "VAR DEC
-j"];
-v9 -> v8;
-v8 [label = "INT(2)"];
-v49 [label = "WHILE"];
-v49 -> v14;
-v49 -> v48;
-v10 [label = "SIMPLE
-VAR
-(i)"];
-v11 [label = "EXP
-VAR"];
-v11 -> v10;
-v12 [label = "SIMPLE
-VAR
-(p)"];
-v13 [label = "EXP
-VAR"];
-v13 -> v12;
-v14 [label = "BINOP(<)"];
-v14 -> v11;
-v14 -> v13;
-v40 [label = "WHILE"];
-v40 -> v19;
-v40 -> v39;
-v15 [label = "SIMPLE
-VAR
-(j)"];
-v16 [label = "EXP
-VAR"];
-v16 -> v15;
-v17 [label = "SIMPLE
-VAR
-(p)"];
-v18 [label = "EXP
-VAR"];
-v18 -> v17;
-v19 [label = "BINOP(<)"];
-v19 -> v16;
-v19 -> v18;
-v31 [label = "IF"];
-v31 -> v27;
-v31 -> v30;
-v20 [label = "SIMPLE
-VAR
-(i)"];
-v21 [label = "EXP
-VAR"];
-v21 -> v20;
-v22 [label = "SIMPLE
-VAR
-(j)"];
-v23 [label = "EXP
-VAR"];
-v23 -> v22;
-v24 [label = "BINOP(*)"];
-v24 -> v21;
-v24 -> v23;
-v25 [label = "SIMPLE
-VAR
-(p)"];
-v26 [label = "EXP
-VAR"];
-v26 -> v25;
-v27 [label = "BINOP(=)"];
-v27 -> v24;
-v27 -> v26;
-v29 [label = "RETURN"];
-v29 -> v28;
-v28 [label = "INT(1)"];
-v30 [label = "STMT
-LIST
-"];
-v30 -> v29;
-v32 [label = "SIMPLE
-VAR
-(j)"];
-v33 [label = "SIMPLE
-VAR
-(j)"];
-v34 [label = "EXP
-VAR"];
-v34 -> v33;
-v35 [label = "INT(1)"];
-v36 [label = "BINOP(+)"];
-v36 -> v34;
-v36 -> v35;
-v37 [label = "ASSIGN
-left := right
-"];
-v37 -> v32;
-v37 -> v36;
-v38 [label = "STMT
-LIST
-"];
-v38 -> v37;
-v39 [label = "STMT
-LIST
-"];
-v39 -> v31;
-v39 -> v38;
-v41 [label = "SIMPLE
-VAR
-(i)"];
-v42 [label = "SIMPLE
-VAR
-(i)"];
-v43 [label = "EXP
-VAR"];
-v43 -> v42;
-v44 [label = "INT(1)"];
-v45 [label = "BINOP(+)"];
-v45 -> v43;
-v45 -> v44;
-v46 [label = "ASSIGN
-left := right
-"];
-v46 -> v41;
-v46 -> v45;
-v47 [label = "STMT
-LIST
-"];
-v47 -> v46;
-v48 [label = "STMT
-LIST
-"];
-v48 -> v40;
-v48 -> v47;
-v51 [label = "RETURN"];
-v51 -> v50;
-v50 [label = "INT(0)"];
-v52 [label = "STMT
-LIST
-"];
-v52 -> v51;
-v53 [label = "STMT
-LIST
-"];
-v53 -> v49;
-v53 -> v52;
-v54 [label = "STMT
-LIST
-"];
-v54 -> v9;
-v54 -> v53;
-v55 [label = "STMT
-LIST
-"];
-v55 -> v6;
-v55 -> v54;
-v85 [label = "FUNC DEC
-PrintPrimes"];
-v85 -> v0;
-v85 -> v62;
-v85 -> v84;
-v58 [label = "PARAM
-start"];
-v58 -> v57;
-v57 [label = "INT"];
-v60 [label = "PARAM
-end"];
-v60 -> v59;
-v59 [label = "INT"];
-v61 [label = "PARAM LIST"];
-v61 -> v60;
-v62 [label = "PARAM LIST"];
-v62 -> v58;
-v62 -> v61;
-v65 [label = "VAR DEC
-p"];
-v65 -> v64;
-v64 [label = "INT(2)"];
-v82 [label = "WHILE"];
-v82 -> v72;
-v82 -> v81;
-v66 [label = "SIMPLE
-VAR
-(p)"];
-v67 [label = "EXP
-VAR"];
-v67 -> v66;
-v68 [label = "SIMPLE
-VAR
-(end)"];
-v69 [label = "EXP
-VAR"];
-v69 -> v68;
-v70 [label = "INT(1)"];
-v71 [label = "BINOP(+)"];
-v71 -> v69;
-v71 -> v70;
-v72 [label = "BINOP(<)"];
-v72 -> v67;
-v72 -> v71;
-v80 [label = "IF"];
-v80 -> v75;
-v80 -> v79;
-v75 [label = "CALL(IsPrime)"];
-v73 [label = "SIMPLE
-VAR
-(p)"];
-v74 [label = "EXP
-VAR"];
-v74 -> v73;
-v75 -> v74;
-v78 [label = "CALL(PrintInt)"];
-v76 [label = "SIMPLE
-VAR
-(p)"];
-v77 [label = "EXP
-VAR"];
-v77 -> v76;
-v78 -> v77;
-v79 [label = "STMT
-LIST
-"];
-v79 -> v78;
-v81 [label = "STMT
-LIST
-"];
-v81 -> v80;
-v83 [label = "STMT
-LIST
-"];
-v83 -> v82;
-v84 [label = "STMT
-LIST
-"];
-v84 -> v65;
-v84 -> v83;
-v90 [label = "FUNC DEC
+v5 [label = "ARRAY
+LongtArray"];
+v4 [label = "INT"];
+v5 -> v4;
+v16 [label = "FUNC DEC
 main"];
-v90 -> v0;
-v90 -> v89;
-v88 [label = "CALL(PrintPrimes)"];
-v86 [label = "INT(2)"];
-v87 [label = "INT(100)"];
-v88 -> v86;
-v88 -> v87;
-v89 [label = "STMT
+v16 -> v6;
+v16 -> v11;
+v16 -> v15;
+v6 [label = "VOID"];
+v7 [label = "PARAM
+arr"];
+v7 -> v0;
+v9 [label = "PARAM
+size"];
+v9 -> v8;
+v8 [label = "INT"];
+v10 [label = "PARAM LIST"];
+v10 -> v9;
+v11 [label = "PARAM LIST"];
+v11 -> v7;
+v11 -> v10;
+v14 [label = "CALL(PrintPrimes)"];
+v12 [label = "INT(2)"];
+v13 [label = "INT(100)"];
+v14 -> v12;
+v14 -> v13;
+v15 [label = "STMT
 LIST
 "];
-v89 -> v88;
-v91 [label = "DEC LIST"];
-v91 -> v90;
-v93 [label = "DEC LIST"];
-v93 -> v85;
-v93 -> v90;
-v95 [label = "DEC LIST"];
-v95 -> v56;
-v95 -> v85;
-v96 [label = "PROGRAM
+v15 -> v14;
+v17 [label = "DEC LIST"];
+v17 -> v16;
+v19 [label = "DEC LIST"];
+v19 -> v5;
+v19 -> v16;
+v21 [label = "DEC LIST"];
+v21 -> v3;
+v21 -> v5;
+v23 [label = "DEC LIST"];
+v23 -> v1;
+v23 -> v3;
+v24 [label = "PROGRAM
 "];
-v96 -> v95;
+v24 -> v23;
 }

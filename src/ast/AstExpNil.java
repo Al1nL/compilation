@@ -3,11 +3,12 @@ package ast;
 public class AstExpNil extends AstExp {
 
     public AstExpNil() {
-        // NIL has no value
+        serialNumber = AstNodeSerialNumber.getFresh();
     }
 
     @Override
     public void printMe() {
         System.out.println("NIL");
+        AstGraphviz.getInstance().logNode(serialNumber, String.format("NIL"));
     }
 }

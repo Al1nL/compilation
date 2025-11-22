@@ -7,7 +7,7 @@ public class AstTypeInt extends AstType {
 
     @Override
     public void printMe() {
-        System.out.println(" TYPE INT serial = " + serialNumber);
+        System.out.println("TYPE INT");
         AstGraphviz.getInstance().logNode(serialNumber, "INT");
     }
 }
