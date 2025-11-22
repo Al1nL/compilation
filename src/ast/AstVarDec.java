@@ -19,9 +19,11 @@ public class AstVarDec extends AstCField
         String label = "VAR DEC\n" + name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
 
-        if (exp != null) {
-            AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
-            exp.printMe();
-        }
+        if (type != null) type.printMe();
+        if (exp != null) exp.printMe();
+
+        if (type != null) AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
+        if (exp != null) AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
+        
     }
 }

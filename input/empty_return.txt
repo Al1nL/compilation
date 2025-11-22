@@ -1,0 +1,5 @@
+int main(int k0)
+{
+    int k1;
+    return;
+}

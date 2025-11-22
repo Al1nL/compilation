@@ -25,4 +25,16 @@ public class AstClassDec extends AstDec
         this.parentName = parentName;
         this.fields = fields;
     }
+    @Override
+    public void printMe() {
+        String extendedName = parentName != null? name + "\n" + "EXTENDS\n" + parentName : name;
+        System.out.print("CLASS " + name);
+        if (parentName != null) System.out.print("Extends " + parentName);
+        AstGraphviz.getInstance().logNode(serialNumber, "CLASS\n" + extendedName);
+        if (fields != null){
+            fields.printMe();
+            AstGraphviz.getInstance().logEdge(serialNumber,fields.serialNumber);
+        } 
+
+    }
 }

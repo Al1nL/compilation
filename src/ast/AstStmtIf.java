@@ -30,6 +30,6 @@ public class AstStmtIf extends AstStmt
 
 		if (cond != null) {cond.printMe();}
 		if (body != null) {body.printMe();}
-		if (else_body != null) {body.printMe();}
+		if (else_body != null) {else_body.printMe();}
     }
 }

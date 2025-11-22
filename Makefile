@@ -48,7 +48,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/simple_func.txt
+INPUT    = ${INPUT_DIR}/else.txt
 OUTPUT   = ${OUTPUT_DIR}/ParseStatus.txt
 
 ##########

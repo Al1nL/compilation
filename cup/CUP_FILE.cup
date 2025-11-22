@@ -153,6 +153,7 @@ stmt 		::= 	varDec:v                             {: RESULT = v; :}
     				| var:v ASSIGN exp:e SEMICOLON               {: RESULT = new AstStmtAssign(v,e); :}
 					| var:v ASSIGN newExp:e SEMICOLON             {: RESULT = new AstStmtAssign(v,e); :}
 					| RETURN exp:e SEMICOLON             {: RESULT = new AstStmtReturn(e); :}
+					| RETURN SEMICOLON               	 {: RESULT = new AstStmtReturn(null); :}
 					| IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE {: RESULT = new AstStmtIf(cond, body, null); :}
 
 					| IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE 
@@ -198,7 +199,7 @@ dec 		::= 	varDec:v          {: RESULT = v; :}
 type 		::= 	TYPE_INT                                {: RESULT =  new AstTypeInt(); :}
 					| TYPE_STRING 							{: RESULT =  new AstTypeString(); :}
 					| VOID 									{: RESULT =  new AstTypeVoid(); :}
-					| ID									{: RESULT =  new AstTypeID(); :}
+					| ID: i									{: RESULT =  new AstTypeID(i); :}
 					;
 
 varDec 		::= 	type:t ID:name SEMICOLON        				{: RESULT =  new AstVarDec(t,name, null); :}
