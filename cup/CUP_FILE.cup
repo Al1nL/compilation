@@ -122,6 +122,7 @@ non terminal ArrayList<AstExp> args;
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
+precedence nonassoc ASSIGN;
 precedence left EQ;
 precedence left LT;
 precedence left GT;
@@ -129,6 +130,8 @@ precedence left PLUS;
 precedence left MINUS;
 precedence left TIMES;
 precedence left DIVIDE;
+precedence nonassoc LBRACK;
+precedence nonassoc LPAREN;
 precedence left DOT;
 /************************/
 /* START WITH: stmtList */
