@@ -85,14 +85,9 @@ public class Main {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
-
                 // syntax error with location
-                Symbol sym = l.next_token();
-                if (sym != null && sym.left >= 0) {
-                    fileWriter.print("ERROR(" + sym.left + ")");
-                } else {
-                    fileWriter.print("ERROR");
-                }
+                    fileWriter.print(e.getMessage());
+                
             }
             fileWriter.close();
         } catch (Exception e) {
