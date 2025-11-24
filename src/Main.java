@@ -71,7 +71,6 @@ public class Main {
                  * **********************
                  */
                 ast.printMe();
-                fileWriter.print("OK");
 
                 /**
                  * **********************************
@@ -81,13 +80,14 @@ public class Main {
                  * **********************************
                  */
                 AstGraphviz.getInstance().finalizeFile();
+                fileWriter.print("OK");
+
             } catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
                 // syntax error with location
-                    fileWriter.print(e.getMessage());
-                
+                fileWriter.print(e.getMessage());
             }
             fileWriter.close();
         } catch (Exception e) {
