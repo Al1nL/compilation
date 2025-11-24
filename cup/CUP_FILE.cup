@@ -22,7 +22,7 @@ parser code
 		System.out.print(":");
 		System.out.print(lexer.getTokenStartPosition());
 		System.out.print("] ");		
-		throw new RuntimeException("SYNTAX");
+		throw new RuntimeException("ERROR("+lexer.getLine()+")");
 		//System.exit(0);
 	}
 :}
