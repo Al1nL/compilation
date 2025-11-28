@@ -1,5 +1,9 @@
 package ast;
 
+import types.*;
+import symboltable.*;
+
+
 
 public class AstStmtWhile extends AstStmt
 {
@@ -29,4 +33,23 @@ public class AstStmtWhile extends AstStmt
 		if (body != null) {body.printMe();}
 		
     }
+
+	public void semantMe(Type expectedReturnType)
+{
+    // Check condition is int
+    Type condType = cond.semantMe();
+    if (!(condType instanceof TypeInt))
+    {
+        System.err.println("ERROR: While condition must be int, got " + condType.name);
+    	report();
+	}
+    
+    // Begin scope for while body
+    SymbolTable.getInstance().beginScope();
+    if (body != null)
+    {
+        body.semantMe();
+    }
+    SymbolTable.getInstance().endScope();
+}
 }

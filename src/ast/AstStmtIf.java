@@ -36,34 +36,30 @@ public class AstStmtIf extends AstStmt
 		if (else_body != null) {else_body.printMe();}
     }
 	
-	public Type semantMe()
-	{
-		/****************************/
-		/* [0] Semant the Condition */
-		/****************************/
-		if (cond.semantMe() != TypeInt.getInstance())
-		{
-			System.out.format(">> ERROR [%d:%d] condition inside IF is not integral\n",2,2);
-		}
-		
-		/*************************/
-		/* [1] Begin If Scope */
-		/*************************/
-		SymbolTable.getInstance().beginScope();
-
-		/***************************/
-		/* [2] Semant Data Members */
-		/***************************/
-		body.semantMe();
-
-		/*****************/
-		/* [3] End Scope */
-		/*****************/
-		SymbolTable.getInstance().endScope();
-
-		/***************************************************/
-		/* [4] Return value is irrelevant for if statement */
-		/**************************************************/
-		return null;		
+	public void semantMe(Type expectedReturnType)
+{
+    // Check condition is int
+    Type condType = cond.semantMe();
+    if (!(condType instanceof TypeInt))
+    {
+        System.err.println("ERROR: If condition must be int, got " + condType.name);
+		report();
 	}
+    
+    // Begin scope for if body
+    SymbolTable.getInstance().beginScope();
+    if (body != null)
+    {
+        body.semantMe();
+    }
+    SymbolTable.getInstance().endScope();
+    
+    // Begin scope for else body if exists
+    if (else_body != null)
+    {
+        SymbolTable.getInstance().beginScope();
+        else_body.semantMe();
+        SymbolTable.getInstance().endScope();
+    }
+}
 }
