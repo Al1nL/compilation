@@ -272,4 +272,8 @@ public class SymbolTable
 		}
 		return instance;
 	}
+	public boolean isGlobalScope()
+    {
+        return topIndex == 0;
+    }
 }
