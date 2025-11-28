@@ -86,8 +86,9 @@ public class Main {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
-                // syntax error with location
+                // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
+                //e.printStackTrace();
             }
             fileWriter.close();
         } catch (Exception e) {
