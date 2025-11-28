@@ -15,6 +15,6 @@ public class TypeList extends Type
 	{
 		this.head = head;
 		this.tail = tail;
-		this.len=tail.len+1;
+		this.len=tail!=null?tail.len+1:1;
 	}
 }
