@@ -26,7 +26,7 @@ public class AstExpCall extends AstExp {
 
     public Type SemantMe() {
         // Look up the function in the symbol table
-        TypeFunction funcType = (TypeFunction) SymbolTable.find(name);
+        TypeFunction funcType = (TypeFunction) SymbolTable.getInstance().find(name);
         if (funcType == null) {
             System.err.println("Function " + name + " is not defined");
             report();
