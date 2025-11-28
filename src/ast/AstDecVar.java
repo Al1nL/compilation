@@ -3,9 +3,8 @@ package ast;
 import types.*;
 import symboltable.*;
 
+public class AstDecVar extends AstDec {
 
-public class AstDecVar extends AstDec
-{
     public String type;
     public String name;
     public AstExp exp;
@@ -20,46 +19,53 @@ public class AstDecVar extends AstDec
     public void printMe() {
         System.out.print("AST NODE VAR DEC\n");
 
-        String label = "VAR DEC\n" +type+" " + name;
+        String label = "VAR DEC\n" + type + " " + name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
 
-        if (exp != null) exp.printMe();
+        if (exp != null) {
+            exp.printMe();
+        }
 
-        if (exp != null) AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
-        
+        if (exp != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
+        }
+
     }
 
-    
-	public Type semantMe()
-	{
-		Type t;
-	
-		/****************************/
-		/* [1] Check If Type exists */
-		/****************************/
-		t = SymbolTable.getInstance().find(type);
-		if (t == null)
-		{
-			System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,type);
-			System.exit(0);
-		}
-		
-		/**************************************/
-		/* [2] Check That Name does NOT exist */
-		/**************************************/
-		if (SymbolTable.getInstance().find(name) != null)
-		{
-			System.out.format(">> ERROR [%d:%d] variable %s already exists in scope\n",2,2,name);				
-		}
+    public Type semantMe() {
+        Type varType = null;
 
-		/************************************************/
-		/* [3] Enter the Identifier to the Symbol Table */
-		/************************************************/
-		SymbolTable.getInstance().enter(name,t);
+        // Check for primitive types
+        if (type.equals("int")) {
+            varType = TypeInt.getInstance();
 
-		/************************************************************/
-		/* [4] Return value is irrelevant for variable declarations */
-		/************************************************************/
-		return null;		
-	}
+        } else if (type.equals("string")) {
+            varType = TypeString.getInstance();
+
+        } else if (type.equals("void")) {
+            // Variables cannot be void
+            System.err.println("ERROR: Variable '" + name + "' cannot have type void");
+        } else {
+            // Must be a class or array type
+            varType = SymbolTable.getInstance().find(type);
+            if (varType == null) {
+                System.err.println("ERROR: Type '" + type + "' is not defined");
+                report();
+            }
+        }
+
+        if (exp != null) {
+            Type expType = exp.semantMe();
+
+            if (!expType.canAssignTo(varType)) {
+                System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType.name);
+                report();
+            }
+        }
+
+        // Enter variable to symbol table   
+        SymbolTable.getInstance().enter(name, varType);
+
+        return varType;
+    }
 }
