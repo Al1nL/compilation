@@ -10,7 +10,7 @@ public abstract class AstNode
 	/* a graphviz dot format of the AST ...    */
 	/*******************************************/
 	public int serialNumber;
-	
+	public int line=-1;
 	/***********************************************/
 	/* The default message for an unknown AST node */
 	/***********************************************/
@@ -22,4 +22,7 @@ public abstract class AstNode
 	{
 		return null;
 	}
+	public void report() {
+        throw new RuntimeException("ERROR(" + line+")");
+    }
 }
