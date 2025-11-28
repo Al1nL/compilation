@@ -33,7 +33,7 @@ public class AstGraphviz
 			/****************************/
 			try
 			{
-				String dirname="./AST_dot_output/";
+				String dirname="./output/";
 				java.io.File dir = new java.io.File(dirname);
     			if (!dir.exists()) dir.mkdirs();
 				String filename="AST_IN_GRAPHVIZ_DOT_FORMAT.txt";
@@ -87,3 +87,4 @@ public class AstGraphviz
 		fileWriter.close();
 	}
 }
+
