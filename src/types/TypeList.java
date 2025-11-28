@@ -7,7 +7,7 @@ public class TypeList extends Type
 	/****************/
 	public Type head;
 	public TypeList tail;
-
+	public int len=0;
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -15,5 +15,6 @@ public class TypeList extends Type
 	{
 		this.head = head;
 		this.tail = tail;
+		this.len=tail.len+1;
 	}
 }
