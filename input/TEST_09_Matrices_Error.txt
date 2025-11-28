@@ -3,7 +3,7 @@ array Mat      = IntArray[];
 
 int trace3x3(Mat A)
 {
-	return return return;
+	return A[0][0]+A[1][1]+A[2][2];
 }
 
 void main()
@@ -14,7 +14,7 @@ void main()
 
 	Mat A := new IntArray[3];
 
-	A[0][0]:=0;A[0][1]:=1;A[0][2]:=2;
+	A[0][0]:=0;A[0][1]:=1;A[0]   :=2;
 	A[1][0]:=3;A[1][1]:=4;A[1][2]:=5;
 	A[2][0]:=6;A[2][1]:=7;A[2][2]:=8;
 

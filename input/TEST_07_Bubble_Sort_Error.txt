@@ -2,13 +2,13 @@ array IntArray = int[];
 
 void BubbleSort(IntArray arr, int size)
 {
-    int i := 0;
+    int size := 0;
     int min := -32767;
     int minIndex := -1;
     
     while (i < size)
     {
-        int j := i+;
+        int j := i+1;
         while (j<size)
         {
             if (arr[j] < min)

@@ -1,8 +1,0 @@
-array IntArray = int[];
-array FloatArray = int[];
-array LongtArray = int[];
-
-void main(IntArray arr, int size)
-{
-    PrintPrimes(2,100);
-}

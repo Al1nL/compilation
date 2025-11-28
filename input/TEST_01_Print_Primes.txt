@@ -20,7 +20,7 @@ int IsPrime(int p)
 
 void PrintPrimes(int start, int end)
 {
-    int p := 2;
+    int p := start;
     
     while (p < end+1)
     {

@@ -1,5 +1,6 @@
 package ast;
 
+
 public class AstVarSubscript extends AstVar
 {
 	public AstVar var;

@@ -68,7 +68,7 @@ void main()
     
     IntList l := MergeLists(a,A);
     
-    while (l)
+    while (1 - (l = nil))
     {
         PrintInt(l.head);
         l := l.tail;

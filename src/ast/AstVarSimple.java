@@ -1,5 +1,8 @@
 package ast;
 
+import types.*;
+import symboltable.*;
+
 public class AstVarSimple extends AstVar
 {
 	/************************/
@@ -44,5 +47,10 @@ public class AstVarSimple extends AstVar
 		AstGraphviz.getInstance().logNode(
 				serialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
+	}
+
+	public Type semantMe()
+	{
+		return SymbolTable.getInstance().find(name);
 	}
 }

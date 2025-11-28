@@ -1,2 +1,0 @@
-int i := Random.randomNumber.generator(6, 7);
-Node cur := cur.next.next.next.next;

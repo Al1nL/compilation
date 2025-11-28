@@ -102,8 +102,8 @@ non terminal AstExp callExp;
 non terminal AstVar var;
 non terminal AstStmt stmt;
 non terminal AstStmtList stmtList;
-non terminal AstProgram program;
-non terminal AstType type;
+non terminal AstDecList program;
+non terminal String type;
 non terminal AstTypedefArray arrayTypedef;
 
 
@@ -112,9 +112,9 @@ non terminal AstParamList paramList;
 non terminal AstDec dec;
 non terminal AstDec cField;
 non terminal AstDecList cFieldList;
-non terminal AstVarDec varDec;
-non terminal AstFuncDec funcDec;
-non terminal AstClassDec classDec;
+non terminal AstDecVar varDec;
+non terminal AstDecFunc funcDec;
+non terminal AstDecClass classDec;
 
 non terminal ArrayList<AstExp> args;
 
@@ -152,7 +152,7 @@ var			::=		ID:name								{: RESULT = new AstVarSimple(name);       :}
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
 					;
 					
-stmt 		::= 	varDec:v                             {: RESULT = v; :}
+stmt 		::= 	varDec:v                             {: RESULT = new AstStmtDecVar(v); :}
     				| var:v ASSIGN exp:e SEMICOLON               {: RESULT = new AstStmtAssign(v,e); :}
 					| var:v ASSIGN newExp:e SEMICOLON             {: RESULT = new AstStmtAssign(v,e); :}
 					| RETURN exp:e SEMICOLON             {: RESULT = new AstStmtReturn(e); :}
@@ -163,7 +163,7 @@ stmt 		::= 	varDec:v                             {: RESULT = v; :}
 					ELSE LBRACE stmtList:elseBody RBRACE          			{: RESULT = new AstStmtIf(cond, body, elseBody); :}
 
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE {: RESULT = new AstStmtWhile(cond, body); :}
-					| callExp:c SEMICOLON                      {: RESULT = c; :}
+					| callExp:c SEMICOLON                      {: RESULT = new AstStmtCall(c); :}
 					;
 
 exp 		::= 	INT:i 						        {: RESULT = new AstExpInt(i); :}
@@ -189,8 +189,8 @@ paramList 	::=		param:p COMMA paramList:l      {: RESULT = new AstParamList(p, l
 					| param:p   			{: RESULT = new AstParamList(p, null); :}
     				;
 
-program 	::= 	dec:d								{: RESULT = new AstProgram(new AstDecList(d, null)); :}
-          			| dec:d program:p					{: RESULT = new AstProgram(new AstDecList(d, p.decs)); :}
+program 	::= 	dec:d								{: RESULT = new AstDecList(d, null); :}
+          			| dec:d program:p					{: RESULT = new AstDecList(d, p); :}
           			;
 					
 dec 		::= 	varDec:v          {: RESULT = v; :}
@@ -198,24 +198,24 @@ dec 		::= 	varDec:v          {: RESULT = v; :}
       				| classDec:c        {: RESULT = c; :}
       				| arrayTypedef:a    {: RESULT = a; :}
       				;
-
-type 		::= 	TYPE_INT                                {: RESULT =  new AstTypeInt(); :}
-					| TYPE_STRING 							{: RESULT =  new AstTypeString(); :}
-					| VOID 									{: RESULT =  new AstTypeVoid(); :}
-					| ID: i									{: RESULT =  new AstTypeID(i); :}
+					
+type 		::= 	TYPE_INT                    {: RESULT = "int"; :}
+					| TYPE_STRING               {: RESULT = "string"; :}
+					| VOID                      {: RESULT = "void"; :}
+					| ID:t                      {: RESULT = t; :}
 					;
 
-varDec 		::= 	type:t ID:name SEMICOLON        				{: RESULT =  new AstVarDec(t,name, null); :}
-					| type:t ID:name ASSIGN exp:e SEMICOLON 		{: RESULT =  new AstVarDec(t,name,e); :}
-					| type:t ID:name ASSIGN newExp:e SEMICOLON		{: RESULT =  new AstVarDec(t,name,e); :}
+varDec 		::= 	type:t ID:name SEMICOLON        				{: RESULT =  new AstDecVar(t,name, null); :}
+					| type:t ID:name ASSIGN exp:e SEMICOLON 		{: RESULT =  new AstDecVar(t,name,e); :}
+					| type:t ID:name ASSIGN newExp:e SEMICOLON		{: RESULT =  new AstDecVar(t,name,e); :}
 					;
 
-funcDec 	::= 	type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE 					{: RESULT =  new AstFuncDec(t,name,null,l); :}
-					| type:t ID:name LPAREN paramList:pl RPAREN LBRACE stmtList:l RBRACE  {: RESULT =  new AstFuncDec(t,name,pl,l); :}
+funcDec 	::= 	type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE 					{: RESULT =  new AstDecFunc(t,name,null,l); :}
+					| type:t ID:name LPAREN paramList:pl RPAREN LBRACE stmtList:l RBRACE  {: RESULT =  new AstDecFunc(t,name,pl,l); :}
 					;
 
-classDec 	::= 	CLASS ID:name LBRACE cFieldList:l RBRACE						{: RESULT =  new AstClassDec(name,null, l); :}
-					| CLASS ID:name1 EXTENDS ID:name2 LBRACE cFieldList:l RBRACE			{: RESULT =  new AstClassDec(name1,name2, l); :}
+classDec 	::= 	CLASS ID:name LBRACE cFieldList:l RBRACE						{: RESULT =  new AstDecClass(name,null, l); :}
+					| CLASS ID:name1 EXTENDS ID:name2 LBRACE cFieldList:l RBRACE			{: RESULT =  new AstDecClass(name1,name2, l); :}
 					;
 
 cField 		::= 	varDec:v 		{: RESULT = v; :}

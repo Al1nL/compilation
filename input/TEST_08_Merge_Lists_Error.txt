@@ -4,7 +4,7 @@ class IntList
     IntList tail;
 }
 
-IntList MergeLists(IntList l1, int l2[])
+IntList MergeLists(IntList l1, IntList l2)
 {
     if (l1 = nil)
     {
@@ -19,7 +19,7 @@ IntList MergeLists(IntList l1, int l2[])
     {
         IntList l3 := l1;
         l3.tail := MergeLists(l1.tail,l2);
-        return l3;
+        return "GustavoFring";
     }
     
     if (l2.head < l1.head)

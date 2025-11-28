@@ -1,4 +1,5 @@
 package ast;
+import types.*;
 
 public class AstExpString extends AstExp {
     public final String value;
@@ -22,5 +23,10 @@ public void printMe() {
         String.format("String(%s)", clean)
     );
 }
+
+public Type semantMe()
+	{
+		return TypeString.getInstance();
+	}
 
 }

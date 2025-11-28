@@ -1,11 +1,12 @@
 package ast;
 
 
+
 public class AstParam extends AstNode{
-    public final AstType type;
+    public final String type;
     public final String name;
 
-    public AstParam(AstType type, String name) {
+    public AstParam(String type, String name) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
         this.type = type;
         this.name = name;
@@ -17,9 +18,9 @@ public class AstParam extends AstNode{
         String label = "PARAM\n" + name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
 
-        if (type != null) {
-            AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
-            type.printMe();
-        }
+        // if (type != null) {
+        //     AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
+        //     type.printMe();
+        // }
     }
 }

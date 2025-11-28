@@ -33,6 +33,6 @@ void main()
     arr[5] := 30;
     arr[6] := -580;
     
-    PrintPrimes(2,100);
+    BubbleSort(arr,7);
 }
 

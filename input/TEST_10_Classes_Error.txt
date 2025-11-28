@@ -1,9 +1,15 @@
 array IntArray = int[];
 
+int monthJuly()
+{
+	int july := 7;
+	return july;
+}
+
 class Person
 {
 	int ID;
-	int age;
+	int age := 18;
 
 	IntArray lastYearSalaries;
 
@@ -20,7 +26,7 @@ class Student extends Person
 		int sum := 0;
 		while (i<10)
 		{
-			sum := (sum+grades)[i];
+			sum := sum+grades[i];
 			i := i+1;
 		}
 		return sum/10;
@@ -38,7 +44,8 @@ void main()
 
 	if (moish.getAverage() > 90)
 	{
-		// Bonus from parents for getting good grades
-		moish.lastYearSalaries[7] := moish.lastYearSalaries[7] + 1000;
+		// mysterious raise pattern ... 
+		moish.lastYearSalaries[moish.age] := moish.lastYearSalaries[moish.birthday()] + 1000;
 	}
+	Student dave := new Person;
 }

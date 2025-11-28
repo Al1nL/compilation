@@ -1,7 +1,0 @@
-int badfoo()
-{
-    int foo(){
-        return;
-    }
-    string s:= "bob";
-}

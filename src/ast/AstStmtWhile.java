@@ -1,5 +1,6 @@
 package ast;
 
+
 public class AstStmtWhile extends AstStmt
 {
 	public AstExp cond;
