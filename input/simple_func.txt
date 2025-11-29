@@ -1,0 +1,5 @@
+int x:=6;
+int five(){
+    int x:=8;
+    return 5;
+}

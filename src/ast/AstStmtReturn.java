@@ -25,7 +25,7 @@ public class AstStmtReturn extends AstStmt {
         }
     }
 
-    public void semantMe(Type expectedReturnType)
+    public Type semantMe(Type expectedReturnType)
 {
     if (exp == null)
     {
@@ -47,5 +47,6 @@ public class AstStmtReturn extends AstStmt {
             report();   
         }
     }
+    return null;
 }
 }

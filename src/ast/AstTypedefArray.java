@@ -27,9 +27,11 @@ public class AstTypedefArray extends AstDec {
 
     @Override
     public Type semantMe() {
-
         // Step 1: Check that the base type exists
         Type baseType = SymbolTable.getInstance().find(type);
+        if(!SymbolTable.getInstance().isGlobalScope()){
+            System.out.format(">> ERROR: Array type defined not in global scope\n");
+        }
         if (baseType == null) {
             System.out.format(">> ERROR: unknown base type '%s' in array typedef '%s'\n", type, name);
             System.exit(0);

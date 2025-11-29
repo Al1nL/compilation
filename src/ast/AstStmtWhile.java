@@ -34,7 +34,7 @@ public class AstStmtWhile extends AstStmt
 		
     }
 
-	public void semantMe(Type expectedReturnType)
+	public Type semantMe(Type expectedReturnType)
 {
     // Check condition is int
     Type condType = cond.semantMe();
@@ -51,5 +51,6 @@ public class AstStmtWhile extends AstStmt
         body.semantMe();
     }
     SymbolTable.getInstance().endScope();
+    return null;
 }
 }

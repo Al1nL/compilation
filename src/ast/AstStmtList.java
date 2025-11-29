@@ -64,10 +64,10 @@ public class AstStmtList extends AstNode
 		if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
 	}
 
-	public Type semantMe()
+	public Type semantMe(Type expectedReturnType)
 	{
-		if (head != null) head.semantMe();
-		if (tail != null) tail.semantMe();
+		if (head != null) head.semantMe(expectedReturnType);
+		if (tail != null) tail.semantMe(expectedReturnType);
 		
 		return null;
 	}

@@ -24,7 +24,8 @@ public class AstExpCall extends AstExp {
 
     }
 
-    public Type SemantMe() {
+    public Type semantMe() {
+        System.out.println("HAHAHAHAAAAAAAAAAAAAAAAAAAAA");
         // Look up the function in the symbol table
         TypeFunction funcType = (TypeFunction) SymbolTable.getInstance().find(name);
         if (funcType == null) {
@@ -40,6 +41,7 @@ public class AstExpCall extends AstExp {
         }
         TypeList p=funcType.params;
         for (int i = 0; i < args.size(); i++) {
+            
             Type argType = args.get(i).semantMe();
             Type paramType = p.head;
             if (!argType.canAssignTo(paramType)) {
@@ -52,5 +54,8 @@ public class AstExpCall extends AstExp {
 
         // Return the function's return type
         return funcType.returnType;
+    }
+    public Type semantMe(Type expectedReturnType){
+        return semantMe();
     }
 }

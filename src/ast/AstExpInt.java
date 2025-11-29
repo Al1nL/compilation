@@ -48,4 +48,7 @@ public class AstExpInt extends AstExp
 	{
 		return TypeInt.getInstance();
 	}
+	public Type semantMe(Type expectedReturnType){
+        return TypeInt.getInstance();
+	}
 }

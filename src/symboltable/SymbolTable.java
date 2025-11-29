@@ -62,7 +62,7 @@ public class SymbolTable
 		/**************************************************************************/
 		/* [3] Prepare a new symbol table entry with name, type, next and prevtop */
 		/**************************************************************************/
-		SymbolTableEntry e = new SymbolTableEntry(name,t,hashValue,next,top, topIndex++);
+		SymbolTableEntry e = new SymbolTableEntry(name,t,hashValue,next,top, topIndex);
 
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
@@ -112,7 +112,7 @@ public class SymbolTable
 		enter(
 			"SCOPE-BOUNDARY",
 			new TypeForScopeBoundaries("NONE"));
-
+		topIndex++;
 		/*********************************************/
 		/* Print the symbol table after every change */
 		/*********************************************/
@@ -268,6 +268,15 @@ public class SymbolTable
 					new TypeList(
 						TypeInt.getInstance(),
 						null)));
+			instance.enter(
+				"PrintString",
+				new TypeFunction(
+					TypeVoid.getInstance(),
+					"PrintString",
+					new TypeList(
+						TypeString.getInstance(),
+						null)));
+						
 			
 		}
 		return instance;

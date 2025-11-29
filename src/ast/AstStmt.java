@@ -4,7 +4,7 @@ import types.*;
 
 public abstract class AstStmt extends AstNode
 {
-    public Type semantMe()
+    public Type semantMe(Type expectedReturnType)
 	{
 		return null;
 	}

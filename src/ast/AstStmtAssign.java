@@ -104,14 +104,23 @@ public class AstStmtAssign extends AstStmt {
         AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
     }
 
-    public void semantMe(Type expectedReturnType) {
+    public Type semantMe(Type expectedReturnType) {
+        System.out.println("############## ################");
         Type varType = var.semantMe();
         Type expType = exp.semantMe();
+        
+        if(varType==null){
+            System.out.println("1NULLLLLLLLLLLLLLLLLLLLLLLLLLL");
+        }
+        if(expType==null){
+            System.out.println("2NULLLLLLLLLLLLLLLLLLLLLLLLLLL");
+        }
 
         if (!expType.canAssignTo(varType)) {
             System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType.name);
 			report();
         }
+        return null;
     }
 
 }

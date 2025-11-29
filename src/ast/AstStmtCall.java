@@ -11,7 +11,7 @@ public class AstStmtCall extends AstStmt {
     /**
      * *************
      */
-    public AstExp callExp;
+    public AstExpCall callExp;
 
     /**
      * ***************
@@ -20,7 +20,7 @@ public class AstStmtCall extends AstStmt {
     /**
      * ***************
      */
-    public AstStmtCall(AstExp callExp) {
+    public AstStmtCall(AstExpCall callExp) {
         /**
          * ***************************
          */
@@ -58,7 +58,8 @@ public class AstStmtCall extends AstStmt {
     }
 
     @Override
-    public Type semantMe() {
+    public Type semantMe(Type expectedReturnType) {
+        
         return callExp.semantMe();
     }
 }

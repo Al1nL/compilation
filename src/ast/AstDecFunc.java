@@ -44,7 +44,7 @@ public class AstDecFunc extends AstDec {
 		/* [0] return type */
 		/*******************/
         Type baseType = SymbolTable.getInstance().find(returnType);
-		if (returnType == null)
+		if (baseType == null)
 		{
 			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);				
 		}
@@ -74,7 +74,7 @@ public class AstDecFunc extends AstDec {
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
-		body.semantMe();
+		body.semantMe(baseType);
 
 		/*****************/
 		/* [4] End Scope */

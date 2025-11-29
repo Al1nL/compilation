@@ -34,7 +34,6 @@ public class AstDecVar extends AstDec {
 
     public Type semantMe() {
         Type varType = null;
-
         // Check for primitive types
         if (type.equals("int")) {
             varType = TypeInt.getInstance();
@@ -55,7 +54,9 @@ public class AstDecVar extends AstDec {
         }
 
         if (exp != null) {
-            Type expType = exp.semantMe();
+            Type expType = exp.semantMe(null);
+
+            
 
             if (!expType.canAssignTo(varType)) {
                 System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType.name);

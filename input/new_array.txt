@@ -1,0 +1,3 @@
+array IDsArray = int[];
+int x := -5;
+IDsArray i := new int[x];

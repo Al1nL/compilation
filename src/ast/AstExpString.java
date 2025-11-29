@@ -29,4 +29,10 @@ public Type semantMe()
 		return TypeString.getInstance();
 	}
 
+
+
+public Type semantMe(Type expectedReturnType){
+        return TypeString.getInstance();
 }
+}
+
