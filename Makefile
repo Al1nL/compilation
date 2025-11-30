@@ -48,7 +48,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/TEST_02_Bubble_Sort.txt  #array_assignment_bad.txt
+INPUT    = ${INPUT_DIR}/void_func.txt  #array_assignment_bad.txt
 OUTPUT   = ${OUTPUT_DIR}/SemanticStatus.txt
 
 ##########

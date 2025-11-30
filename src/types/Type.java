@@ -57,6 +57,15 @@ public abstract class Type {
             return true;
         }
 
+
+        //arrays
+        if (this instanceof TypeArray && other instanceof TypeArray && this.name.charAt(this.name.length()-1)==']'){
+            TypeArray var = (TypeArray) other;
+            TypeArray exp = (TypeArray) this;
+            return var.baseType.isSameType(exp.baseType);
+            
+        }
+
         // Same named types (classes/arrays)
         if (this.name != null && other.name != null) {
             return this.name.equals(other.name);

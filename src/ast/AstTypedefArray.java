@@ -31,17 +31,22 @@ public class AstTypedefArray extends AstDec {
         Type baseType = SymbolTable.getInstance().find(type);
         if(!SymbolTable.getInstance().isGlobalScope()){
             System.out.format(">> ERROR: Array type defined not in global scope\n");
+            report();
         }
         if (baseType == null) {
             System.out.format(">> ERROR: unknown base type '%s' in array typedef '%s'\n", type, name);
-            System.exit(0);
+            report();
+        }
+        if(baseType.isSameType(TypeVoid.getInstance())){
+            System.out.format(">> ERROR: assigned void in array typedef '%s'\n", name);
+            report();
         }
         if (SymbolTable.getInstance().find(name) != null) {
             System.out.format(">> ERROR: typedef '%s' already exists\n", name);
-            System.exit(0);
+            report();
         }
 
-        Type arrayType = new TypeArray(baseType);
+        Type arrayType = new TypeArray(baseType, name);
         SymbolTable.getInstance().enter(name, arrayType);
 
         return arrayType;

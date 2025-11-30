@@ -1,0 +1,5 @@
+array gradesArray = int[];
+gradesArray arr := new int[10];
+void main(){
+    arr[8] := 5;
+}
