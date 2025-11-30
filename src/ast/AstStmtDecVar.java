@@ -39,8 +39,12 @@ public class AstStmtDecVar extends AstStmt
 		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 	}
 
-	public Type semantMe(Type expectedReturnType)
+	public Type semantMe()
 	{
 		return var.semantMe();
+	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
 	}
 }

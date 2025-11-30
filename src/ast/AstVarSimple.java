@@ -53,4 +53,8 @@ public class AstVarSimple extends AstVar
 	{
 		return SymbolTable.getInstance().find(name);
 	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

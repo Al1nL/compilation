@@ -104,7 +104,7 @@ public class AstStmtAssign extends AstStmt {
         AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
     }
 
-    public Type semantMe(Type expectedReturnType) {
+    public Type semantMe() {
         System.out.println("############## ################");
         Type varType = var.semantMe();
         Type expType = exp.semantMe();
@@ -122,5 +122,9 @@ public class AstStmtAssign extends AstStmt {
         }
         return null;
     }
+    public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 
 }

@@ -46,5 +46,9 @@ public class AstTypedefArray extends AstDec {
 
         return arrayType;
     }
+    public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 
 }

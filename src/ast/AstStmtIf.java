@@ -58,9 +58,10 @@ public class AstStmtIf extends AstStmt
     if (else_body != null)
     {
         SymbolTable.getInstance().beginScope();
-        else_body.semantMe();
+        else_body.semantMe(expectedReturnType);
         SymbolTable.getInstance().endScope();
     }
     return null;
 }
+
 }

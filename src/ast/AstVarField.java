@@ -99,4 +99,8 @@ public class AstVarField extends AstVar
 		System.exit(0);
 		return null;
 	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

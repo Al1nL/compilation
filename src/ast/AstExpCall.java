@@ -42,8 +42,13 @@ public class AstExpCall extends AstExp {
         TypeList p=funcType.params;
         for (int i = 0; i < args.size(); i++) {
             
+            
             Type argType = args.get(i).semantMe();
             Type paramType = p.head;
+            if(argType==null){
+                System.err.println("nullllllllllllllllllllllllllll");
+                System.err.println(Integer.toString(i));
+            }
             if (!argType.canAssignTo(paramType)) {
                 System.err.println("Argument " + (i + 1) + " of function " + name +
                                             " has incompatible type. Expected " + paramType + ", got " + argType);

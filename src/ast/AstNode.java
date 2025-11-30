@@ -25,4 +25,8 @@ public abstract class AstNode
 	public void report() {
         throw new RuntimeException("ERROR(" + lineNumber+")");
     }
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

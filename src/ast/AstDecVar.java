@@ -69,4 +69,8 @@ public class AstDecVar extends AstDec {
 
         return varType;
     }
+    public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

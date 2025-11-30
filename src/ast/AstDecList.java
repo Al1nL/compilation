@@ -49,4 +49,8 @@ import types.*;
 
     return new TypeList(headType, tailTypeList);
 }
+public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
     }

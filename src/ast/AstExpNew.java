@@ -25,7 +25,7 @@ public class AstExpNew extends AstExp {
         //if (type != null) AstGraphviz.getInstance().logEdge(serialNumber,type.serialNumber);
         if (sizeExp != null) AstGraphviz.getInstance().logEdge(serialNumber,sizeExp.serialNumber);
     }
-    public Type semantMe(Type expectedReturnType){
+    public Type semantMe(){
         Type ret = SymbolTable.getInstance().find(type);
         if (ret == null)
 			{
@@ -50,4 +50,8 @@ public class AstExpNew extends AstExp {
             }
             return new TypeArray(ret);
         }
+        public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

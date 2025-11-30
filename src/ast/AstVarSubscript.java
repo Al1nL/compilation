@@ -1,5 +1,6 @@
 package ast;
-
+import types.*;
+import symboltable.*;
 
 public class AstVarSubscript extends AstVar
 {
@@ -57,4 +58,35 @@ public class AstVarSubscript extends AstVar
 		if (var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 		if (subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
 	}
+	public Type semantMe()
+	{
+		Type ret = var.semantMe();
+		if(ret==null){
+			System.out.format(">> ERROR [%d:%d] non existing type\n",2,2);
+            report();
+		}
+		Type t = subscript.semantMe();
+            if (!t.isSameType(TypeInt.getInstance())){
+                System.out.format(">> ERROR: indexing an array with non int argument\n");
+                report();
+            }
+		if(subscript instanceof AstExpInt){
+                AstExpInt v = (AstExpInt) subscript;
+                if(v.value<0){
+                    System.out.format(">> ERROR: indexing an array with a negativ index\n");
+                    report();
+                }
+                
+            }
+		TypeArray convertedRet = (TypeArray) ret;
+            return convertedRet.baseType;
+
+	}
+
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
+
+
 }

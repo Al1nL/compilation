@@ -1,0 +1,96 @@
+digraph
+{
+graph [ordering = "out"]
+v0 [label = "ARRAY
+gradesArray"];
+v1 [label = "ARRAY
+IDsArray"];
+v11 [label = "FUNC DEC
+void F()"];
+v11 -> v3;
+v11 -> v10;
+v2 [label = "PARAM
+ids"];
+v3 [label = "PARAM LIST"];
+v3 -> v2;
+v8 [label = "CALL(PrintInt)"];
+v4 [label = "SIMPLE
+VAR
+(ids)"];
+v5 [label = "INT(6)"];
+v6 [label = "SUBSCRIPT
+VAR
+...[...]"];
+v6 -> v4;
+v6 -> v5;
+v7 [label = "EXP
+VAR"];
+v7 -> v6;
+v8 -> v7;
+v9 [label = "STMT
+CALL"];
+v9 -> v8;
+v10 [label = "STMT
+LIST
+"];
+v10 -> v9;
+v27 [label = "FUNC DEC
+void main()"];
+v27 -> v26;
+v14 [label = "VAR DEC
+IDsArray ids"];
+v13 [label = "NEW"];
+v12 [label = "INT(8)"];
+v13 -> v12;
+v14 -> v13;
+v15 [label = "STMT
+DEC
+VAR"];
+v15 -> v14;
+v18 [label = "VAR DEC
+gradesArray grades"];
+v17 [label = "NEW"];
+v16 [label = "INT(8)"];
+v17 -> v16;
+v18 -> v17;
+v19 [label = "STMT
+DEC
+VAR"];
+v19 -> v18;
+v22 [label = "CALL(F)"];
+v20 [label = "SIMPLE
+VAR
+(grades)"];
+v21 [label = "EXP
+VAR"];
+v21 -> v20;
+v22 -> v21;
+v23 [label = "STMT
+CALL"];
+v23 -> v22;
+v24 [label = "STMT
+LIST
+"];
+v24 -> v23;
+v25 [label = "STMT
+LIST
+"];
+v25 -> v19;
+v25 -> v24;
+v26 [label = "STMT
+LIST
+"];
+v26 -> v15;
+v26 -> v25;
+v28 [label = "DEC LIST"];
+v28 -> v27;
+v29 [label = "DEC LIST"];
+v29 -> v11;
+v29 -> v28;
+v30 [label = "DEC LIST"];
+v30 -> v1;
+v30 -> v29;
+v31 [label = "DEC LIST"];
+v31 -> v0;
+v31 -> v30;
+}

@@ -1,4 +1,4 @@
-array gradesArray = int[]; 
+array gradesArray = int[];
 array IDsArray = int[];
 void F(IDsArray ids){ PrintInt(ids[6]); }
 void main()

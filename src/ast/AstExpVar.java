@@ -58,6 +58,11 @@ public class AstExpVar extends AstExp
 
 	public Type semantMe()
 {
+	System.out.println("====>"+var.getClass().getName());
     return var.semantMe();
 }
+public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

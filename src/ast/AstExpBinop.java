@@ -89,4 +89,8 @@ public class AstExpBinop extends AstExp
 		System.exit(0);
 		return null;
 	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

@@ -46,4 +46,8 @@ public class AstParam extends AstNode {
 
         return paramType;
     }
+    public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

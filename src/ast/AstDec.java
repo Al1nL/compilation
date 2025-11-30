@@ -8,4 +8,8 @@ public abstract class AstDec extends AstStmt
 	{
 		return null;
 	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

@@ -58,8 +58,12 @@ public class AstStmtCall extends AstStmt {
     }
 
     @Override
-    public Type semantMe(Type expectedReturnType) {
+    public Type semantMe() {
         
         return callExp.semantMe();
     }
+    public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

@@ -17,4 +17,8 @@ public class AstExpNil extends AstExp {
 {
     return new TypeNil();
 }
+public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }

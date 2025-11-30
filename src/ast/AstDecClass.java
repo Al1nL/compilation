@@ -78,4 +78,8 @@ public class AstDecClass extends AstDec
 		/*********************************************************/
 		return null;		
 	}
+	public Type semantMe(Type expectedReturnType)
+	{
+		return semantMe();
+	}
 }
