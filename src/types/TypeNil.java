@@ -2,6 +2,7 @@ package types;
 
 public class TypeNil extends Type
 {
+    private static TypeNil instance = null;
     public TypeNil()
     {
         this.name = "nil"; // optional, mainly for debugging
@@ -32,4 +33,12 @@ public class TypeNil extends Type
     {
         return "nil";
     }
+    public static TypeNil getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new TypeNil();
+		}
+		return instance;
+	}
 }
