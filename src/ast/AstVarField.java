@@ -73,7 +73,7 @@ public class AstVarField extends AstVar
 		/*********************************/
 		if (t.isClass() == false)
 		{
-			System.out.format(">> ERROR [%d:%d] access %s field of a non-class variable\n",6,6,fieldName);
+			System.out.format(">> ERROR [%d:%d] access %s field of a non-class variable\n",lineNumber+1,lineNumber+1,fieldName);
 			System.exit(0);
 		}
 		else
@@ -95,7 +95,7 @@ public class AstVarField extends AstVar
 		/*********************************************/
 		/* [4] fieldName does not exist in class var */
 		/*********************************************/
-		System.out.format(">> ERROR [%d:%d] field %s does not exist in class\n",6,6,fieldName);							
+		System.out.format(">> ERROR [%d:%d] field %s does not exist in class\n",lineNumber,lineNumber,fieldName);					
 		System.exit(0);
 		return null;
 	}

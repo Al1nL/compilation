@@ -49,5 +49,10 @@ public class TypeClass extends Type
         
         return null;
     }
+
+    @Override
+    public boolean isClass() {
+        return true;
+    }
 }
 

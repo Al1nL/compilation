@@ -371,7 +371,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     // Helper to set line number in AST nodes
     public void setLine(ast.AstNode node)
     {
-        node.lineNumber = lexer.getLine();
+        node.lineNumber = lexer.getTokenStartPosition();
     }
 
 

@@ -57,11 +57,20 @@ public class AstDecClass extends AstDec
 		/* [1] Begin Class Scope */
 		/*************************/
 		SymbolTable.getInstance().beginScope();
+		TypeClass parentTypeClass = null;
+		//todo: check this after
+		if (parentName != null) {
+			Type parentType = SymbolTable.getInstance().find(parentName);
+			if (parentType == null || !(parentType instanceof TypeClass)) {
+				report(); // superclass does not exist or is not a class
+			}
+			parentTypeClass = (TypeClass) parentType;
+		}
 
 		/***************************/
 		/* [2] Semant Data Members */
 		/***************************/
-		TypeClass t = new TypeClass(null,name, fields.semantMe());
+		TypeClass t = new TypeClass(parentTypeClass ,name, fields.semantMe());
 
 		/*****************/
 		/* [3] End Scope */
