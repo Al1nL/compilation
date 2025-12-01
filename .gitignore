@@ -29,3 +29,8 @@ Dockerfile
 .idea/
 
 output/
+src/Parser.java
+src/Lexer.java
+src/TokenNames.java
+
+SEMANT
