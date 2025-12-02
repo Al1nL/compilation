@@ -13,7 +13,6 @@ public class TypeClass extends Type
 	/* packed together with the class methods         */
 	/**************************************************/
 	public TypeList dataMembers;
-	
 	/****************/
 	/* CTROR(S) ... */
 	/****************/

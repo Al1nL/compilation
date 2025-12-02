@@ -39,19 +39,19 @@ public class AstVarSimple extends AstVar
 		/**********************************/
 		/* AST NODE TYPE = AST SIMPLE VAR */
 		/**********************************/
-		System.out.format("AST NODE SIMPLE VAR( %s )\n",name);
+		System.out.format("AST NODE SIMPLE VAR ( %s )\n", this.name);
 
 		/*********************************/
 		/* Print to AST GRAPHVIZ DOT file */
 		/*********************************/
 		AstGraphviz.getInstance().logNode(
 				serialNumber,
-			String.format("SIMPLE\nVAR\n(%s)",name));
+			String.format("SIMPLE\nVAR\n(%s)", this.name));
 	}
 
 	public Type semantMe()
 	{
-		return SymbolTable.getInstance().find(name);
+		return SymbolTable.getInstance().find(this.name);
 	}
 	public Type semantMe(Type expectedReturnType)
 	{

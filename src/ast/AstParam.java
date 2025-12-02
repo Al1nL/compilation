@@ -17,7 +17,7 @@ public class AstParam extends AstNode {
     public void printMe() {
         System.out.print("AST NODE PARAM\n");
 
-        String label = "PARAM\n" + name;
+        String label = "PARAM\n" + this.name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
     }
 
@@ -32,12 +32,12 @@ public class AstParam extends AstNode {
             paramType = TypeString.getInstance();
 
         } else if (type.equals("void")) {
-            throw new RuntimeException("ERROR: Parameter '" + name + "' cannot have type void");
+            throw new RuntimeException("ERROR: Parameter '" + this.name + "' cannot have type void");
         } else {
             // Must be a class or array type
             paramType = SymbolTable.getInstance().find(type);
             if (paramType == null) {
-                throw new RuntimeException("ERROR: Type '" + type + "' is not defined");
+                throw new RuntimeException("ERROR: Type '" + this.type + "' is not defined");
             }
         }
 

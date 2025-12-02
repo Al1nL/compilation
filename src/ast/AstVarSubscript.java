@@ -42,8 +42,8 @@ public class AstVarSubscript extends AstVar
 		/****************************************/
 		/* RECURSIVELY PRINT VAR + SUBSCRIPT ... */
 		/****************************************/
-		if (var != null) var.printMe();
-		if (subscript != null) subscript.printMe();
+		if (this.var != null) var.printMe();
+		if (this.subscript != null) subscript.printMe();
 		
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -55,8 +55,8 @@ public class AstVarSubscript extends AstVar
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
-		if (subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
+		if (this.var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
+		if (this.subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
 	}
 	public Type semantMe()
 	{

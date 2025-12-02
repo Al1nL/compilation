@@ -18,7 +18,7 @@ public class AstDecClass extends AstDec
     public AstDecClass(String name, String parentName, AstDecList fields)
     {
         serialNumber = AstNodeSerialNumber.getFresh();
-
+		
         if (parentName != null)
             System.out.print("===== classDec -> CLASS ID EXTENDS ID LBRACE cField { cField } RBRACE\n");
         else
@@ -34,7 +34,7 @@ public class AstDecClass extends AstDec
 		/*************************************/
 		/* RECURSIVELY PRINT HEAD + TAIL ... */
 		/*************************************/
-		System.out.format("CLASS DEC = %s\n",name);
+		System.out.format("CLASS DEC = %s\n",this.name);
 		if (fields != null) fields.printMe();
 		
 		/***************************************/
@@ -42,7 +42,7 @@ public class AstDecClass extends AstDec
 		/***************************************/
 		AstGraphviz.getInstance().logNode(
                 serialNumber,
-			String.format("CLASS\n%s",name));
+			String.format("CLASS\n%s",this.name));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
@@ -70,7 +70,7 @@ public class AstDecClass extends AstDec
 		/***************************/
 		/* [2] Semant Data Members */
 		/***************************/
-		TypeClass t = new TypeClass(parentTypeClass ,name, fields.semantMe());
+		TypeClass t = new TypeClass(parentTypeClass ,this.name, fields.semantMe());
 
 		/*****************/
 		/* [3] End Scope */
@@ -80,7 +80,7 @@ public class AstDecClass extends AstDec
 		/************************************************/
 		/* [4] Enter the Class Type to the Symbol Table */
 		/************************************************/
-		SymbolTable.getInstance().enter(name,t);
+		SymbolTable.getInstance().enter(this.name,t);
 
 		/*********************************************************/
 		/* [5] Return value is irrelevant for class declarations */

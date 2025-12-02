@@ -43,14 +43,14 @@ public class AstVarField extends AstVar
 		/* RECURSIVELY PRINT VAR, then FIELD NAME ... */
 		/**********************************************/
 		if (var != null) var.printMe();
-		System.out.format("FIELD NAME( %s )\n",fieldName);
+		System.out.format("FIELD NAME( %s )\n",this.fieldName);
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AstGraphviz.getInstance().logNode(
 				serialNumber,
-			String.format("FIELD\nVAR\n...->%s",fieldName));
+			String.format("FIELD\nVAR\n...->%s",this.fieldName));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
@@ -86,7 +86,7 @@ public class AstVarField extends AstVar
 		/************************************/
 		for (TypeList it = tc.dataMembers; it != null; it=it.tail)
 		{
-			if (it.head.name == fieldName)
+			if (it.head != null && it.head.name == fieldName)
 			{
 				return it.head;
 			}

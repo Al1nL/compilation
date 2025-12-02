@@ -19,7 +19,7 @@ public class AstDecVar extends AstDec {
     public void printMe() {
         System.out.print("AST NODE VAR DEC\n");
 
-        String label = "VAR DEC\n" + type + " " + name;
+        String label = "VAR DEC\n" + this.type + " " + this.name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
 
         if (exp != null) {
@@ -43,12 +43,12 @@ public class AstDecVar extends AstDec {
 
         } else if (type.equals("void")) {
             // Variables cannot be void
-            System.err.println("ERROR: Variable '" + name + "' cannot have type void");
+            System.err.println("ERROR: Variable '" + this.name + "' cannot have type void");
         } else {
             // Must be a class or array type
             varType = SymbolTable.getInstance().find(type);
             if (varType == null) {
-                System.err.println("ERROR: Type '" + type + "' is not defined");
+                System.err.println("ERROR: Type '" + this.type + "' is not defined");
                 report();
             }
         }
@@ -65,7 +65,7 @@ public class AstDecVar extends AstDec {
         }
 
         // Enter variable to symbol table   
-        SymbolTable.getInstance().enter(name, varType);
+        SymbolTable.getInstance().enter(this.name, varType);
 
         return varType;
     }

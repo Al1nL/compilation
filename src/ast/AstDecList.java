@@ -8,7 +8,6 @@ import types.*;
 
         public AstDecList(AstDec head, AstDecList tail) {
             serialNumber = AstNodeSerialNumber.getFresh();
-
             if (tail != null)
                 System.out.print("===== cFieldList -> cField cFieldList\n");
             else
@@ -49,8 +48,9 @@ import types.*;
 
     return new TypeList(headType, tailTypeList);
 }
-public Type semantMe(Type expectedReturnType)
+    public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
 	}
+
     }
