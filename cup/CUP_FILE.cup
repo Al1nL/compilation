@@ -224,7 +224,6 @@ classDec 	::= 	CLASS:cls ID:name LBRACE cFieldList:l RBRACE						{: RESULT =  ne
 
 cField 		::= 	varDec:v 			{: RESULT = v; :}
 					| funcDec:f 		{: RESULT = f; :}
-					| arrayTypedef:a 	{: RESULT = a; :}
 					;
 
 cFieldList ::=		cField:c cFieldList:l 	{: RESULT = new AstDecList(c, l); :}
