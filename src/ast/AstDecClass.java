@@ -1,6 +1,6 @@
 package ast;
-import types.*;
 import symboltable.*;
+import types.*;
 
 
 public class AstDecClass extends AstDec
@@ -75,7 +75,7 @@ public class AstDecClass extends AstDec
 		/*****************/
 		/* [3] End Scope */
 		/*****************/
-		SymbolTable.getInstance().endScope();
+		//SymbolTable.getInstance().endScope();
 
 		/************************************************/
 		/* [4] Enter the Class Type to the Symbol Table */
@@ -85,7 +85,7 @@ public class AstDecClass extends AstDec
 		/*********************************************************/
 		/* [5] Return value is irrelevant for class declarations */
 		/*********************************************************/
-		return null;		
+		return t;		
 	}
 	public Type semantMe(Type expectedReturnType)
 	{

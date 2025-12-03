@@ -1,7 +1,7 @@
 package ast;
 
-import types.*;
 import symboltable.*;
+import types.*;
 
 public class AstDecFunc extends AstDec {
     private final String returnType;
@@ -46,7 +46,7 @@ public class AstDecFunc extends AstDec {
         Type baseType = SymbolTable.getInstance().find(returnType);
 		if (baseType == null)
 		{
-			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);				
+			System.out.format(">> ERROR [%d] non existing return type %s\n",lineNumber,returnType);				
 		}
 	
 		/****************************/
@@ -62,7 +62,7 @@ public class AstDecFunc extends AstDec {
 			t = SymbolTable.getInstance().find(it.head.type);
 			if (t == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.head.type);				
+				System.out.format(">> ERROR [%d] non existing type %s\n",lineNumber,it.head.type);				
 			}
 			else
 			{
@@ -84,12 +84,13 @@ public class AstDecFunc extends AstDec {
 		/***************************************************/
 		/* [5] Enter the Function Type to the Symbol Table */
 		/***************************************************/
-		SymbolTable.getInstance().enter(name,new TypeFunction(baseType,name,type_list));
+		t=new TypeFunction(baseType,name,type_list);
+		SymbolTable.getInstance().enter(name,t);
 
 		/************************************************************/
 		/* [6] Return value is irrelevant for function declarations */
 		/************************************************************/
-		return null;		
+		return t;		
 	}
 	public Type semantMe(Type expectedReturnType)
 	{

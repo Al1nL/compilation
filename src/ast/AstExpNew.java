@@ -29,7 +29,7 @@ public class AstExpNew extends AstExp {
         Type ret = SymbolTable.getInstance().find(type);
         if (ret == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,type);
+				System.out.format(">> ERROR [%d] non existing type %s\n",lineNumber,type);				
                 report();				
 			}
         if(sizeExp==null){

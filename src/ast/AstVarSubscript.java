@@ -1,6 +1,5 @@
 package ast;
 import types.*;
-import symboltable.*;
 
 public class AstVarSubscript extends AstVar
 {
@@ -62,7 +61,7 @@ public class AstVarSubscript extends AstVar
 	{
 		Type ret = var.semantMe();
 		if(ret==null){
-			System.out.format(">> ERROR [%d:%d] non existing type\n",2,2);
+			System.out.format(">> ERROR [%d] non existing type\n",lineNumber);
             report();
 		}
 		Type t = subscript.semantMe();
