@@ -35,63 +35,66 @@ public class AstDecFunc extends AstDec {
     }
 
 	public Type semantMe()
-	{
-		Type t;
-		//Type returnType = null;
-		TypeList type_list = null;
+{
+    TypeList type_list = null;
 
-		/*******************/
-		/* [0] return type */
-		/*******************/
-        Type baseType = SymbolTable.getInstance().find(returnType);
-		if (baseType == null)
-		{
-			System.out.format(">> ERROR [%d] non existing return type %s\n",lineNumber,returnType);				
-		}
-	
-		/****************************/
-		/* [1] Begin Function Scope */
-		/****************************/
-		SymbolTable.getInstance().beginScope();
+    /*******************/
+    /* [0] Return type */
+    /*******************/
+    Type baseType = SymbolTable.getInstance().find(returnType);
+    if (baseType == null)
+    {
+        System.out.format(">> ERROR [%d] non existing return type %s\n", lineNumber, returnType);
+        // You should probably report() here
+    }
 
-		/***************************/
-		/* [2] Semant Input Params */
-		/***************************/
-		for (AstParamList it = params; it  != null; it = it.tail)
-		{
-			t = SymbolTable.getInstance().find(it.head.type);
-			if (t == null)
-			{
-				System.out.format(">> ERROR [%d] non existing type %s\n",lineNumber,it.head.type);				
-			}
-			else
-			{
-				type_list = new TypeList(t,type_list);
-				SymbolTable.getInstance().enter(it.head.name,t);
-			}
-		}
+    /*****************************************************/
+    /* [1] Enter function name BEFORE opening its scope  */
+    /*****************************************************/
+    // Create function type first (with null params for now)
+    TypeFunction t = new TypeFunction(baseType, name, null);
+    SymbolTable.getInstance().enter(name, t);
 
-		/*******************/
-		/* [3] Semant Body */
-		/*******************/
-		body.semantMe(baseType);
+    /****************************/
+    /* [2] Begin Function Scope */
+    /****************************/
+    SymbolTable.getInstance().beginScope();
 
-		/*****************/
-		/* [4] End Scope */
-		/*****************/
-		SymbolTable.getInstance().endScope();
+    /***************************/
+    /* [3] Semant Input Params */
+    /***************************/
+    for (AstParamList it = params; it != null; it = it.tail)
+    {
+        Type paramType = SymbolTable.getInstance().find(it.head.type);
+        if (paramType == null)
+        {
+            System.out.format(">> ERROR [%d] non existing type %s\n", lineNumber, it.head.type);
+        }
+        else
+        {
+            type_list = new TypeList(paramType, type_list);
+            SymbolTable.getInstance().enter(it.head.name, paramType);
+        }
+    }
 
-		/***************************************************/
-		/* [5] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-		t=new TypeFunction(baseType,name,type_list);
-		SymbolTable.getInstance().enter(name,t);
+    // Update function type with actual parameters
+    t.params = type_list;  // Assuming TypeFunction has a params field
 
-		/************************************************************/
-		/* [6] Return value is irrelevant for function declarations */
-		/************************************************************/
-		return t;		
-	}
+    /*******************/
+    /* [4] Semant Body */
+    /*******************/
+    body.semantMe(baseType);
+
+    /*****************/
+    /* [5] End Scope */
+    /*****************/
+    SymbolTable.getInstance().endScope();
+
+    /********************************************************/
+    /* [6] Function is already in symbol table, just return */
+    /********************************************************/
+    return t;
+}
 	public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
