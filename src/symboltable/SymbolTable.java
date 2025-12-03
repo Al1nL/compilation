@@ -7,10 +7,6 @@ package symboltable;
 /* GENERAL IMPORTS */
 /*******************/
 import java.io.PrintWriter;
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
 import types.*;
 
 /****************/
@@ -284,4 +280,33 @@ public class SymbolTable
     {
         return topIndex == 0;
     }
+
+	public Type findInClassScope(TypeClass tc, String fieldName)
+{
+    SymbolTableEntry e = top;
+
+    // find where the scope of the class begins
+    while (e != null && !(e.type instanceof TypeClass && e.name.equals(tc.name))) {
+        e = e.prevtop;
+    }
+
+    if (e == null) {
+        return null; // class not found — should not happen
+    }
+
+    //  go from there into the class scope
+    e = e.prevtop;
+
+    // search until reaching SCOPE-BOUNDARY
+    while (e != null && !e.name.equals("SCOPE-BOUNDARY")) {
+		//System.err.println("var: "+e.name+"\n");
+        if (e.name.equals(fieldName)) {
+            return e.type;
+        }
+        e = e.prevtop;
+    }
+
+    return null; // field not found in this class
+}
+
 }
