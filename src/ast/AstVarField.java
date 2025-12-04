@@ -125,27 +125,16 @@ public class AstVarField extends AstVar {
         } else {
             tc = (TypeClass) t;
         }
-        /* Look for fiedlName inside tc */
+        /* Look for fiedlName inside tc or fathers */
+        Type found = SymbolTable.getInstance().findInClassScope(tc, fieldName);
 
-        TypeClass currentClass = tc;
-        Type found = null;
-        while (currentClass != null) {
-            found = SymbolTable.getInstance()
-                    .findInClassScope(currentClass, fieldName);
-
-            if (found != null) {
-                return found;
-            }
-
-            currentClass = currentClass.father;  // go to parent
-        }
         if (found == null) {
             System.err.println("var:" + var.lineNumber);
             System.out.format(">> ERROR [%d] field %s does not exist in class\n", lineNumber, fieldName);
             System.exit(0);
         }
 
-        return t;
+        return found;
     }
 
     public Type semantMe(Type expectedReturnType) {
