@@ -410,6 +410,9 @@ public class SymbolTable {
     }
 
     public boolean isGlobalScope() {
+        
+        //todo: change global scope or global finder
+
         SymbolTableEntry e = top;
         while (e != null) {
             if ("SCOPE-BOUNDARY".equals(e.name)) {

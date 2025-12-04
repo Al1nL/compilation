@@ -71,19 +71,62 @@ public class AstDecClass extends AstDec {
 
         // PROCESS FIELDS
         System.err.println(">>> Processing fields for " + this.name);
-        TypeList fieldTypes = fields.semantMe();
-        System.err.println("topIndex AFTER processing fields: " + SymbolTable.getInstance().topIndex);
 
-        // Store fields in class type
-        t.dataMembers = fieldTypes;
+        t.dataMembers = this.processFields();
+        // TypeList fieldTypes = fields.semantMe();
+        System.err.println("topIndex AFTER processing fields: " + SymbolTable.getInstance().topIndex);
 
         System.err.println("====== CLASS " + this.name + " END ======\n");
 
         // DO NOT endScope()
+         /*****************/
+        /* [5] End Scope */
+        /*****************/
+        SymbolTable.getInstance().endScope();
+        
         return t;
     }
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public TypeClassVarDecList processFields(){
+        TypeClassVarDecList result = null;
+		TypeClassVarDecList last = null;
+
+        Type t;
+        String name;
+		for (AstDecList it = fields; it != null; it = it.tail)
+		{
+            AstDec dec = it.head;
+
+            if(dec instanceof AstDecVar){
+                t = ((AstDecVar) dec).semantMe();
+                name = ((AstDecVar) dec).name;
+
+            }else if(dec instanceof AstDecFunc){
+                t = ((AstDecFunc) dec).semantMe();
+                name = ((AstDecFunc) dec).name;
+            }else
+                continue;
+            
+			// Convert Type → TypeClassVarDec
+			TypeClassVarDec decv = new TypeClassVarDec(t, name);
+
+			// First element
+			if (result == null)
+			{
+				result = new TypeClassVarDecList(decv, null);
+				last = result;
+			}
+			else
+			{
+				last.tail = new TypeClassVarDecList(decv, null);
+				last = last.tail;
+			}
+		}
+
+        return result;
     }
 }

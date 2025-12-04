@@ -56,13 +56,13 @@ public class AstDecVar extends AstDec {
         if (exp != null) {
             Type expType = exp.semantMe(null);
 
-            
-
             if (!expType.canAssignTo(varType)) {
-                System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType.name);
+                System.err.println("ERROR: Cannot assign expType " + expType.name + " to " + varType.name);
                 report();
             }
         }
+
+        //Todo: add here check if calss type and send classDecVar type
 
         // Enter variable to symbol table   
         SymbolTable.getInstance().enter(this.name, varType);

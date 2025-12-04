@@ -34,7 +34,7 @@ public class AstExpCall extends AstExp {
         }
 
         //  Check the arguments against the function's parameters
-        if (args.size() != funcType.params.len) {
+        if (funcType.params != null && args.size() != funcType.params.len) {
             System.err.println("Function " + name + " expects " +
                                         funcType.params.len + " arguments, but got " + args.size());
             report();

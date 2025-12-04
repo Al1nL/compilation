@@ -12,11 +12,11 @@ public class TypeClass extends Type
 	/* Note that data members coming from the AST are */
 	/* packed together with the class methods         */
 	/**************************************************/
-	public TypeList dataMembers;
+	public TypeClassVarDecList dataMembers;
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TypeClass(TypeClass father, String name, TypeList dataMembers)
+	public TypeClass(TypeClass father, String name, TypeClassVarDecList dataMembers)
 	{
 		this.name = name;
 		this.father = father;
@@ -27,5 +27,30 @@ public class TypeClass extends Type
     public boolean isClass() {
         return true;
     }
+
+	// Find a field in this class or parent classes
+    public Type findField(String fieldName)
+    {
+        // Search in this class's data members
+        TypeClassVarDecList current = dataMembers;
+        while (current != null)
+        {
+            if (current.head != null && current.head.name != null)
+            {
+                if (current.head.name.equals(fieldName))
+                {
+                    return current.head.t;
+                }
+            }
+			current = current.tail;
+		}
+		// Search in parent class
+        if (father != null)
+        {
+            return father.findField(fieldName);
+        }
+
+        return null;
+	}
 }
 

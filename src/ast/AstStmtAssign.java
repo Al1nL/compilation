@@ -117,7 +117,7 @@ public class AstStmtAssign extends AstStmt {
         }
 
         if (!expType.canAssignTo(varType)) {
-            System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType.name);
+            System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType + " "+ lineNumber);
 			report();
         }
         return null;

@@ -122,11 +122,11 @@ public class AstVarField extends AstVar {
         if (t.isClass() == false) {
             System.out.format(">> ERROR [%d] access %s field of a non-class variable\n", lineNumber + 1, fieldName);
             System.exit(0);
-        } else {
-            tc = (TypeClass) t;
-        }
+        } 
+
+        tc = (TypeClass) t;
         /* Look for fiedlName inside tc or fathers */
-        Type found = SymbolTable.getInstance().findInClassScope(tc, fieldName);
+        Type found = tc.findField(this.fieldName); //SymbolTable.getInstance().findInClassScope(tc, fieldName);
 
         if (found == null) {
             System.err.println("var:" + var.lineNumber);

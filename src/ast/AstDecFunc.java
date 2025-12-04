@@ -5,7 +5,7 @@ import types.*;
 
 public class AstDecFunc extends AstDec {
     private final String returnType;
-    private final String name;
+    public final String name;
     private final AstParamList params;
     private final AstStmtList body;
 
