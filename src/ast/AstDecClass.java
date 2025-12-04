@@ -1,5 +1,5 @@
 package ast;
-
+import java.util.HashSet;
 import symboltable.*;
 import types.*;
 
@@ -72,7 +72,7 @@ public class AstDecClass extends AstDec {
         // PROCESS FIELDS
         System.err.println(">>> Processing fields for " + this.name);
 
-        t.dataMembers = this.processFields();
+        t.dataMembers = this.processFields(parentTypeClass);
         // TypeList fieldTypes = fields.semantMe();
         System.err.println("topIndex AFTER processing fields: " + SymbolTable.getInstance().topIndex);
 
@@ -91,9 +91,10 @@ public class AstDecClass extends AstDec {
         return semantMe();
     }
 
-    public TypeClassVarDecList processFields(){
+    public TypeClassVarDecList processFields(TypeClass parent){
         TypeClassVarDecList result = null;
 		TypeClassVarDecList last = null;
+        HashSet<String> addedNames = new HashSet<>();
 
         Type t;
         String name;
@@ -110,6 +111,33 @@ public class AstDecClass extends AstDec {
                 name = ((AstDecFunc) dec).name;
             }else
                 continue;
+            
+            if(parent != null){
+                Type same = parent.findField(name);
+
+                if(same != null){
+
+                    if(!same.isSameType(t)) report();
+
+                    if(dec instanceof AstDecVar){
+                        System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
+                        report();
+                    }else{
+                        TypeFunction func = (TypeFunction) same;
+                        boolean ok = func.compareFunctions((TypeFunction)t);
+                        if(!ok) report(); 
+                    }
+                }
+            }
+            
+            if (addedNames.contains(name)) {
+                System.out.format(
+                    ">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
+                    name, lineNumber);
+                report();
+            } else {
+                addedNames.add(name); // Add this name to the set
+            }
             
 			// Convert Type → TypeClassVarDec
 			TypeClassVarDec decv = new TypeClassVarDec(t, name);
