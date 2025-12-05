@@ -7,5 +7,5 @@ class Son extends Father
 int foo(int j) { return j; }
 }
 int main(Son s, Father f){
-    return nil=nil; 
+    return "acv"=nil; 
 }

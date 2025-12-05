@@ -24,4 +24,8 @@ public class TypeInt extends Type
 		}
 		return instance;
 	}
+	@Override
+    public String toString() {
+        return "int";
+    }
 }

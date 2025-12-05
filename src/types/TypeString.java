@@ -24,4 +24,8 @@ public class TypeString extends Type
 		}
 		return instance;
 	}
+	@Override
+    public String toString() {
+        return "string";
+    }
 }

@@ -14,7 +14,7 @@ public class TypeArray extends Type {
 
     @Override
     public String toString() {
-        return baseType + "[]";
+        return name;
     }
 
     public boolean isArray(){ return true;}
