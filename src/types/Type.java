@@ -106,4 +106,8 @@ public abstract class Type {
 
         return false;
     }
+    public String toString()
+    {
+        return "changeName";
+    }
 }

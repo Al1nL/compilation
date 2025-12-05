@@ -82,5 +82,24 @@ public class AstStmtList extends AstNode
 
     return new TypeList(headType, tailTypeList);
 }
+
+    public TypeList semantMe(Type expectedReturnType) 
+{
+    Type headType = null;
+    TypeList tailTypeList = null;
+
+    if (head != null)
+    {
+        headType = head.semantMe(expectedReturnType);
+    }
+
+    if (tail != null)
+    {
+        tailTypeList = tail.semantMe(expectedReturnType);
+
+    }
+
+    return new TypeList(headType, tailTypeList);
+}
 	
 }
