@@ -46,6 +46,7 @@ public class AstDecFunc extends AstDec {
     {
         System.out.format(">> ERROR [%d] non existing return type %s\n", lineNumber, returnType);
         // You should probably report() here
+        report();
     }
 
     /*****************************************************/
