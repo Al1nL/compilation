@@ -70,6 +70,7 @@ public class AstDecFunc extends AstDec {
         if (paramType == null)
         {
             System.out.format(">> ERROR [%d] non existing type %s\n", lineNumber, it.head.type);
+            report();
         }
         else
         {

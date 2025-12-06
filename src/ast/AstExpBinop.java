@@ -76,7 +76,6 @@ public class AstExpBinop extends AstExp
 
 	public Type semantMe()
 	{	
-		System.out.println("ENTERE THE RIGHT PLACE");
 		Type t1 = null;
 		Type t2 = null;
 		

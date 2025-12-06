@@ -25,7 +25,6 @@ public class AstExpCall extends AstExp {
     }
 
     public Type semantMe() {
-        System.out.println("HAHAHAHAAAAAAAAAAAAAAAAAAAAA");
         // Look up the function in the symbol table
         TypeFunction funcType = (TypeFunction) SymbolTable.getInstance().find(name);
         if (funcType == null) {
@@ -46,13 +45,12 @@ public class AstExpCall extends AstExp {
             Type argType = args.get(i).semantMe();
             Type paramType = p.head;
             if(argType==null){
-                System.err.println("nullllllllllllllllllllllllllll");
                 System.err.println(Integer.toString(i));
             }
             if (!argType.canAssignTo(paramType)) {
                 System.err.println("Argument " + (i + 1) + " of function " + name +
                                             " has incompatible type. Expected " + paramType + ", got " + argType);
-            report();
+                report();
             }
             p=p.tail;
         }

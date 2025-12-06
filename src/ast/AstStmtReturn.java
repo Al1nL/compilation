@@ -27,7 +27,6 @@ public class AstStmtReturn extends AstStmt {
 
     public Type semantMe(Type expectedReturnType)
 {
-    System.out.println("ENTERED RETURN!!");
     if (exp == null)
     {
         // return; with no value
@@ -52,8 +51,6 @@ public class AstStmtReturn extends AstStmt {
 }
     public Type semantMe()
 {
-    System.out.println("ENTERED Wrong RETURN!!");
-    
     return null;
 }
 

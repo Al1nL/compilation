@@ -19,10 +19,6 @@ public class AstTypedefArray extends AstDec {
         System.out.println("ARRAY TYPEDEF: " + name);
         String label = "ARRAY\n" + name;
         AstGraphviz.getInstance().logNode(serialNumber, label);
-        // if (type != null) {
-        //     type.toString();
-        //     AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
-        // }
     }
 
     @Override

@@ -121,7 +121,7 @@ public class AstVarField extends AstVar {
          */
         if (t.isClass() == false) {
             System.out.format(">> ERROR [%d] access %s field of a non-class variable\n", lineNumber + 1, fieldName);
-            System.exit(0);
+            report();
         } 
 
         tc = (TypeClass) t;
@@ -131,7 +131,7 @@ public class AstVarField extends AstVar {
         if (found == null) {
             System.err.println("var:" + var.lineNumber);
             System.out.format(">> ERROR [%d] field %s does not exist in class\n", lineNumber, fieldName);
-            System.exit(0);
+            report();
         }
 
         return found;

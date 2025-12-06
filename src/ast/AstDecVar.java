@@ -44,6 +44,7 @@ public class AstDecVar extends AstDec {
         } else if (type.equals("void")) {
             // Variables cannot be void
             System.err.println("ERROR: Variable '" + this.name + "' cannot have type void");
+            report();
         } else {
             // Must be a class or array type
             varType = SymbolTable.getInstance().find(type);

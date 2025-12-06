@@ -105,16 +105,8 @@ public class AstStmtAssign extends AstStmt {
     }
 
     public Type semantMe() {
-        System.out.println("############## ################");
         Type varType = var.semantMe();
         Type expType = exp.semantMe();
-        
-        if(varType==null){
-            System.out.println("1NULLLLLLLLLLLLLLLLLLLLLLLLLLL");
-        }
-        if(expType==null){
-            System.out.println("2NULLLLLLLLLLLLLLLLLLLLLLLLLLL");
-        }
 
         if (!expType.canAssignTo(varType)) {
             System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType + " "+ lineNumber);
