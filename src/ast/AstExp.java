@@ -53,7 +53,6 @@ public abstract class AstExp extends AstStmt {
                             callName);
                     return null;
                 }
-				System.err.format("pT:%s, aT:%s\n",paramType.name,argType.name);
                 if (!argType.canAssignTo(paramType)) {
                     System.err.format(">> ERROR: Argument %d of %s '%s': expected '%s' but got '%s'\n",
                             i + 1,

@@ -167,7 +167,7 @@ stmt 		::= 	varDec:v                             {: RESULT = new AstStmtDecVar(v
 					| IF:ifTok LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE  
 						ELSE LBRACE stmtList:elseBody RBRACE           			{: RESULT = new AstStmtIf(cond, body, elseBody); setLineNum(RESULT, ifTokleft); :}
 					| WHILE:whileTok LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE  {: RESULT = new AstStmtWhile(cond, body); setLineNum(RESULT, whileTokleft); :}
-					| callExp:c SEMICOLON:s                      {: RESULT = new AstStmtCall((AstExpCall) c); setLineNum(RESULT, sleft);:}
+					| callExp:c SEMICOLON:s                      {: RESULT = new AstStmtCall(c); setLineNum(RESULT, sleft);:}
 					;
 
 exp 		::= 	INT:i 						        {: RESULT = new AstExpInt(i); setLineNum(RESULT, ileft);:}

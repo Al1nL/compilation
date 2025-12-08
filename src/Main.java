@@ -81,6 +81,7 @@ public class Main {
                  */
                 AstGraphviz.getInstance().finalizeFile();
                 fileWriter.print("OK");
+                System.out.println("finished, all ok");
 
             } catch (Error le) {
                 // lexical error
