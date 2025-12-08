@@ -11,7 +11,7 @@ public class AstStmtCall extends AstStmt {
     /**
      * *************
      */
-    public AstExpCall callExp;
+    public AstExp callExp;
 
     /**
      * ***************
@@ -20,7 +20,7 @@ public class AstStmtCall extends AstStmt {
     /**
      * ***************
      */
-    public AstStmtCall(AstExpCall callExp) {
+    public AstStmtCall(AstExp callExp) {
         /**
          * ***************************
          */

@@ -1,10 +1,11 @@
 package ast;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import symboltable.*;
 import types.*;
 
 public class AstExpCall extends AstExp {
+
     public final String name;
     public final ArrayList<AstExp> args;
 
@@ -17,48 +18,32 @@ public class AstExpCall extends AstExp {
     @Override
     public void printMe() {
         System.out.print("CALL " + name + "(");
-        AstGraphviz.getInstance().logNode(serialNumber, String.format("CALL(%s)",name));
-        if (args != null) for (AstExp e : args) e.printMe();
+        AstGraphviz.getInstance().logNode(serialNumber, String.format("CALL(%s)", name));
+        if (args != null) {
+            for (AstExp e : args) {
+                e.printMe();
+            }
+        }
         System.out.println(")");
-        if (args != null) for (AstExp e : args) AstGraphviz.getInstance().logEdge(serialNumber,e.serialNumber);
+        if (args != null) {
+            for (AstExp e : args) {
+                AstGraphviz.getInstance().logEdge(serialNumber, e.serialNumber);
+            }
+        }
 
     }
 
     public Type semantMe() {
         // Look up the function in the symbol table
         TypeFunction funcType = (TypeFunction) SymbolTable.getInstance().find(name);
-        if (funcType == null) {
-            System.err.println("Function " + name + " is not defined");
+        Type result = validateCall(name, funcType, args, false);
+        if (result == null) {
             report();
         }
-
-        //  Check the arguments against the function's parameters
-        if (funcType.params != null && args.size() != funcType.params.len) {
-            System.err.println("Function " + name + " expects " +
-                                        funcType.params.len + " arguments, but got " + args.size());
-            report();
-        }
-        TypeList p=funcType.params;
-        for (int i = 0; i < args.size(); i++) {
-            
-            
-            Type argType = args.get(i).semantMe();
-            Type paramType = p.head;
-            if(argType==null){
-                System.err.println(Integer.toString(i));
-            }
-            if (!argType.canAssignTo(paramType)) {
-                System.err.println("Argument " + (i + 1) + " of function " + name +
-                                            " has incompatible type. Expected " + paramType + ", got " + argType);
-                report();
-            }
-            p=p.tail;
-        }
-
-        // Return the function's return type
-        return funcType.returnType;
+        return result;
     }
-    public Type semantMe(Type expectedReturnType){
+
+    public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
 }

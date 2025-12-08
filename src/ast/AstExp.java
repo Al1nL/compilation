@@ -1,15 +1,71 @@
 package ast;
+
+import java.util.ArrayList;
 import types.*;
 
+public abstract class AstExp extends AstStmt {
 
-public abstract class AstExp extends AstStmt
-{
-    public Type semantMe()
-	{
-		return null;
-	}
-	public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+    public Type semantMe() {
+        return null;
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
+    // Helper method to validate function/method call arguments
+
+    public static Type validateCall(String callName, TypeFunction funcType,
+            ArrayList<AstExp> args, boolean isMethodCall) {
+        if (funcType == null) {
+            System.err.format(">> ERROR: %s '%s' is not defined\n",
+                    isMethodCall ? "Method" : "Function", callName);
+            return null;
+        }
+
+        // Check argument count
+        int expectedArgs = (funcType.params != null) ? funcType.params.len : 0;
+        int actualArgs = (args != null) ? args.size() : 0;
+
+        if (expectedArgs != actualArgs) {
+            System.err.format(">> ERROR: %s '%s' expects %d arguments but got %d\n",
+                    isMethodCall ? "Method" : "Function",
+                    callName, expectedArgs, actualArgs);
+            return null;
+        }
+
+        // Type-check each argument
+        if (args != null && funcType.params != null) {
+            TypeList paramList = funcType.params;
+
+            for (int i = 0; i < args.size(); i++) {
+                Type argType = args.get(i).semantMe();
+                Type paramType = paramList.head;
+
+                if (argType == null) {
+                    System.err.format(">> ERROR: Argument %d in call to '%s' has no type\n",
+                            i + 1, callName);
+                    return null;
+                }
+                if (paramType == null) {
+                    System.err.format(">> ERROR: Parameter %d of %s '%s' has no type defined\n",
+                            i + 1,
+                            isMethodCall ? "method" : "function",
+                            callName);
+                    return null;
+                }
+				System.err.format("pT:%s, aT:%s\n",paramType.name,argType.name);
+                if (!argType.canAssignTo(paramType)) {
+                    System.err.format(">> ERROR: Argument %d of %s '%s': expected '%s' but got '%s'\n",
+                            i + 1,
+                            isMethodCall ? "method" : "function",
+                            callName, paramType.name, argType.name);
+                    return null;
+                }
+
+                paramList = paramList.tail;
+            }
+        }
+
+        return funcType.returnType;
+    }
 }
