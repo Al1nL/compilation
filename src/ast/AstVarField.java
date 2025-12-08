@@ -1,6 +1,5 @@
 package ast;
 
-import symboltable.*;
 import types.*;
 
 public class AstVarField extends AstVar {
@@ -129,7 +128,6 @@ public class AstVarField extends AstVar {
         Type found = tc.findField(this.fieldName); //SymbolTable.getInstance().findInClassScope(tc, fieldName);
 
         if (found == null) {
-            System.err.println("var:" + var.lineNumber);
             System.out.format(">> ERROR [%d] field %s does not exist in class\n", lineNumber, fieldName);
             report();
         }

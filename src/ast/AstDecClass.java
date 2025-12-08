@@ -32,8 +32,8 @@ public class AstDecClass extends AstDec {
         }
 
         AstGraphviz.getInstance().logNode(
-            serialNumber,
-            String.format("CLASS\n%s", this.name));
+                serialNumber,
+                String.format("CLASS\n%s", this.name));
 
         AstGraphviz.getInstance().logEdge(serialNumber, fields.serialNumber);
     }
@@ -41,7 +41,6 @@ public class AstDecClass extends AstDec {
     public Type semantMe() {
 
         System.err.println("\n====== CLASS " + this.name + " START ======");
-        System.err.println("topIndex BEFORE enter: " + SymbolTable.getInstance().topIndex);
 
         // Check duplicate class
         if (SymbolTable.getInstance().find(this.name) != null) {
@@ -63,27 +62,19 @@ public class AstDecClass extends AstDec {
 
         // ENTER class name
         SymbolTable.getInstance().enter(this.name, t);
-        System.err.println("topIndex AFTER enter class name: " + SymbolTable.getInstance().topIndex);
 
         // BEGIN SCOPE
         SymbolTable.getInstance().beginScope();
-        System.err.println("topIndex AFTER beginScope: " + SymbolTable.getInstance().topIndex);
 
         // PROCESS FIELDS
-        System.err.println(">>> Processing fields for " + this.name);
-
         t.dataMembers = this.processFields(parentTypeClass);
         // TypeList fieldTypes = fields.semantMe();
-        System.err.println("topIndex AFTER processing fields: " + SymbolTable.getInstance().topIndex);
 
         System.err.println("====== CLASS " + this.name + " END ======\n");
 
-        // DO NOT endScope()
-         /*****************/
-        /* [5] End Scope */
-        /*****************/
+        /* End Scope */
         SymbolTable.getInstance().endScope();
-        
+
         return t;
     }
 
@@ -91,69 +82,72 @@ public class AstDecClass extends AstDec {
         return semantMe();
     }
 
-    public TypeClassVarDecList processFields(TypeClass parent){
+    public TypeClassVarDecList processFields(TypeClass parent) {
         TypeClassVarDecList result = null;
-		TypeClassVarDecList last = null;
+        TypeClassVarDecList last = null;
         HashSet<String> addedNames = new HashSet<>();
 
         Type t;
         String name;
-		for (AstDecList it = fields; it != null; it = it.tail)
-		{
+        for (AstDecList it = fields; it != null; it = it.tail) {
             AstDec dec = it.head;
 
-            if(dec instanceof AstDecVar){
+            if (dec instanceof AstDecVar) {
+                System.err.format("var:%s\n", ((AstDecVar) dec).name);
                 t = ((AstDecVar) dec).semantMe();
                 name = ((AstDecVar) dec).name;
 
-            }else if(dec instanceof AstDecFunc){
+            } else if (dec instanceof AstDecFunc) {
+                System.err.format("method:%s\n", ((AstDecFunc) dec).name);
                 t = ((AstDecFunc) dec).semantMe();
                 name = ((AstDecFunc) dec).name;
-            }else
+            } else {
                 continue;
-            
-            if(parent != null){
+            }
+
+            if (parent != null) {
                 Type same = parent.findField(name);
 
-                if(same != null){
+                if (same != null) {
 
-                    if(!same.isSameType(t)) report();
+                    if (!same.isSameType(t)) {
+                        report();
+                    }
 
-                    if(dec instanceof AstDecVar){
+                    if (dec instanceof AstDecVar) {
                         System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
                         report();
-                    }else{
+                    } else {
                         TypeFunction func = (TypeFunction) same;
-                        boolean ok = func.compareFunctions((TypeFunction)t);
-                        if(!ok) report(); 
+                        boolean ok = func.compareFunctions((TypeFunction) t);
+                        if (!ok) {
+                            report();
+                        }
                     }
                 }
             }
-            
+
             if (addedNames.contains(name)) {
                 System.out.format(
-                    ">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
-                    name, lineNumber);
+                        ">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
+                        name, lineNumber);
                 report();
             } else {
                 addedNames.add(name); // Add this name to the set
             }
-            
-			// Convert Type → TypeClassVarDec
-			TypeClassVarDec decv = new TypeClassVarDec(t, name);
 
-			// First element
-			if (result == null)
-			{
-				result = new TypeClassVarDecList(decv, null);
-				last = result;
-			}
-			else
-			{
-				last.tail = new TypeClassVarDecList(decv, null);
-				last = last.tail;
-			}
-		}
+            // Convert Type → TypeClassVarDec
+            TypeClassVarDec decv = new TypeClassVarDec(t, name);
+
+            // First element
+            if (result == null) {
+                result = new TypeClassVarDecList(decv, null);
+                last = result;
+            } else {
+                last.tail = new TypeClassVarDecList(decv, null);
+                last = last.tail;
+            }
+        }
 
         return result;
     }
