@@ -1,6 +1,7 @@
 package ast;
 
 import symboltable.*;
+import returncounter.ReturnCounter;
 import types.*;
 
 public class AstDecFunc extends AstDec {
@@ -85,7 +86,22 @@ public class AstDecFunc extends AstDec {
     /*******************/
     /* [4] Semant Body */
     /*******************/
+    ReturnCounter c = ReturnCounter.getInstance();
+    if(returnType.equals("void")){
+        c.setCount(1);
+
+    }
+    else{
+        c.setCount(0);
+    }
+
     body.semantMe(baseType);
+    if(c.getCount()<=0){
+        System.out.format(">> ERROR no return statemnt existing in %s\n", name);
+            report();
+
+    }
+    c.setCount(0);
 
     /*****************/
     /* [5] End Scope */

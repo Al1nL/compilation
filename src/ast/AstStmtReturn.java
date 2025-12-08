@@ -1,7 +1,7 @@
 package ast;
 
 import types.*;
-
+import returncounter.ReturnCounter;
 
 public class AstStmtReturn extends AstStmt {
     public final AstExp exp;  // The expression being returned, can be null for `return;`
@@ -47,6 +47,8 @@ public class AstStmtReturn extends AstStmt {
             report();   
         }
     }
+    ReturnCounter c = ReturnCounter.getInstance();
+    c.setCount(1);
     return null;
 }
     public Type semantMe()
