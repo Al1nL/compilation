@@ -153,6 +153,20 @@ public class SymbolTable {
         return null;
     }
 
+    public Type findInScope(String name){
+        SymbolTableEntry e = top;
+        while (e != null) {
+            if(name.equals(e.name)){
+                return e.type;
+            }
+            if ("SCOPE-BOUNDARY".equals(e.name)) {
+                return null;
+            }
+            e = e.prevtop;
+        }
+        return null;
+    }
+
     /**
      * ************************************************************************
      */

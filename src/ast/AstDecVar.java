@@ -34,6 +34,14 @@ public class AstDecVar extends AstDec {
 
     public Type semantMe() {
         Type varType = null;
+        Type varname = null;
+        // Check for primitive types
+        
+        varname = SymbolTable.getInstance().findInScope(name);
+        if(varname!=null){
+            System.err.println("ERROR: Variable '" + this.name + "' is already defined in this scope");
+            report();
+        }
         // Check for primitive types
         if (type.equals("int")) {
             varType = TypeInt.getInstance();
