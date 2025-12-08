@@ -6,5 +6,6 @@ int main()
 IDsArray ids := new int[8];
 gradesArray grades := new int[8];
 F(grades);
+ids := new int[8];
 return 0;
 }

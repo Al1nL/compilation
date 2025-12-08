@@ -48,7 +48,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/bin_op_test_3.txt  #array_assignment_bad.txt
+INPUT    = ${INPUT_DIR}/delete_check.txt  #array_assignment_bad.txt
 OUTPUT   = ${OUTPUT_DIR}/SemanticStatus.txt
 
 ##########

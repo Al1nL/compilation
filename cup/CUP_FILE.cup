@@ -153,8 +153,8 @@ stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l); :}
 					| stmt:s				{: RESULT = new AstStmtList(s,null); :}
 					;
 
-var			::=		ID:name								{: RESULT = new AstVarSimple(name); :}
-					| var:v DOT ID:fieldName			{: RESULT = new AstVarField(v,fieldName); :}
+var			::=		ID:name								{: RESULT = new AstVarSimple(name); setLineNum(RESULT, nameleft); :}
+					| var:v DOT: d ID:fieldName			{: RESULT = new AstVarField(v,fieldName); setLineNum(RESULT, dleft);:}
 					| var:v LBRACK exp:e RBRACK:rb			{: RESULT = new AstVarSubscript(v,e); setLineNum(RESULT, rbleft); :}
 					;
 					
@@ -170,23 +170,23 @@ stmt 		::= 	varDec:v                             {: RESULT = new AstStmtDecVar(v
 					| callExp:c SEMICOLON:s                      {: RESULT = new AstStmtCall((AstExpCall) c); setLineNum(RESULT, sleft);:}
 					;
 
-exp 		::= 	INT:i 						        {: RESULT = new AstExpInt(i); :}
+exp 		::= 	INT:i 						        {: RESULT = new AstExpInt(i); setLineNum(RESULT, ileft);:}
 					| MINUS:m INT:i  					{: RESULT = new AstExpInt(-i); setLineNum(RESULT, mleft);:}
-					| STRING:s 							{: RESULT = new AstExpString(s); :}
+					| STRING:s 							{: RESULT = new AstExpString(s); setLineNum(RESULT, sleft);:}
 					| NIL:n								{: RESULT = new AstExpNil(); setLineNum(RESULT, nleft);:}
-					| var:v								{: RESULT = new AstExpVar(v); :}
+					| var:v								{: RESULT = new AstExpVar(v); setLineNum(RESULT, vleft);:}
 					| LPAREN exp:e RPAREN				{: RESULT = e; :}
-					| exp:e1 PLUS  exp:e2				{: RESULT = new AstExpBinop(e1, e2, 0); :}
-					| exp:e1 MINUS exp:e2				{: RESULT = new AstExpBinop(e1, e2, 1); :}
-					| exp:e1 TIMES exp:e2				{: RESULT = new AstExpBinop(e1, e2, 2); :}
-					| exp:e1 DIVIDE exp:e2				{: RESULT = new AstExpBinop(e1, e2, 3); :}
-					| exp:e1 LT    exp:e2				{: RESULT = new AstExpBinop(e1, e2, 4); :}
-					| exp:e1 GT    exp:e2				{: RESULT = new AstExpBinop(e1, e2, 5); :}
-					| exp:e1 EQ    exp:e2				{: RESULT = new AstExpBinop(e1, e2, 6); :}
+					| exp:e1 PLUS:o  exp:e2				{: RESULT = new AstExpBinop(e1, e2, 0); setLineNum(RESULT, oleft);:}
+					| exp:e1 MINUS:o exp:e2				{: RESULT = new AstExpBinop(e1, e2, 1); setLineNum(RESULT, oleft);:}
+					| exp:e1 TIMES:o exp:e2				{: RESULT = new AstExpBinop(e1, e2, 2); setLineNum(RESULT, oleft);:}
+					| exp:e1 DIVIDE:o exp:e2			{: RESULT = new AstExpBinop(e1, e2, 3); setLineNum(RESULT, oleft);:}
+					| exp:e1 LT:o    exp:e2				{: RESULT = new AstExpBinop(e1, e2, 4); setLineNum(RESULT, oleft);:}
+					| exp:e1 GT:o   exp:e2				{: RESULT = new AstExpBinop(e1, e2, 5); setLineNum(RESULT, oleft);:}
+					| exp:e1 EQ:o    exp:e2				{: RESULT = new AstExpBinop(e1, e2, 6); setLineNum(RESULT, oleft);:}
 					| callExp:c							{: RESULT = c; :}
 					;
 
-param 		::= 	type:t ID:name 		{: RESULT = new AstParam(t, name); :}
+param 		::= 	type:t ID:name 		{: RESULT = new AstParam(t, name); setLineNum(RESULT, nameleft);:}
 					;
 
 paramList 	::=		param:p COMMA paramList:l      {: RESULT = new AstParamList(p, l); :}
@@ -214,8 +214,8 @@ varDec 		::= 	type:t ID:name SEMICOLON:s        				{: RESULT =  new AstDecVar(t
 					| type:t ID:name ASSIGN newExp:e SEMICOLON:s	{: RESULT =  new AstDecVar(t,name,e); setLineNum(RESULT, sleft); :}
 					;
 
-funcDec 	::= 	type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE:rb 					{: RESULT =  new AstDecFunc(t,name,null,l); setLineNum(RESULT, rbleft); :}
-					| type:t ID:name LPAREN paramList:pl RPAREN LBRACE stmtList:l RBRACE:rb  {: RESULT =  new AstDecFunc(t,name,pl,l); setLineNum(RESULT, rbleft); :}
+funcDec 	::= 	type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE:rb 					{: RESULT =  new AstDecFunc(t,name,null,l); setLineNum(RESULT, nameleft); :}
+					| type:t ID:name LPAREN paramList:pl RPAREN LBRACE stmtList:l RBRACE:rb  {: RESULT =  new AstDecFunc(t,name,pl,l); setLineNum(RESULT, nameleft); :}
 					;
 
 classDec 	::= 	CLASS:cls ID:name LBRACE cFieldList:l RBRACE						{: RESULT =  new AstDecClass(name,null, l); setLineNum(RESULT, clsleft); :}
@@ -227,7 +227,7 @@ cField 		::= 	varDec:v 			{: RESULT = v; :}
 					;
 
 cFieldList ::=		cField:c cFieldList:l 	{: RESULT = new AstDecList(c, l); :}
-					| cField:c 				{: RESULT = new AstDecList(c, null); :}
+					| cField:c 				{: RESULT = new AstDecList(c, null); setLineNum(RESULT, cleft);:}
 					;
 
 arrayTypedef ::=	ARRAY:arr ID:name EQ type:t LBRACK RBRACK SEMICOLON {: RESULT = new AstTypedefArray(name, t); setLineNum(RESULT, arrleft); :}
@@ -237,8 +237,8 @@ newExp 	    ::=		NEW:n type:t		{: RESULT = new AstExpNew(t, null); setLineNum(RE
 					| NEW:n type:t LBRACK exp:e RBRACK {: RESULT = new AstExpNew(t, e); setLineNum(RESULT, nleft);:}
 					;
 
-callExp		::=		ID:id LPAREN args:a RPAREN {: RESULT = new AstExpCall(id, a); :}
-					| var:v DOT ID:id LPAREN args:a RPAREN {: RESULT = new AstExpMethodCall(v, id, a); :}
+callExp		::=		ID:id LPAREN:lp args:a RPAREN:rp {: RESULT = new AstExpCall(id, a); setLineNum(RESULT, idleft); :}
+					| var:v DOT ID:id LPAREN: lp args:a RPAREN {: RESULT = new AstExpMethodCall(v, id, a); setLineNum(RESULT, idleft);:}
 					;
 
 args 		::=		/* empty */ {: RESULT = new ArrayList<AstExp>(); :}

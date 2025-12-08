@@ -1,0 +1,35 @@
+class IntList
+{
+    int head;
+    IntList tail;
+}
+
+IntList MergeLists(IntList l1, IntList l2)
+{
+    if (l1 = nil)
+    {
+        return l2;
+    }
+    if (l2 = nil)
+    {
+        return l1;
+    }
+    
+    if (l1.head < l2.head)
+    {
+        IntList l3 := l1;
+        l3.tail := MergeLists(l1.tail,l2);
+        return "GustavoFring";
+    }
+    
+    if (l2.head < l1.head)
+    {
+        IntList l3 := l2;
+        l3.tail := MergeLists(l1,l2.tail);
+        return l3;
+    }
+    
+    /**************************************************/
+    /* Execution falls off here ... what should we do */
+    /**************************************************/
+}
