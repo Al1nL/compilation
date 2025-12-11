@@ -38,6 +38,7 @@ public class AstDecFunc extends AstDec {
 	public Type semantMe()
 {
     TypeList type_list = null;
+    TypeList cur_list = type_list;
 
     /*******************/
     /* [0] Return type */
@@ -65,6 +66,7 @@ public class AstDecFunc extends AstDec {
     /***************************/
     /* [3] Semant Input Params */
     /***************************/
+    int length = 0;
     for (AstParamList it = params; it != null; it = it.tail)
     {
         Type paramType = SymbolTable.getInstance().find(it.head.type);
@@ -75,9 +77,21 @@ public class AstDecFunc extends AstDec {
         }
         else
         {
-            type_list = new TypeList(paramType, type_list);
+            length++;
+            if(cur_list==null){
+                type_list = new TypeList(paramType, type_list);
+                cur_list = type_list;
+            }
+            else{
+                cur_list.tail = new TypeList(paramType, null);
+                cur_list = cur_list.tail;
+            }
+            
             SymbolTable.getInstance().enter(it.head.name, paramType);
         }
+    }
+    if(type_list!=null){
+        type_list.len = length;
     }
 
     // Update function type with actual parameters

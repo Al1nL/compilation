@@ -1,4 +1,4 @@
-int main(){
+int main(int i, int j, string k){
     int a;
     a := 0;
     a := 0;
