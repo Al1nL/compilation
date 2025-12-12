@@ -110,11 +110,6 @@ public class AstDecFunc extends AstDec {
     }
 
     body.semantMe(baseType);
-    if(c.getCount()<=0){
-        System.out.format(">> ERROR no return statemnt existing in %s\n", name);
-            report();
-
-    }
     c.setCount(0);
 
     /*****************/

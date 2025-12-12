@@ -144,7 +144,15 @@ public class SymbolTable {
     public Type find(String name) {
         SymbolTableEntry e;
 
-        for (e = table[hash(name)]; e != null; e = e.next) {
+        for (e = table[hash(name)]; e != null; e = e.prevtop) {
+            if(e.type instanceof TypeClass){
+                Type currentClass = (TypeClass)e.type;                        
+                if(currentClass != null && ((TypeClass)currentClass).father != null){
+                    Type t = ((TypeClass)currentClass).father.findField(name); 
+                    if(t != null) return t;
+                }
+  
+            }
             if (name.equals(e.name)) {
                 return e.type;
             }
@@ -161,7 +169,7 @@ public class SymbolTable {
             }
             if ("SCOPE-BOUNDARY".equals(e.name)) {
                 return null;
-            }
+            }    
             e = e.prevtop;
         }
         return null;

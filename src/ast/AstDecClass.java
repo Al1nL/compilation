@@ -111,17 +111,17 @@ public class AstDecClass extends AstDec {
                 if (same != null) {
 
                     if (!same.isSameType(t)) {
-                        report();
+                        dec.report();
                     }
 
                     if (dec instanceof AstDecVar) {
                         System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
-                        report();
+                        dec.report();
                     } else {
                         TypeFunction func = (TypeFunction) same;
                         boolean ok = func.compareFunctions((TypeFunction) t);
                         if (!ok) {
-                            report();
+                            dec.report();
                         }
                     }
                 }
