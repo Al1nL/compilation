@@ -131,7 +131,7 @@ public class AstDecClass extends AstDec {
                 System.out.format(
                         ">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
                         name, lineNumber);
-                report();
+                dec.report();
             } else {
                 addedNames.add(name); // Add this name to the set
             }

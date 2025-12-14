@@ -64,9 +64,13 @@ public class AstVarSubscript extends AstVar
 			System.out.format(">> ERROR [%d] non existing type\n",lineNumber);
             report();
 		}
+		if(!ret.isArray()){
+			System.out.format(">> ERROR [%d] cannot subscript non array var\n",lineNumber);
+            report();
+		}
 		Type t = subscript.semantMe();
             if (!t.isSameType(TypeInt.getInstance())){
-                System.out.format(">> ERROR: indexing an array with non int argument\n");
+                System.out.format(">> ERROR [%d] indexing an array with non int argument\n",lineNumber);
                 report();
             }
 		if(subscript instanceof AstExpInt){
