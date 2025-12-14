@@ -45,11 +45,6 @@ CUP_FLAGS =                                \
 -parser  ${CUP_GENERATED_PARSER_NAME}      \
 -symbols ${CUP_GENERATED_SYMBOLS_FILENAME} 
 
-#########################
-# DEFINITIONS :: PARSER #
-#########################
-INPUT    = ${INPUT_DIR}/delete_check.txt  #array_assignment_bad.txt
-OUTPUT   = ${OUTPUT_DIR}/SemanticStatus.txt
 
 ##########
 # TARGET #
@@ -114,77 +109,3 @@ all:
 	@echo "***********************************************************"
 	jar cfm SEMANT ${MANIFEST_FILE} -C ${BIN_DIR} .
 	
-debug: all
-	@echo "\n"
-	@echo "*****************************"
-	@echo "*                           *"
-	@echo "*                           *"
-	@echo "* [6] Run resulting program *"
-	@echo "*                           *"
-	@echo "*                           *"
-	@echo "*****************************"
-	java -jar SEMANT ${INPUT} ${OUTPUT}
-	@echo "\n"
-	@echo "***************************************"
-	@echo "*                                     *"
-	@echo "*                                     *"
-	@echo "* [7] Create a jpeg ast visualization *"
-	@echo "*                                     *"
-	@echo "*                                     *"
-	@echo "***************************************"
-	dot -Tjpeg -o${OUTPUT_DIR}/ast.jpeg ${OUTPUT_DIR}/AST_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@echo "\n"
-	@echo "************************************************"
-	@echo "*                                              *"
-	@echo "*                                              *"
-	@echo "* [8] Open the jpeg ast visualization with eog *"
-	@echo "*                                              *"
-	@echo "*                                              *"
-	@echo "************************************************"
-	eog ${OUTPUT_DIR}/ast.jpeg &
-	@echo "*********************************************************"
-	@echo "*                                                       *"
-	@echo "*                                                       *"
-	@echo "* [9] Create a jpeg SYMBOL TABLE visualization in steps *"
-	@echo "*                                                       *"
-	@echo "*                                                       *"
-	@echo "*********************************************************"
-	dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_0.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_0_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_1.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_1_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_2.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_2_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_3.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_3_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_4.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_4_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_5.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_5_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_6.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_6_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_7.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_7_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_8.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_8_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_9.jpeg  ${OUTPUT_DIR}/SYMBOL_TABLE_9_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_10.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_10_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_11.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_11_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_12.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_12_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_13.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_13_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_14.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_14_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_15.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_15_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_16.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_16_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_17.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_17_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_18.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_18_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_19.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_19_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_20.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_20_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_21.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_21_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_22.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_22_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_23.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_23_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_24.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_24_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_25.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_25_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_26.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_26_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_27.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_27_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_28.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_28_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_29.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_29_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@dot -Tjpeg -o${OUTPUT_DIR}/SYMBOL_TABLE_30.jpeg ${OUTPUT_DIR}/SYMBOL_TABLE_30_IN_GRAPHVIZ_DOT_FORMAT.txt
-	@echo "******************************************************************"
-	@echo "*                                                                *"
-	@echo "*                                                                *"
-	@echo "* [10] Open the (first) jpeg SYMBOL TABLE visualization with eog *"
-	@echo "*                                                                *"
-	@echo "*                                                                *"
-	@echo "******************************************************************"
-	eog ${OUTPUT_DIR}/SYMBOL_TABLE_0.jpeg &
