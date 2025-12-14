@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
@@ -17,71 +16,29 @@ public class Main {
         String outputFileName = argv[1];
 
         try {
-            /**
-             * *****************************
-             */
-            /* [1] Initialize a file reader */
-            /**
-             * *****************************
-             */
+            /* Initialize a file reader */
             fileReader = new FileReader(inputFileName);
 
-            /**
-             * *****************************
-             */
-            /* [2] Initialize a file writer */
-            /**
-             * *****************************
-             */
+            /* Initialize a file writer */
             fileWriter = new PrintWriter(outputFileName);
 
-            /**
-             * ***************************
-             */
-            /* [3] Initialize a new lexer */
-            /**
-             * ***************************
-             */
+            /* Initialize a new lexer */
             l = new Lexer(fileReader);
 
-            /**
-             * ****************************
-             */
             /* [4] Initialize a new parser */
-            /**
-             * ****************************
-             */
             p = new Parser(l);
 
-            /**
-             * ********************************
-             */
             /* [5] 3 ... 2 ... 1 ... Parse !!! */
-            /**
-             * ********************************
-             */
             try {
                 ast = (AstNode) p.parse().value;
 
-                /**
-                 * **********************
-                 */
                 /* [6] Print the AST ... */
-                /**
-                 * **********************
-                 */
-                ast.printMe();
+                // ast.printMe();
                 ast.semantMe();
-                /**
-                 * **********************************
-                 */
-                /* [8] Finalize AST GRAPHIZ DOT file */
-                /**
-                 * **********************************
-                 */
+                /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
                 fileWriter.print("OK");
-                System.out.println("finished, all ok");
+                System.out.println("finished,Check output file");
 
             } catch (Error le) {
                 // lexical error
@@ -89,7 +46,7 @@ public class Main {
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             fileWriter.close();
         } catch (Exception e) {

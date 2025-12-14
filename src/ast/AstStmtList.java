@@ -2,104 +2,75 @@ package ast;
 
 import types.*;
 
+public class AstStmtList extends AstNode {
 
-public class AstStmtList extends AstNode
-{
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AstStmt head;
-	public AstStmtList tail;
+    /* DATA MEMBERS */
+    public AstStmt head;
+    public AstStmtList tail;
 
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstStmtList(AstStmt head, AstStmtList tail)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
+    /* CONSTRUCTOR(S) */
+    public AstStmtList(AstStmt head, AstStmtList tail) {
+        /* SET A UNIQUE SERIAL NUMBER */
+        serialNumber = AstNodeSerialNumber.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		if (tail != null) System.out.print("====================== stmts -> stmt stmts\n");
-		if (tail == null) System.out.print("====================== stmts -> stmt      \n");
-
-		/*******************************/
-		/* COPY INPUT DATA MEMBERS ... */
-		/*******************************/
-		this.head = head;
-		this.tail = tail;
-	}
-
-	/******************************************************/
-	/* The printing message for a statement list AST node */
-	/******************************************************/
-	public void printMe()
-	{
-		/**************************************/
-		/* AST NODE TYPE = AST STATEMENT LIST */
-		/**************************************/
-		System.out.print("AST NODE STMT LIST\n");
-
-		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
-		/*************************************/
-		if (head != null) head.printMe();
-		if (tail != null) tail.printMe();
-
-		/**********************************/
-		/* PRINT to AST GRAPHVIZ DOT file */
-		/**********************************/
-		AstGraphviz.getInstance().logNode(
-				serialNumber,
-			"STMT\nLIST\n");
-		
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		if (head != null) AstGraphviz.getInstance().logEdge(serialNumber,head.serialNumber);
-		if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
-	}
-
-    public TypeList semantMe() 
-{
-    Type headType = null;
-    TypeList tailTypeList = null;
-
-    if (head != null)
-    {
-        headType = head.semantMe();
+        /* COPY INPUT DATA MEMBERS ... */
+        this.head = head;
+        this.tail = tail;
     }
 
-    if (tail != null)
-    {
-        tailTypeList = tail.semantMe();
+    /* The printing message for a statement list AST node */
+    public void printMe() {
+        /* AST NODE TYPE = AST STATEMENT LIST */
+        System.out.print("AST NODE STMT LIST\n");
 
+        /* RECURSIVELY PRINT HEAD + TAIL ... */
+        if (head != null) {
+            head.printMe();
+        }
+        if (tail != null) {
+            tail.printMe();
+        }
+
+        /* PRINT to AST GRAPHVIZ DOT file */
+        AstGraphviz.getInstance().logNode(serialNumber, "STMT\nLIST\n");
+
+        /* PRINT Edges to AST GRAPHVIZ DOT file */
+        if (head != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, head.serialNumber);
+        }
+        if (tail != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, tail.serialNumber);
+        }
     }
 
-    return new TypeList(headType, tailTypeList);
-}
+    public TypeList semantMe() {
+        Type headType = null;
+        TypeList tailTypeList = null;
 
-    public TypeList semantMe(Type expectedReturnType) 
-{
-    Type headType = null;
-    TypeList tailTypeList = null;
+        if (head != null) {
+            headType = head.semantMe();
+        }
 
-    if (head != null)
-    {
-        headType = head.semantMe(expectedReturnType);
+        if (tail != null) {
+            tailTypeList = tail.semantMe();
+
+        }
+
+        return new TypeList(headType, tailTypeList);
     }
 
-    if (tail != null)
-    {
-        tailTypeList = tail.semantMe(expectedReturnType);
+    public TypeList semantMe(Type expectedReturnType) {
+        Type headType = null;
+        TypeList tailTypeList = null;
 
+        if (head != null) {
+            headType = head.semantMe(expectedReturnType);
+        }
+
+        if (tail != null) {
+            tailTypeList = tail.semantMe(expectedReturnType);
+        }
+
+        return new TypeList(headType, tailTypeList);
     }
-
-    return new TypeList(headType, tailTypeList);
-}
-	
 }

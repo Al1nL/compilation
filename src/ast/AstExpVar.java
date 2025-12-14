@@ -1,68 +1,49 @@
 package ast;
+
 import types.*;
 
+public class AstExpVar extends AstExp {
 
-public class AstExpVar extends AstExp
-{
-	public AstVar var;
+    public AstVar var;
 
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstExpVar(AstVar var)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
+    /* CONSTRUCTOR(S) */
+    public AstExpVar(AstVar var) {
+        /* SET A UNIQUE SERIAL NUMBER */
+        serialNumber = AstNodeSerialNumber.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.print("====================== exp -> var\n");
+        /* PRINT CORRESPONDING DERIVATION RULE */
+        System.out.print("====================== exp -> var\n");
 
-		/*******************************/
-		/* COPY INPUT DATA MEMBERS ... */
-		/*******************************/
-		this.var = var;
-	}
-	
-	/***********************************************/
-	/* The default message for an exp var AST node */
-	/***********************************************/
-	public void printMe()
-	{
-		/************************************/
-		/* AST NODE TYPE = EXP VAR AST NODE */
-		/************************************/
-		System.out.print("AST NODE EXP VAR\n");
+        /* COPY INPUT DATA MEMBERS ... */
+        this.var = var;
+    }
 
-		/*****************************/
-		/* RECURSIVELY PRINT var ... */
-		/*****************************/
-		if (var != null) var.printMe();
-		
-		/*********************************/
-		/* Print to AST GRAPHVIZ DOT file */
-		/*********************************/
-		AstGraphviz.getInstance().logNode(
-				serialNumber,
-			"EXP\nVAR");
+    /* The default message for an exp var AST node */
+    public void printMe() {
+        /* AST NODE TYPE = EXP VAR AST NODE */
+        System.out.print("AST NODE EXP VAR\n");
 
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
-			
-	}
+        /* RECURSIVELY PRINT var ... */
+        if (var != null) {
+            var.printMe();
+        }
 
-	public Type semantMe()
-{
-	System.out.println("====>"+var.getClass().getName());
-    return var.semantMe();
-}
-public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+        /* Print to AST GRAPHVIZ DOT file */
+        AstGraphviz.getInstance().logNode(
+                serialNumber,
+                "EXP\nVAR");
+
+        /* PRINT Edges to AST GRAPHVIZ DOT file */
+        AstGraphviz.getInstance().logEdge(serialNumber, var.serialNumber);
+
+    }
+
+    public Type semantMe() {
+        System.out.println("====>" + var.getClass().getName());
+        return var.semantMe();
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

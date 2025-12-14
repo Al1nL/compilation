@@ -1,4 +1,5 @@
 package ast;
+
 import types.*;
 
 public class AstExpNil extends AstExp {
@@ -13,12 +14,11 @@ public class AstExpNil extends AstExp {
         AstGraphviz.getInstance().logNode(serialNumber, String.format("NIL"));
     }
 
-    public Type semantMe()
-{
-    return TypeNil.getInstance();
-}
-public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+    public Type semantMe() {
+        return TypeNil.getInstance();
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

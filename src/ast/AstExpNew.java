@@ -1,8 +1,10 @@
 package ast;
+
 import symboltable.*;
 import types.*;
 
 public class AstExpNew extends AstExp {
+
     public final String type;
     public final AstExp sizeExp; // may be null
 
@@ -16,42 +18,45 @@ public class AstExpNew extends AstExp {
     public void printMe() {
         System.out.print("NEW ");
         AstGraphviz.getInstance().logNode(serialNumber, String.format("NEW"));
-        if (type != null) type.toString();
+        if (type != null) {
+            type.toString();
+        }
         if (sizeExp != null) {
             System.out.print("{ ");
             sizeExp.printMe();
             System.out.println(" }");
         }
-        //if (type != null) AstGraphviz.getInstance().logEdge(serialNumber,type.serialNumber);
-        if (sizeExp != null) AstGraphviz.getInstance().logEdge(serialNumber,sizeExp.serialNumber);
+        if (sizeExp != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, sizeExp.serialNumber);
+        }
     }
-    public Type semantMe(){
+
+    public Type semantMe() {
         Type ret = SymbolTable.getInstance().find(type);
-        if (ret == null)
-			{
-				System.out.format(">> ERROR [%d] non existing type %s\n",lineNumber,type);				
-                report();				
-			}
-        if(sizeExp==null){
+        if (ret == null) {
+            System.out.format(">> ERROR [%d] non existing type %s\n", lineNumber, type);
+            report();
+        }
+        if (sizeExp == null) {
             return ret;
         }
-            Type t = sizeExp.semantMe();
-            if (!t.isSameType(TypeInt.getInstance())){
-                System.out.format(">> ERROR: initializing array with non int argument\n");
+        Type t = sizeExp.semantMe();
+        if (!t.isSameType(TypeInt.getInstance())) {
+            System.out.format(">> ERROR: initializing array with non int argument\n");
+            report();
+        }
+        if (sizeExp instanceof AstExpInt) {
+            AstExpInt v = (AstExpInt) sizeExp;
+            if (v.value <= 0) {
+                System.out.format(">> ERROR: initializing array of non positive length\n");
                 report();
             }
-            if(sizeExp instanceof AstExpInt){
-                AstExpInt v = (AstExpInt) sizeExp;
-                if(v.value<=0){
-                    System.out.format(">> ERROR: initializing array of non positive length\n");
-                    report();
-                }
-                
-            }
-            return new TypeArray(ret);
+
         }
-        public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+        return new TypeArray(ret);
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

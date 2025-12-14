@@ -1,7 +1,7 @@
 package ast;
 
-import types.*;
 import symboltable.*;
+import types.*;
 
 public class AstTypedefArray extends AstDec {
 
@@ -23,9 +23,9 @@ public class AstTypedefArray extends AstDec {
 
     @Override
     public Type semantMe() {
-        // Step 1: Check that the base type exists
+        // Check that the base type exists
         Type baseType = SymbolTable.getInstance().find(type);
-        if(!SymbolTable.getInstance().isGlobalScope()){
+        if (!SymbolTable.getInstance().isGlobalScope()) {
             System.out.format(">> ERROR: Array type defined not in global scope\n");
             report();
         }
@@ -33,7 +33,7 @@ public class AstTypedefArray extends AstDec {
             System.out.format(">> ERROR: unknown base type '%s' in array typedef '%s'\n", type, name);
             report();
         }
-        if(baseType.isSameType(TypeVoid.getInstance())){
+        if (baseType.isSameType(TypeVoid.getInstance())) {
             System.out.format(">> ERROR: assigned void in array typedef '%s'\n", name);
             report();
         }
@@ -47,9 +47,8 @@ public class AstTypedefArray extends AstDec {
 
         return arrayType;
     }
-    public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
 
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

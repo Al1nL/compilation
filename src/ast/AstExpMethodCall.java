@@ -45,7 +45,7 @@ public class AstExpMethodCall extends AstExp {
     }
 
     public Type semantMe() {
-        // 1. Analyze the object to get its type
+        // Analyze the object to get its type
         Type objectType = object.semantMe();
 
         if (objectType == null) {
@@ -53,7 +53,7 @@ public class AstExpMethodCall extends AstExp {
             report();
         }
 
-        // 2. Ensure the object type is a class type
+        // Ensure the object type is a class type
         if (!(objectType instanceof TypeClass)) {
             System.out.format(">> ERROR[%d]: Cannot call method '%s' on non-class type '%s'\n",
                     lineNumber, method, objectType.name);
@@ -62,7 +62,7 @@ public class AstExpMethodCall extends AstExp {
 
         TypeClass classType = (TypeClass) objectType;
 
-        // 3. Look up the method in the class
+        // Look up the method in the class
         Type methodType = classType.findField(method);
 
         if (!(methodType instanceof TypeFunction)) {
@@ -73,5 +73,4 @@ public class AstExpMethodCall extends AstExp {
 
         return validateCall(method, (TypeFunction) methodType, args, true);
     }
-
 }

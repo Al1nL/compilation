@@ -1,7 +1,7 @@
 package ast;
 
-import types.*;
 import symboltable.*;
+import types.*;
 
 public class AstParam extends AstNode {
 
@@ -22,7 +22,7 @@ public class AstParam extends AstNode {
     }
 
     public Type semantMe() {
-        
+
         Type paramType = null;
 
         if (type.equals("int")) {
@@ -43,13 +43,12 @@ public class AstParam extends AstNode {
             }
         }
 
-        // Store the resolved type
         paramType.name = name; // This allows us to identify the param later
 
         return paramType;
     }
-    public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

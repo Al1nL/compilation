@@ -1,7 +1,7 @@
 package ast;
 
-import types.*;
 import symboltable.*;
+import types.*;
 
 public class AstVarSimple extends AstVar
 {
@@ -20,11 +20,6 @@ public class AstVarSimple extends AstVar
 		/******************************/
 		serialNumber = AstNodeSerialNumber.getFresh();
 	
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.format("====================== var -> ID( %s )\n",name);
-
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
@@ -44,9 +39,7 @@ public class AstVarSimple extends AstVar
 		/*********************************/
 		/* Print to AST GRAPHVIZ DOT file */
 		/*********************************/
-		AstGraphviz.getInstance().logNode(
-				serialNumber,
-			String.format("SIMPLE\nVAR\n(%s)", this.name));
+		AstGraphviz.getInstance().logNode(serialNumber, String.format("SIMPLE\nVAR\n(%s)", this.name));
 	}
 
 	public Type semantMe()

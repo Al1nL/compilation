@@ -1,15 +1,14 @@
 package ast;
+
 import types.*;
 
+public abstract class AstStmt extends AstNode {
 
-public abstract class AstStmt extends AstNode
-{
-    public Type semantMe()
-	{
-		return null;
-	}
-	public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+    public Type semantMe() {
+        return null;
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

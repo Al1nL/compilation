@@ -1,4 +1,5 @@
 package ast;
+
 import java.util.HashSet;
 import symboltable.*;
 import types.*;
@@ -12,12 +13,6 @@ public class AstDecClass extends AstDec {
     public AstDecClass(String name, String parentName, AstDecList fields) {
         serialNumber = AstNodeSerialNumber.getFresh();
 
-        if (parentName != null) {
-            System.out.print("===== classDec -> CLASS ID EXTENDS ID LBRACE cField { cField } RBRACE\n");
-        } else {
-            System.out.print("===== classDec -> CLASS ID LBRACE cField { cField } RBRACE\n");
-        }
-
         this.name = name;
         this.parentName = parentName;
         this.fields = fields;
@@ -26,6 +21,12 @@ public class AstDecClass extends AstDec {
     @Override
     public void printMe() {
         System.out.format("CLASS DEC = %s\n", this.name);
+
+        if (parentName != null) {
+            System.out.print("===== classDec -> CLASS ID EXTENDS ID LBRACE cField { cField } RBRACE\n");
+        } else {
+            System.out.print("===== classDec -> CLASS ID LBRACE cField { cField } RBRACE\n");
+        }
 
         if (fields != null) {
             fields.printMe();
@@ -128,8 +129,7 @@ public class AstDecClass extends AstDec {
             }
 
             if (addedNames.contains(name)) {
-                System.out.format(
-                        ">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
+                System.out.format(">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
                         name, lineNumber);
                 dec.report();
             } else {

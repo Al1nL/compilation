@@ -1,7 +1,7 @@
 package ast;
 
-import types.*;
 import symboltable.*;
+import types.*;
 
 public class AstDecVar extends AstDec {
 
@@ -35,10 +35,9 @@ public class AstDecVar extends AstDec {
     public Type semantMe() {
         Type varType = null;
         Type varname = null;
-        // Check for primitive types
-        
+        // Check for dups
         varname = SymbolTable.getInstance().findInScope(name);
-        if(varname!=null){
+        if (varname != null) {
             System.err.println("ERROR: Variable '" + this.name + "' is already defined in this scope");
             report();
         }
@@ -71,15 +70,13 @@ public class AstDecVar extends AstDec {
             }
         }
 
-        //Todo: add here check if calss type and send classDecVar type
-
         // Enter variable to symbol table   
         SymbolTable.getInstance().enter(this.name, varType);
 
         return varType;
     }
-    public Type semantMe(Type expectedReturnType)
-	{
-		return semantMe();
-	}
+
+    public Type semantMe(Type expectedReturnType) {
+        return semantMe();
+    }
 }

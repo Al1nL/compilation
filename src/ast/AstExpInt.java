@@ -1,54 +1,37 @@
 package ast;
+
 import types.*;
 
+public class AstExpInt extends AstExp {
 
-public class AstExpInt extends AstExp
-{
-	public int value;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstExpInt(int value)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
+    public int value;
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.format("====================== exp -> INT( %d )\n", value);
+    /* CONSTRUCTOR(S) */
+    public AstExpInt(int value) {
+        /* SET A UNIQUE SERIAL NUMBER */
+        serialNumber = AstNodeSerialNumber.getFresh();
 
-		/*******************************/
-		/* COPY INPUT DATA MEMBERS ... */
-		/*******************************/
-		this.value = value;
-	}
+        /* COPY INPUT DATA MEMBERS ... */
+        this.value = value;
+    }
 
-	/************************************************/
-	/* The printing message for an int exp AST node */
-	/************************************************/
-	public void printMe()
-	{
-		/*******************************/
-		/* AST NODE TYPE = AST INT EXP */
-		/*******************************/
-		System.out.format("AST NODE INT( %d )\n",value);
+    /* The printing message for an int exp AST node */
+    public void printMe() {
+        /* PRINT CORRESPONDING DERIVATION RULE */
+        System.out.format("====================== exp -> INT( %d )\n", value);
 
-		/*********************************/
-		/* Print to AST GRAPHVIZ DOT file */
-		/*********************************/
-		AstGraphviz.getInstance().logNode(
-				serialNumber,
-			String.format("INT(%d)",value));
-	}
-	public Type semantMe()
-	{
-		return TypeInt.getInstance();
-	}
-	public Type semantMe(Type expectedReturnType){
+        /* AST NODE TYPE = AST INT EXP */
+        System.out.format("AST NODE INT( %d )\n", value);
+
+        /* Print to AST GRAPHVIZ DOT file */
+        AstGraphviz.getInstance().logNode(serialNumber, String.format("INT(%d)", value));
+    }
+
+    public Type semantMe() {
         return TypeInt.getInstance();
-	}
+    }
+
+    public Type semantMe(Type expectedReturnType) {
+        return TypeInt.getInstance();
+    }
 }

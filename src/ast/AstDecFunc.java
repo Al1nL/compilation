@@ -22,11 +22,11 @@ public class AstDecFunc extends AstDec {
     public void printMe() {
         System.out.print("AST NODE FUNC DEC\n");
 
-        // 1. Log THIS node first
+        // Log THIS node first
         String label = "FUNC DEC\n" + returnType + " " + name + "()";
         AstGraphviz.getInstance().logNode(serialNumber, label);
 
-        // 2. Log edges to children
+        // Log edges to children
         if (params != null) {
             AstGraphviz.getInstance().logEdge(serialNumber, params.serialNumber);
         }
@@ -34,7 +34,7 @@ public class AstDecFunc extends AstDec {
             AstGraphviz.getInstance().logEdge(serialNumber, body.serialNumber);
         }
 
-        // 3. Then print children
+        // Then print children
         if (params != null) {
             params.printMe();
         }
@@ -46,8 +46,7 @@ public class AstDecFunc extends AstDec {
     public Type semantMe() {
         /* Forbid overriding built-ins */
         if (name.equals("PrintInt") || name.equals("PrintString")) {
-            System.out.format(
-                    ">> ERROR [%d] cannot override built-in function %s\n",
+            System.out.format(">> ERROR [%d] cannot override built-in function %s\n",
                     lineNumber,
                     name
             );
@@ -60,11 +59,9 @@ public class AstDecFunc extends AstDec {
         Type baseType = SymbolTable.getInstance().find(returnType);
         if (baseType == null) {
             System.out.format(">> ERROR [%d] non existing return type %s\n", lineNumber, returnType);
-            // You should probably report() here
             report();
         }
 
-        /* Enter function name BEFORE opening its scope  */
         // Create function type first (with null params for now)
         TypeFunction t = new TypeFunction(baseType, name, null);
 
@@ -73,7 +70,7 @@ public class AstDecFunc extends AstDec {
         /* Begin Function Scope */
         SymbolTable.getInstance().beginScope();
 
-        /* [3] Semant Input Params */
+        /* Semant Input Params */
         int length = 0;
         for (AstParamList it = params; it != null; it = it.tail) {
             Type paramType = SymbolTable.getInstance().find(it.head.type);
@@ -93,11 +90,7 @@ public class AstDecFunc extends AstDec {
                     cur_list = cur_list.tail;
                 }
                 if (SymbolTable.getInstance().findInScope(it.head.name) != null) {
-                    System.out.format(
-                            ">> ERROR [%d] duplicate parameter name %s\n",
-                            lineNumber,
-                            it.head.name
-                    );
+                    System.out.format(">> ERROR [%d] duplicate parameter name %s\n", lineNumber, it.head.name);
                     report();
                 }
 

@@ -16,11 +16,6 @@ public class AstVarSubscript extends AstVar
 		/******************************/
 		serialNumber = AstNodeSerialNumber.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.print("====================== var -> var [ exp ]\n");
-
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
@@ -57,6 +52,7 @@ public class AstVarSubscript extends AstVar
 		if (this.var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 		if (this.subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
 	}
+
 	public Type semantMe()
 	{
 		Type ret = var.semantMe();
@@ -82,14 +78,11 @@ public class AstVarSubscript extends AstVar
                 
             }
 		TypeArray convertedRet = (TypeArray) ret;
-            return convertedRet.baseType;
-
+        return convertedRet.baseType;
 	}
 
 	public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
 	}
-
-
 }
