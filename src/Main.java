@@ -35,6 +35,10 @@ public class Main {
                 /* [6] Print the AST ... */
                 // ast.printMe();
                 ast.semantMe();
+                /**********************/
+                /* [8] IR the AST ... */
+                /**********************/
+                ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
                 fileWriter.print("OK");

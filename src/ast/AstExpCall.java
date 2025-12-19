@@ -3,6 +3,8 @@ package ast;
 import java.util.ArrayList;
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstExpCall extends AstExp {
 
@@ -45,5 +47,21 @@ public class AstExpCall extends AstExp {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        Temp t = null;
+
+        // if (args != null) { t = args.head.irMe(); }
+        if(args != null){
+            for (AstExp e : args) {
+                e.irMe();
+            }
+        }
+
+        Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+
+        return null;
     }
 }

@@ -2,6 +2,8 @@ package ast;
 
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstVarSimple extends AstVar
 {
@@ -49,5 +51,11 @@ public class AstVarSimple extends AstVar
 	public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
+	}
+	public Temp irMe()
+	{
+		Temp t = TempFactory.getInstance().getFreshTemp();
+		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,name));
+		return t;
 	}
 }

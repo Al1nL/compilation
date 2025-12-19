@@ -3,6 +3,8 @@ package ast;
 import returncounter.ReturnCounter;
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstDecFunc extends AstDec {
 
@@ -125,5 +127,15 @@ public class AstDecFunc extends AstDec {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        Ir.
+                getInstance().
+                AddIrCommand(new IrCommandLabel("main"));
+        if (body != null) body.irMe();
+
+        return null;
     }
 }

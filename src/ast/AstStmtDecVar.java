@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstStmtDecVar extends AstStmt
 {
@@ -47,4 +49,5 @@ public class AstStmtDecVar extends AstStmt
 	{
 		return semantMe();
 	}
+	public Temp irMe() { return var.irMe(); }
 }

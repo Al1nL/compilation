@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstDecList extends AstNode {
 
@@ -51,5 +53,13 @@ public class AstDecList extends AstNode {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        if (head != null) head.irMe();
+        if (tail != null) tail.irMe();
+
+        return null;
     }
 }

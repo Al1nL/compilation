@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstStmtCall extends AstStmt {
 
@@ -33,5 +35,12 @@ public class AstStmtCall extends AstStmt {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        if (callExp != null) callExp.irMe();
+
+        return null;
     }
 }

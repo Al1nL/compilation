@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstStmtAssign extends AstStmt {
 
@@ -53,5 +55,15 @@ public class AstStmtAssign extends AstStmt {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        Temp src = exp.irMe();
+        Ir.
+                getInstance().
+                AddIrCommand(new IrCommandStore(((AstVarSimple) var).name,src));
+
+        return null;
     }
 }

@@ -2,6 +2,8 @@ package ast;
 
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstDecVar extends AstDec {
 
@@ -78,5 +80,16 @@ public class AstDecVar extends AstDec {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        Ir.getInstance().AddIrCommand(new IrCommandAllocate(name));
+
+        if (exp != null)
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandStore(name,exp.irMe()));
+        }
+        return null;
     }
 }

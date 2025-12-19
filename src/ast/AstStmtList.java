@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstStmtList extends AstNode {
 
@@ -72,5 +74,13 @@ public class AstStmtList extends AstNode {
         }
 
         return new TypeList(headType, tailTypeList);
+    }
+
+    public Temp irMe()
+    {
+        if (head != null) head.irMe();
+        if (tail != null) tail.irMe();
+
+        return null;
     }
 }

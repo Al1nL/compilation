@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public abstract class AstNode
 {
@@ -28,5 +30,12 @@ public abstract class AstNode
 	public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
+	}
+	/*****************************************/
+	/* The default IR action for an AST node */
+	/*****************************************/
+	public Temp irMe()
+	{
+		return null;
 	}
 }
