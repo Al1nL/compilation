@@ -1,5 +1,0 @@
-array IDsArray = int[];
-IDsArray arr := new int[5];
-int main(){
-    IDsArray arr := nil;
-}

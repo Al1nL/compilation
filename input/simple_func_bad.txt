@@ -1,5 +1,0 @@
-int x:=6;
-int five(){
-    int x:=9;
-    return;
-}

@@ -32,7 +32,7 @@ JFlex_FILE     = ${JFlex_DIR}/LEX_FILE.lex
 ######################
 # DEFINITIONS :: CUP #
 ######################
-CUP_PROGRAM                    = java -jar ${EXTERNAL_JARS_DIR}/java-cup-11b.jar 
+CUP_PROGRAM                    = java -jar ${EXTERNAL_JARS_DIR}/java-cup-11b.jar
 CUP_FILE                       = ${CUP_DIR}/CUP_FILE.cup
 CUP_GENERATED_PARSER_NAME      = Parser
 CUP_GENERATED_SYMBOLS_FILENAME = TokenNames
@@ -43,22 +43,27 @@ CUP_GENERATED_SYMBOLS_FILENAME = TokenNames
 CUP_FLAGS =                                \
 -nowarn                                    \
 -parser  ${CUP_GENERATED_PARSER_NAME}      \
--symbols ${CUP_GENERATED_SYMBOLS_FILENAME} 
+-symbols ${CUP_GENERATED_SYMBOLS_FILENAME}
 
+#########################
+# DEFINITIONS :: PARSER #
+#########################
+INPUT    = ${INPUT_DIR}/Input.txt
+OUTPUT   = ${OUTPUT_DIR}/Output.txt
 
 ##########
 # TARGET #
 ##########
-all:
+compile:
 	clear
 	@echo "*******************************"
 	@echo "*                             *"
 	@echo "*                             *"
-	@echo "* [0] Remove SEMANT program *"
+	@echo "* [0] Remove ANALYZER program *"
 	@echo "*                             *"
 	@echo "*                             *"
 	@echo "*******************************"
-	rm -rf SEMANT
+	rm -rf ANALYZER
 	@echo "\n"
 	@echo "************************************************************"
 	@echo "*                                                          *"
@@ -107,5 +112,13 @@ all:
 	@echo "*                                                         *"
 	@echo "*                                                         *"
 	@echo "***********************************************************"
-	jar cfm SEMANT ${MANIFEST_FILE} -C ${BIN_DIR} .
-	
+	jar cfm ANALYZER ${MANIFEST_FILE} -C ${BIN_DIR} .
+	@echo "\n"
+	@echo "*****************************"
+	@echo "*                           *"
+	@echo "*                           *"
+	@echo "* [6] Run resulting program *"
+	@echo "*                           *"
+	@echo "*                           *"
+	@echo "*****************************"
+	java -jar ANALYZER ${INPUT} ${OUTPUT}

@@ -1,5 +1,0 @@
-void main(){
-    string x := "a";
-    int y := 3;
-    string z := x + y;
-}
