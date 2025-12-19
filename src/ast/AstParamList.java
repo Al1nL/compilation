@@ -1,4 +1,6 @@
 package ast;
+import temp.*;
+import ir.*;
 
 public class AstParamList extends AstNode {
 
@@ -30,5 +32,10 @@ public class AstParamList extends AstNode {
         if (tail != null) {
             AstGraphviz.getInstance().logEdge(serialNumber, tail.serialNumber);
         }
+    }
+
+    public Temp irMe()
+    {
+        return head.irMe();
     }
 }

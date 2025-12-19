@@ -1,5 +1,6 @@
 package ast;
-
+import temp.*;
+import ir.*;
 import types.*;
 
 public abstract class AstStmt extends AstNode {
@@ -11,4 +12,10 @@ public abstract class AstStmt extends AstNode {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+
+    public Temp irMe()
+    {
+        return null;
+    }
+    
 }

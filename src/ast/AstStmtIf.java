@@ -2,6 +2,8 @@ package ast;
 
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstStmtIf extends AstStmt {
 
@@ -65,6 +67,71 @@ public class AstStmtIf extends AstStmt {
             else_body.semantMe(expectedReturnType);
             SymbolTable.getInstance().endScope();
         }
+        return null;
+    }
+
+    public Temp irMe()
+    {
+        /*******************************/
+        /* [1] Allocate fresh labels */
+        /*******************************/
+    
+        String labelElse = IrCommand.getFreshLabel("else");
+        String labelEnd = IrCommand.getFreshLabel("end");
+
+        /*********************************/
+        /* [2] entry label for the while */
+        /*********************************/
+        // Ir.
+        //         getInstance().
+        //         AddIrCommand(new IrCommandLabel(labelStart));
+
+        /********************/
+        /* [3] cond.IRme(); */
+        /********************/
+        Temp condTemp = cond.irMe();
+
+        /******************************************/
+        /* [4] Jump conditionally to the loop end */
+        /******************************************/
+        if(else_body != null){
+            Ir.
+                getInstance().
+                AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelElse));
+        }else{
+            Ir.
+                getInstance().
+                AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelEnd));
+        }
+        
+
+        /*******************/
+        /* [5] body.IRme() */
+        /*******************/
+        body.irMe();
+
+        /******************************/
+        /* [6] Jump to the else entry */
+        /******************************/
+        if(else_body != null){
+            Ir.
+                    getInstance().
+                    AddIrCommand(new IrCommandLabel(labelElse));
+                
+            else_body.irMe();
+        }
+        
+
+        /**********************/
+        /* [7] Loop end label */
+        /**********************/
+        Ir.
+                getInstance().
+                AddIrCommand(new IrCommandLabel(labelEnd));
+
+        /*******************/
+        /* [8] return null */
+        /*******************/
         return null;
     }
 }

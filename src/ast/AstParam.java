@@ -1,5 +1,6 @@
 package ast;
-
+import temp.*;
+import ir.*;
 import symboltable.*;
 import types.*;
 
@@ -51,4 +52,5 @@ public class AstParam extends AstNode {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+    
 }

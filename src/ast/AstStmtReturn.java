@@ -1,5 +1,7 @@
 package ast;
 
+import temp.*;
+import ir.*;
 import returncounter.ReturnCounter;
 import types.*;
 
@@ -50,4 +52,18 @@ public class AstStmtReturn extends AstStmt {
     public Type semantMe() {
         return null;
     }
+
+    public Temp irMe()
+    {
+        Temp t = null;
+        if (this.exp != null) {
+            t = this.exp.irMe();
+            Ir.getInstance().AddIrCommand(
+                new IrCommandReturn(t)
+            );
+        }
+
+        return t;
+    }
+    
 }

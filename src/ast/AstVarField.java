@@ -1,5 +1,7 @@
 package ast;
 
+import temp.*;
+import ir.*;
 import types.*;
 
 public class AstVarField extends AstVar {
@@ -67,5 +69,16 @@ public class AstVarField extends AstVar {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    public Temp irMe()
+    {
+        Temp base = var.irMe();  // object address
+        Temp t = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(
+            new IrCommandLoadField(t, base, this.fieldName)
+        );
+    
+        return t;
     }
 }

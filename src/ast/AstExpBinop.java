@@ -144,9 +144,16 @@ public class AstExpBinop extends AstExp {
 
         if (op == 0)
         {
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));
+            if(right instanceof AstExpInt && left instanceof AstExpInt){
+                Ir.
+                        getInstance().
+                        AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));  
+            }else{
+                Ir.
+                        getInstance().
+                        AddIrCommand(new IrCommandBinopAddStrings(dst,t1,t2));
+            }
+            
         }
         if (op == 2)
         {

@@ -2,6 +2,8 @@ package ast;
 
 import java.util.ArrayList;
 import types.*;
+import temp.*;
+import ir.*;
 
 public abstract class AstExp extends AstStmt {
 
@@ -11,6 +13,14 @@ public abstract class AstExp extends AstStmt {
 
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
+    }
+
+    /*****************************************/
+    /* The default IR action for an AST node */
+    /*****************************************/
+    public Temp irMe()
+    {
+        return null;
     }
     // Helper method to validate function/method call arguments
 

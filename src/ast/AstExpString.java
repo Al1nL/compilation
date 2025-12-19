@@ -1,6 +1,8 @@
 package ast;
 
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstExpString extends AstExp {
 
@@ -32,5 +34,12 @@ public class AstExpString extends AstExp {
 
     public Type semantMe(Type expectedReturnType) {
         return TypeString.getInstance();
+    }
+
+    public Temp irMe()
+    {
+        Temp t = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(new IRcommandConstString(t,value));
+        return t;
     }
 }
