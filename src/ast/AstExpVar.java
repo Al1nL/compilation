@@ -1,5 +1,6 @@
 package ast;
-
+import temp.*;
+import ir.*;
 import types.*;
 
 public class AstExpVar extends AstExp {

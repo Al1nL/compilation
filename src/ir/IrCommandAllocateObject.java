@@ -10,7 +10,7 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-
+import temp.*;
 public class IrCommandAllocateObject extends IrCommand
 {
     public Temp dst;

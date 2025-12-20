@@ -1,10 +1,10 @@
 package ast;
 
 import java.util.HashSet;
-
-import ir.Ir;
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstDecClass extends AstDec {
 
@@ -153,8 +153,8 @@ public class AstDecClass extends AstDec {
 
         return result;
     }
-}irMe()
-    {
+
+    public Temp irMe(){
         /**************************************/
         /* [1] Begin class IR generation      */
         /**************************************/
@@ -165,6 +165,8 @@ public class AstDecClass extends AstDec {
                 parentName,
                 fields
             ));
+
+        return null;
     }
     
 }

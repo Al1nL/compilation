@@ -34,7 +34,7 @@ public class AstParamList extends AstNode {
         }
     }
 
-    public void irMe() {
+    public Temp irMe() {
         /*******************************/
         /* [1] Generate IR for head param */
         /*******************************/

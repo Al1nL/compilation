@@ -1,5 +1,6 @@
 package ast;
-
+import temp.*;
+import ir.*;
 import types.*;
 
 public class AstExpNil extends AstExp {
@@ -34,8 +35,8 @@ public class AstExpNil extends AstExp {
         /******************************/
         Ir.
             getInstance().
-            AddIrCommand(new IrCommandConstInt(dst, 0));
-    
+            AddIrCommand(new IRcommandConstInt(dst, 0));
+
         /*******************/
         /* [3] return dst */
         /*******************/

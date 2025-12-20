@@ -1,5 +1,6 @@
 package ast;
-
+import temp.*;
+import ir.*;
 import symboltable.*;
 import types.*;
 
@@ -62,7 +63,7 @@ public class AstTypedefArray extends AstDec {
         /* [2] Add IR command to register the typedef */
         /******************************************/
         Ir.getInstance().AddIrCommand(
-            new IrCommandTypedefArray(type, name, arrayTemp)
+            new IrCommandTypedefArray(this.type, this.name, arrayTemp)
         );
 
         /*******************************/

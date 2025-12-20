@@ -1,5 +1,7 @@
 package ast;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstVarSubscript extends AstVar
 {
@@ -91,7 +93,7 @@ public class AstVarSubscript extends AstVar
 		/******************************/
 		/* [1] Evaluate array variable */
 		/******************************/
-		Temp var = var.irMe();
+		Temp arr = var.irMe();
 
 		/******************************/
 		/* [2] Evaluate index          */
@@ -102,7 +104,7 @@ public class AstVarSubscript extends AstVar
 		/* [3] Null check             */
 		/******************************/
 		Ir.getInstance().AddIrCommand(
-			new IrCommandJumpIfEqToZero(var, "_null_pointer_error")
+			new IrCommandJumpIfEqToZero(arr, "_null_pointer_error")
 		);
 
 		/******************************/
@@ -110,7 +112,7 @@ public class AstVarSubscript extends AstVar
 		/******************************/
 		Temp addr = TempFactory.getInstance().getFreshTemp();
 		Ir.getInstance().AddIrCommand(
-			new IrCommandAdd(addr, var, idx)
+			new IrCommandAdd(addr, arr, idx)
 		);
 
 		/******************************/
@@ -118,7 +120,7 @@ public class AstVarSubscript extends AstVar
 		/******************************/
 		Temp dst = TempFactory.getInstance().getFreshTemp();
 		Ir.getInstance().AddIrCommand(
-			new IrCommandLoad(dst, addr, 0)
+			new IrCommandAdd(dst, addr, null)
 		);
 
 		/******************************/

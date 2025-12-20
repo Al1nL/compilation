@@ -3,6 +3,8 @@
 /***********/
 package ir;
 
+import java.util.ArrayList;
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -10,6 +12,7 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import temp.*;
 
 public class IrCommandVirtualCall extends IrCommand
 {

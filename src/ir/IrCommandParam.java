@@ -10,6 +10,7 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import temp.*;
 
 public class IrCommandParam extends IrCommand {
 
