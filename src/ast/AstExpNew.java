@@ -2,6 +2,8 @@ package ast;
 
 import symboltable.*;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstExpNew extends AstExp {
 
@@ -59,4 +61,42 @@ public class AstExpNew extends AstExp {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+
+    public Temp irMe()
+    {
+        /******************************/
+        /* [1] Allocate fresh temp   */
+        /******************************/
+        Temp dst = TempFactory.getInstance().getFreshTemp();
+    
+        /*********************************************/
+        /* [2] Case 1: new TYPE (object allocation) */
+        /*********************************************/
+        if (sizeExp == null)
+        {
+            Ir.
+                getInstance().
+                AddIrCommand(new IrCommandAllocateObject(dst, type));
+    
+            /*******************/
+            /* [3] return dst */
+            /*******************/
+            return dst;
+        }
+    
+        /********************************************/
+        /* [4] Case 2: new TYPE[size] (array alloc) */
+        /********************************************/
+        Temp sizeTemp = sizeExp.irMe();
+    
+        Ir.
+            getInstance().
+            AddIrCommand(new IrCommandAllocateArray(dst, type, sizeTemp));
+    
+        /*******************/
+        /* [5] return dst */
+        /*******************/
+        return dst;
+    }
+    
 }

@@ -21,4 +21,24 @@ public class AstExpNil extends AstExp {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+
+    public Temp irMe()
+    {
+        /******************************/
+        /* [1] Allocate fresh temp   */
+        /******************************/
+        Temp dst = TempFactory.getInstance().getFreshTemp();
+    
+        /******************************/
+        /* [2] dst = 0 (nil)         */
+        /******************************/
+        Ir.
+            getInstance().
+            AddIrCommand(new IrCommandConstInt(dst, 0));
+    
+        /*******************/
+        /* [3] return dst */
+        /*******************/
+        return dst;
+    }
 }

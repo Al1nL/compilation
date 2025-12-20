@@ -34,8 +34,21 @@ public class AstParamList extends AstNode {
         }
     }
 
-    public Temp irMe()
-    {
-        return head.irMe();
+    public void irMe() {
+        /*******************************/
+        /* [1] Generate IR for head param */
+        /*******************************/
+        if (head != null) {
+            head.irMe();
+        }
+
+        /*******************************/
+        /* [2] Recursively generate IR for tail params */
+        /*******************************/
+        if (tail != null) {
+            tail.irMe();
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,8 @@
 package ast;
 
 import java.util.HashSet;
+
+import ir.Ir;
 import symboltable.*;
 import types.*;
 
@@ -151,4 +153,18 @@ public class AstDecClass extends AstDec {
 
         return result;
     }
+}irMe()
+    {
+        /**************************************/
+        /* [1] Begin class IR generation      */
+        /**************************************/
+        Ir.
+            getInstance().
+            AddIrCommand(new IrCommandDeclareClass(
+                name,
+                parentName,
+                fields
+            ));
+    }
+    
 }

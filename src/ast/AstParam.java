@@ -52,5 +52,23 @@ public class AstParam extends AstNode {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
-    
+
+    public Temp irMe() {
+        /*******************************/
+        /* [1] Allocate a temporary for this parameter */
+        /*******************************/
+        Temp paramTemp = TempFactory.getInstance().getFreshTemp();
+
+        /******************************************/
+        /* [2] Add IR command to declare the param */
+        /******************************************/
+        Ir.getInstance().AddIrCommand(
+            new IrCommandParam(type, name, paramTemp)
+        );
+
+        /*******************/
+        /* [3] Return the temp */
+        /*******************/
+        return paramTemp;
+    }
 }

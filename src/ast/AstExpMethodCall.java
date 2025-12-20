@@ -74,4 +74,55 @@ public class AstExpMethodCall extends AstExp {
 
         return validateCall(method, (TypeFunction) methodType, args, true);
     }
+
+    public Temp irMe()
+    {
+        /******************************/
+        /* [1] Evaluate object        */
+        /******************************/
+        Temp objTemp = object.irMe();
+
+        /*****************************************/
+        /* [2] Runtime check: object != nil      */
+        /*****************************************/
+        Ir.
+            getInstance().
+            AddIrCommand(new IrCommandJumpIfEqToZero(
+                objTemp,
+                "_null_pointer_error"
+            ));
+
+        /******************************/
+        /* [3] Evaluate arguments     */
+        /******************************/
+        ArrayList<Temp> argTemps = new ArrayList<>();
+
+        for (AstExp exp : args)
+        {
+            argTemps.add(exp.irMe());
+        }
+
+        /******************************/
+        /* [4] Allocate return temp   */
+        /******************************/
+        Temp dst = TempFactory.getInstance().getFreshTemp();
+
+        /********************************************/
+        /* [5] Virtual method call                  */
+        /********************************************/
+        Ir.
+            getInstance().
+            AddIrCommand(new IrCommandVirtualCall(
+                dst,
+                objTemp,
+                method,
+                argTemps
+            ));
+
+        /*******************/
+        /* [6] return dst */
+        /*******************/
+        return dst;
+    }
+
 }

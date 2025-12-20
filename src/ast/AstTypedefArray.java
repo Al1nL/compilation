@@ -51,4 +51,23 @@ public class AstTypedefArray extends AstDec {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+
+    public Temp irMe() {
+        /*******************************/
+        /* [1] Allocate a temp for the array typedef */
+        /*******************************/
+        Temp arrayTemp = TempFactory.getInstance().getFreshTemp();
+
+        /******************************************/
+        /* [2] Add IR command to register the typedef */
+        /******************************************/
+        Ir.getInstance().AddIrCommand(
+            new IrCommandTypedefArray(type, name, arrayTemp)
+        );
+
+        /*******************************/
+        /* [3] Return the temp */
+        /*******************************/
+        return arrayTemp;
+    }
 }

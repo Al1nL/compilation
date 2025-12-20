@@ -85,4 +85,47 @@ public class AstVarSubscript extends AstVar
 	{
 		return semantMe();
 	}
+
+	public Temp irMe()
+	{
+		/******************************/
+		/* [1] Evaluate array variable */
+		/******************************/
+		Temp var = var.irMe();
+
+		/******************************/
+		/* [2] Evaluate index          */
+		/******************************/
+		Temp idx = subscript.irMe();
+
+		/******************************/
+		/* [3] Null check             */
+		/******************************/
+		Ir.getInstance().AddIrCommand(
+			new IrCommandJumpIfEqToZero(var, "_null_pointer_error")
+		);
+
+		/******************************/
+		/* [4] Compute element address */
+		/******************************/
+		Temp addr = TempFactory.getInstance().getFreshTemp();
+		Ir.getInstance().AddIrCommand(
+			new IrCommandAdd(addr, var, idx)
+		);
+
+		/******************************/
+		/* [5] Load value from var   */
+		/******************************/
+		Temp dst = TempFactory.getInstance().getFreshTemp();
+		Ir.getInstance().AddIrCommand(
+			new IrCommandLoad(dst, addr, 0)
+		);
+
+		/******************************/
+		/* [6] Return value            */
+		/******************************/
+		return dst;
+	}
+
+	
 }

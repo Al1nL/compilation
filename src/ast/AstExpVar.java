@@ -46,4 +46,12 @@ public class AstExpVar extends AstExp {
     public Type semantMe(Type expectedReturnType) {
         return semantMe();
     }
+
+    public Temp irMe()
+    {
+        /******************************/
+        /* [1] Evaluate the variable */
+        /******************************/
+        return var.irMe();
+    }
 }

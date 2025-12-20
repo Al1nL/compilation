@@ -56,7 +56,7 @@ public class AstExpCall extends AstExp {
         // if (args != null) { t = args.head.irMe(); }
         if(args != null){
             for (AstExp e : args) {
-                e.irMe();
+                t = e.irMe();
             }
         }
 
