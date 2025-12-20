@@ -14,6 +14,7 @@ package temp;
 public class Temp
 {
 	private int serial=0;
+	public Set<Variable> dependencySet; //set of all high level variables the temp is depended on.
 	
 	public Temp(int serial)
 	{
