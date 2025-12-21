@@ -20,4 +20,9 @@ public class IrCommandPrintInt extends IrCommand
 	{
 		this.t = t;
 	}
+
+	@Override
+    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
+		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+	}
 }

@@ -26,8 +26,27 @@ public abstract class IrCommand
 	}
 
 	//usedAndUninited is the set of variables used before initialized
-	
 	public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
-		return null;
+		return prevOutSet;
 	}
+	
+
+	//general function to check using initialized and doing nothing else.
+    public Map<Variable, boolean> generalComputeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet, Temp t) {
+        this.inSet = prevOutSet;
+        for (Variable var : t.dependencySet) {
+            if(!prevOutSet.get(var)){
+                usedAndUninited.add(var);
+
+            }
+        }
+        this.outSet = new HashMap<>();
+        for (Variable var : prevOutSet.keySet()) {
+            
+            outSet.put(var, inSet.get(var));
+        }
+        return outSet;
+
+        
+    }
 }

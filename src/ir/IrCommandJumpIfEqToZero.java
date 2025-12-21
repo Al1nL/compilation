@@ -22,4 +22,10 @@ public class IrCommandJumpIfEqToZero extends IrCommand
 		this.t          = t;
 		this.labelName = labelName;
 	}
+
+
+	@Override
+    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
+		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+	}
 }

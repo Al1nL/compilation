@@ -26,22 +26,8 @@ public class IrCommandAdd extends IrCommand
     }
 
     @Override
-    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet) {
-        this.inSet = prevOutSet;
-        for (Variable var : dst.dependencySet) {
-            if(!prevOutSet.get(var)){
-                usedAndUninited.add(var);
-
-            }
-        }
-        this.outSet = new HashMap<>();
-        for (Variable var : prevOutSet.keySet()) {
-            
-            outSet.put(var, inSet.get(var));
-        }
-        return outSet;
-
-        
-    }
+    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
+		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+	}
 
 }
