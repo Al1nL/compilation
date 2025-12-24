@@ -2,6 +2,10 @@ import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
 import ast.*;
+import ir.*;
+import analysis.*;
+import java.util.*;
+import variable.Variable;
 
 public class Main {
 
@@ -22,6 +26,7 @@ public class Main {
             /* Initialize a file writer */
             fileWriter = new PrintWriter(outputFileName);
 
+
             /* Initialize a new lexer */
             l = new Lexer(fileReader);
 
@@ -41,8 +46,36 @@ public class Main {
                 ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
-                fileWriter.print("OK");
-                System.out.println("finished,Check output file");
+                //fileWriter.print("OK");
+                System.out.println("finished semantics, moving to ir");
+
+
+
+            /* ---------------------------------
+             * Build CFG
+             * --------------------------------- */
+            CFGBuilder builder = new CFGBuilder();
+            List<IrCommand> ir = Ir.getInstance().getCommands();
+            List<CFGNode> cfg = builder.build(ir);
+
+            /* ---------------------------------
+             * Run data-flow analysis
+             * --------------------------------- */
+            Set<Variable> errors = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
+
+            /* ---------------------------------
+             * Print required output
+             * --------------------------------- */
+            if (errors.isEmpty()) {
+                fileWriter.println("!OK");
+            } else {
+                errors.stream()
+                      .map(v -> v.name)
+                      .distinct()
+                      .sorted()
+                      .forEach(fileWriter::println);
+            }
+            System.out.println("finished ir");
 
             } catch (Error le) {
                 // lexical error
@@ -50,7 +83,7 @@ public class Main {
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                // e.printStackTrace();
+                e.printStackTrace();
             }
             fileWriter.close();
         } catch (Exception e) {
