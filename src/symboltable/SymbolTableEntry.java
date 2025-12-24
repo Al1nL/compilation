@@ -27,13 +27,13 @@ public class SymbolTableEntry
 	/* TYPE value ... */
 	/******************/
 	public Type type;
+	 public int scopeLevel;
 
 	/*********************************************/
 	/* prevtop and next symbol table entries ... */
 	/*********************************************/
 	public SymbolTableEntry prevtop;
 	public SymbolTableEntry next;
-
 	/****************************************************/
 	/* The prevtopIndex is just for debug purposes ... */
 	/****************************************************/
@@ -48,7 +48,7 @@ public class SymbolTableEntry
 		int index,
 		SymbolTableEntry next,
 		SymbolTableEntry prevtop,
-		int prevtopIndex)
+		int prevtopIndex,int scopeLevel)
 	{
 		this.index = index;
 		this.name = name;
@@ -56,5 +56,6 @@ public class SymbolTableEntry
 		this.next = next;
 		this.prevtop = prevtop;
 		this.prevtopIndex = prevtopIndex;
+		this.scopeLevel=scopeLevel;
 	}
 }
