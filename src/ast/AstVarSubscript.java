@@ -61,7 +61,6 @@ public class AstVarSubscript extends AstVar {
         /*****************************************************/
         /* PRINT Node to AST GRAPHVIZ DOT file */
         /*****************************************************/
-         */
         AstGraphviz.getInstance().logNode(
                 serialNumber,
                 "SUBSCRIPT\nVAR\n...[...]");
