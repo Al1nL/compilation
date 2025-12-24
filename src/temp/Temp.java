@@ -6,7 +6,8 @@ package temp;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
-
+import java.util.*;
+import variable.Variable;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
