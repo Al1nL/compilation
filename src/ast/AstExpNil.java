@@ -1,6 +1,7 @@
 package ast;
-import temp.*;
 import ir.*;
+import java.util.HashSet;
+import temp.*;
 import types.*;
 
 public class AstExpNil extends AstExp {
@@ -40,6 +41,7 @@ public class AstExpNil extends AstExp {
         /*******************/
         /* [3] return dst */
         /*******************/
+        dst.dependencySet = new HashSet<>();  
         return dst;
     }
 }

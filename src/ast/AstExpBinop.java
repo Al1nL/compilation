@@ -1,9 +1,9 @@
 package ast;
 
-import types.*;
-import temp.*;
 import ir.*;
-
+import java.util.HashSet;
+import temp.*;
+import types.*;
 public class AstExpBinop extends AstExp {
 
     int op;
@@ -141,7 +141,10 @@ public class AstExpBinop extends AstExp {
 
         if (left  != null) t1 = left.irMe();
         if (right != null) t2 = right.irMe();
-
+        
+        dst.dependencySet = new HashSet<>();
+dst.dependencySet.addAll(t1.dependencySet);
+dst.dependencySet.addAll(t2.dependencySet);
         if (op == 0)
         {
             if(right instanceof AstExpInt && left instanceof AstExpInt){

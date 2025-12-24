@@ -1,16 +1,16 @@
 package ast;
 
-import symboltable.*;
-import types.*;
-import temp.*;
 import ir.*;
-
+import symboltable.*;
+import temp.*;
+import types.*;
+import variable.Variable;
 public class AstDecVar extends AstDec {
 
     public String type;
     public String name;
     public AstExp exp;
-
+    public Variable var;
     public AstDecVar(String type, String name, AstExp exp) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
         this.type = type;
@@ -71,10 +71,11 @@ public class AstDecVar extends AstDec {
                 report();
             }
         }
-
+var = Variable.get(name, SymbolTable.getInstance().currScopeLevel);
+    
         // Enter variable to symbol table   
+    
         SymbolTable.getInstance().enter(this.name, varType);
-
         return varType;
     }
 
@@ -82,13 +83,11 @@ public class AstDecVar extends AstDec {
         return semantMe();
     }
 
-    public Temp irMe()
-    {
+    public Temp irMe() {
         Ir.getInstance().AddIrCommand(new IrCommandAllocate(name));
 
-        if (exp != null)
-        {
-            Ir.getInstance().AddIrCommand(new IrCommandStore(name,exp.irMe()));
+        if (exp != null) {
+            Ir.getInstance().AddIrCommand(new IrCommandStore(var, exp.irMe()));
         }
         return null;
     }

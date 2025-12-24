@@ -1,9 +1,11 @@
 package ast;
 
-import symboltable.*;
-import types.*;
-import temp.*;
 import ir.*;
+import java.util.HashSet;
+import symboltable.*;
+import temp.*;
+   import types.*;
+   import variable.Variable;
 
 public class AstVarSimple extends AstVar
 {
@@ -11,7 +13,7 @@ public class AstVarSimple extends AstVar
 	/* simple variable name */
 	/************************/
 	public String name;
-	
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -46,8 +48,14 @@ public class AstVarSimple extends AstVar
 
 	public Type semantMe()
 	{
-		return SymbolTable.getInstance().find(this.name);
+Type t = SymbolTable.getInstance().find(name);
+    SymbolTableEntry e = SymbolTable.getInstance().findEntry(name);
+
+    this.var = Variable.get(e.name, e.scopeLevel);
+
+    return t;	
 	}
+
 	public Type semantMe(Type expectedReturnType)
 	{
 		return semantMe();
@@ -55,7 +63,11 @@ public class AstVarSimple extends AstVar
 	public Temp irMe()
 	{
 		Temp t = TempFactory.getInstance().getFreshTemp();
-		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,name));
+		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,var));
+		t.dependencySet = new HashSet<>();
+    	t.dependencySet.add(var);
+		    analysis.Dbg.p("AstVarSimple.irMe name=" + name + " deps=" + t.dependencySet);
+
 		return t;
 	}
 }
