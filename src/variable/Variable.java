@@ -1,22 +1,55 @@
-/***********/
-/* PACKAGE */
-/***********/
 package variable;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import java.util.*;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+public class Variable implements Comparable<Variable> {
 
-public class Variable extends Comparable
-{
-	public String name;
-    public int scope;
-    public boolean equals(Variable other){
-        return this.name.equals(other.name) && this.scope==other.scope;
+    public final String name;
+    public final int scope;
+    private static final Map<String, Variable> pool = new HashMap<>();
+
+    public Variable(String name, int scope) {
+        this.name = name;
+        this.scope = scope;
+        // all.add(this);
+
     }
-	
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Variable)) {
+            return false;
+        }
+        Variable other = (Variable) o;
+        return scope == other.scope && name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * name.hashCode() + scope;
+    }
+
+    @Override
+    public int compareTo(Variable other) {
+        int cmp = this.name.compareTo(other.name);
+        if (cmp != 0) {
+            return cmp;
+        }
+        return Integer.compare(this.scope, other.scope);
+    }
+
+    public static Variable get(String name, int scope) {
+        String key = name + "#" + scope;
+        
+        //If pool already contains key → return its value
+        //Otherwise, create a new value using the function, store it, and return it
+        return pool.computeIfAbsent(
+                key,
+                k -> new Variable(name, scope)
+        );
+    }
+
 }
