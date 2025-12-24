@@ -3,6 +3,8 @@
 /***********/
 package ir;
 
+import java.util.*;
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -64,4 +66,20 @@ public class Ir
 		}
 		return instance;
 	}
+	public List<IrCommand> getCommands() {
+    List<IrCommand> result = new ArrayList<>();
+
+    if (head != null) {
+        result.add(head);
+    }
+
+    IrCommandList curr = tail;
+    while (curr != null) {
+        result.add(curr.head);
+        curr = curr.tail;
+    }
+
+    return result;
+}
+
 }

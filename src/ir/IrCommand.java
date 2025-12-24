@@ -1,52 +1,63 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import analysis.Dbg;
+import java.util.*;
+import temp.Temp;
+import variable.Variable;
+public abstract class IrCommand {
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+    /* Label Factory */
+    protected static int labelCounter = 0;
 
-public abstract class IrCommand
-{
-	/*****************/
-	/* Label Factory */
-	/*****************/
-	protected static int labelCounter = 0;
-	private Map<Variable, boolean> inSet;
-	private Map<Variable, boolean> outSet;
+    public static String getFreshLabel(String msg) {
+        return String.format("Label_%d_%s", labelCounter++, msg);
+    }
 
-	public    static String getFreshLabel(String msg)
-	{
-		return String.format("Label_%d_%s", labelCounter++,msg);
-	}
+    /**
+     * Transfer function.
+     * Default behavior: OUT = IN.
+     */
+    public Map<Variable, Boolean> computeOutSet(
+            Set<Variable> usedAndUninited,
+            Map<Variable, Boolean> inSet) {
+        return new HashMap<>(inSet);
+    }
 
-	//usedAndUninited is the set of variables used before initialized
-	public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
-		return prevOutSet;
-	}
-	
+    /**
+     * Helper for IR commands that ASSIGN to a TEMP.
+     * Checks that all variables used in computing the TEMP are initialized.
+     * Does not modify the initialized-variable set.
+     */
+    protected Map<Variable, Boolean> generalComputeOutSet(
+            Set<Variable> usedAndUninited,
+            Map<Variable, Boolean> inSet,
+            Temp t) {
 
-	//general function to check using initialized and doing nothing else.
-    public Map<Variable, boolean> generalComputeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet, Temp t) {
-        this.inSet = prevOutSet;
         for (Variable var : t.dependencySet) {
-            if(!prevOutSet.get(var)){
+            if (!inSet.getOrDefault(var, false)) {
                 usedAndUninited.add(var);
-
             }
         }
-        this.outSet = new HashMap<>();
-        for (Variable var : prevOutSet.keySet()) {
-            
-            outSet.put(var, inSet.get(var));
-        }
-        return outSet;
 
-        
+        return new HashMap<>(inSet);
+    }
+
+    /**
+     * Helper for IR commands that READ a TEMP without assigning.
+     */
+    protected Map<Variable, Boolean> checkTempRead(
+            Set<Variable> usedAndUninited,
+            Map<Variable, Boolean> inSet,
+            Temp t) {
+
+        for (Variable var : t.dependencySet) {
+            if (!inSet.getOrDefault(var, false)) {
+                usedAndUninited.add(var);
+                 Dbg.p("!!! USED BEFORE SET: " + var.name + "@" + var.scope
+        + " in " + this.getClass().getSimpleName());
+            }
+        }
+
+        return new HashMap<>(inSet);
     }
 }
