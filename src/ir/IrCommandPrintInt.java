@@ -6,11 +6,9 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+import java.util.*;
 import temp.*;
+import variable.Variable;
 
 public class IrCommandPrintInt extends IrCommand
 {
@@ -22,7 +20,7 @@ public class IrCommandPrintInt extends IrCommand
 	}
 
 	@Override
-    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
-		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
+    	return checkTempRead(usedAndUninited, prevOutSet, t);
 	}
 }

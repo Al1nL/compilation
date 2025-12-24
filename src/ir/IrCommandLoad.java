@@ -11,15 +11,15 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 import temp.*;
-
+import variable.Variable;
 public class IrCommandLoad extends IrCommand
 {
 	Temp dst;
-	String varName;
+    public final Variable var;
 	
-	public IrCommandLoad(Temp dst, String varName)
+	public IrCommandLoad(Temp dst,Variable var)
 	{
 		this.dst      = dst;
-		this.varName = varName;
+		this.var = var;
 	}
 }

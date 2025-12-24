@@ -6,11 +6,9 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+import java.util.*;
 import temp.*;
+import variable.Variable;
 
 public class IrCommandJumpIfEqToZero extends IrCommand
 {
@@ -25,7 +23,10 @@ public class IrCommandJumpIfEqToZero extends IrCommand
 
 
 	@Override
-    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
-		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
+		return checkTempRead(usedAndUninited, prevOutSet, t);
 	}
+	public String getLabelName() {
+    return labelName;
+}
 }

@@ -1,56 +1,44 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import analysis.Dbg;
+import java.util.*;
+import temp.Temp;
+import variable.Variable;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-import temp.*;
+public class IrCommandStore extends IrCommand {
 
-public class IrCommandStore extends IrCommand
-{
-	String varName;
-	Temp src;
-	
-	public IrCommandStore(String varName, Temp src)
-	{
-		this.src      = src;
-		this.varName = varName;
-	}
+    public final Variable var;
 
-	@Override
-    public Map<Variable, boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, boolean> prevOutSet){ 
-		this.inSet = prevOutSet;
-		boolean isInited = true;
-        for (Variable var : src.dependencySet) {
-            if(!prevOutSet.get(var)){
-                usedAndUninited.add(var);
-				isInited = false;
+    Temp src;
 
+    public IrCommandStore(Variable var, Temp src) {
+        this.var = var;
+        this.src = src;
+    }
+
+    @Override
+    public Map<Variable, Boolean> computeOutSet(
+            Set<Variable> usedAndUninited,
+            Map<Variable, Boolean> in) {
+        Dbg.p("STORE " + var.name + "  deps=" + src.dependencySet);
+        Dbg.p("  IN=" + in);
+        Map<Variable, Boolean> out = new HashMap<>(in);
+
+        boolean rhsInitialized = true;
+
+        // Check RHS usage
+        for (Variable v : src.dependencySet) {
+            if (!in.getOrDefault(v, false)) {
+                usedAndUninited.add(v);
+                rhsInitialized = false;
             }
         }
-        this.outSet = new HashMap<>();
-        for (Variable var : prevOutSet.keySet()) {
 
-			if(var.name.equals(varName)){//should check if the variable is the same also scope, for now leaving it like that.
-				if(isInited){
-					outSet.put(var, true);
-				}
-				else{
-					outSet.put(var, false);
-				}
+        // Update only the assigned variable
+        out.put(var, rhsInitialized);
+        Dbg.p("  rhsInitialized=" + rhsInitialized);
 
-			}
-			else{
-				outSet.put(var, inSet.get(var));
-			}
-                        
-        }
-        return outSet;
-	}
+        return out;
+    }
+
 }
