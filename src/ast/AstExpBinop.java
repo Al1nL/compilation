@@ -4,6 +4,9 @@ import ir.*;
 import java.util.HashSet;
 import temp.*;
 import types.*;
+import symboltable.*;
+import variable.Variable;
+
 public class AstExpBinop extends AstExp {
 
     int op;
@@ -90,6 +93,7 @@ public class AstExpBinop extends AstExp {
             System.out.format(">> ERROR: binop expression either rigth or left are null\n");
             report();
         }
+        this.var = Variable.get("", SymbolTable.getInstance().currScopeLevel);
         if (op == 6) {
             if (t1.canAssignTo(t2) || t2.canAssignTo(t1)) {
                 return TypeInt.getInstance();
@@ -138,19 +142,26 @@ public class AstExpBinop extends AstExp {
         Temp t1 = null;
         Temp t2 = null;
         Temp dst = TempFactory.getInstance().getFreshTemp();
+        var.name = Integer.toString(dst.getSerialNumber());
 
         if (left  != null) t1 = left.irMe();
         if (right != null) t2 = right.irMe();
         
         dst.dependencySet = new HashSet<>();
-dst.dependencySet.addAll(t1.dependencySet);
-dst.dependencySet.addAll(t2.dependencySet);
+        if(t1.dependencySet != null){
+            dst.dependencySet.addAll(t1.dependencySet);
+        }
+        if(t2.dependencySet != null){
+            dst.dependencySet.addAll(t2.dependencySet);
+        }
+        
+
         if (op == 0)
         {
             if(right instanceof AstExpInt && left instanceof AstExpInt){
                 Ir.
                         getInstance().
-                        AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));  
+                        AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2, var));  
             }else{
                 Ir.
                         getInstance().

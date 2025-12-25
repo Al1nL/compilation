@@ -11,6 +11,7 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 import temp.*;
+import variable.Variable;
 
 public class IRcommandConstInt extends IrCommand
 {

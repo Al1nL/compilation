@@ -71,7 +71,7 @@ public class AstDecVar extends AstDec {
                 report();
             }
         }
-var = Variable.get(name, SymbolTable.getInstance().currScopeLevel);
+        var = Variable.get(name, SymbolTable.getInstance().currScopeLevel);
     
         // Enter variable to symbol table   
     

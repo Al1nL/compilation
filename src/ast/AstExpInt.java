@@ -4,6 +4,8 @@ import ir.*;
 import java.util.HashSet;
 import temp.*;
 import types.*;
+import symboltable.*;
+import variable.Variable;
 
 public class AstExpInt extends AstExp {
 
@@ -40,8 +42,8 @@ public class AstExpInt extends AstExp {
 
     public Temp irMe()
     {
-        Temp t = TempFactory.getInstance().getFreshTemp();
-        t.dependencySet = new HashSet<>(); 
+        Temp t = TempFactory.getInstance().getFreshTemp(); 
+        t.dependencySet = new HashSet<>();
         Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
         return t;
     }

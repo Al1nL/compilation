@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Variable implements Comparable<Variable> {
 
-    public final String name;
+    public String name;
     public final int scope;
     private static final Map<String, Variable> pool = new HashMap<>();
 

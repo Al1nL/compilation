@@ -157,8 +157,8 @@ public class SymbolTable {
                 return e.type;
             }
         }
-
-        return null;
+        TypeInt t =  TypeInt.getInstance();
+        return t;
     }
 
     public Type findInScope(String name){

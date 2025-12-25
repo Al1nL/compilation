@@ -4,8 +4,8 @@ import ir.*;
 import java.util.HashSet;
 import symboltable.*;
 import temp.*;
-   import types.*;
-   import variable.Variable;
+import types.*;
+import variable.Variable;
 
 public class AstVarSimple extends AstVar
 {
@@ -48,11 +48,11 @@ public class AstVarSimple extends AstVar
 
 	public Type semantMe()
 	{
-Type t = SymbolTable.getInstance().find(name);
-    SymbolTableEntry e = SymbolTable.getInstance().findEntry(name);
-
-    this.var = Variable.get(e.name, e.scopeLevel);
-
+	Type t = SymbolTable.getInstance().find(name);
+	SymbolTableEntry e = SymbolTable.getInstance().findEntry(this.name);
+	int scope = 0;
+	if(e != null){ scope = e.scopeLevel; }
+	this.var = Variable.get(name, scope); //change name to getOrset
     return t;	
 	}
 

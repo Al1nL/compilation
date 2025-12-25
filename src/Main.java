@@ -43,6 +43,7 @@ public class Main {
                 /**********************/
                 /* [8] IR the AST ... */
                 /**********************/
+                
                 ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.Variable;
 
 public abstract class AstExp extends AstStmt {
 
+    public Variable var;
     public Type semantMe() {
         return null;
     }
