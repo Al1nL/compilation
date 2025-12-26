@@ -5,7 +5,7 @@ import java.util.HashSet;
 import temp.*;
 import types.*;
 import symboltable.*;
-import variable.Variable;
+// import variable.Variable;
 
 public class AstExpInt extends AstExp {
 
@@ -33,6 +33,7 @@ public class AstExpInt extends AstExp {
     }
 
     public Type semantMe() {
+        // var = Variable.get("TypeInt" + Integer.toString(value), SymbolTable.getInstance().currScopeLevel);
         return TypeInt.getInstance();
     }
 
@@ -43,7 +44,6 @@ public class AstExpInt extends AstExp {
     public Temp irMe()
     {
         Temp t = TempFactory.getInstance().getFreshTemp(); 
-        t.dependencySet = new HashSet<>();
         Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
         return t;
     }

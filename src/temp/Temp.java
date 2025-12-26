@@ -20,6 +20,7 @@ public class Temp
 	public Temp(int serial)
 	{
 		this.serial = serial;
+		dependencySet = new HashSet<>();
 	}
 	
 	public int getSerialNumber()

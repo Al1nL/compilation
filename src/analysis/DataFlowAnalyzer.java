@@ -2,6 +2,7 @@ package analysis;
 
 import java.util.*;
 import variable.Variable;
+import ir.*;
 
 public class DataFlowAnalyzer {
 
@@ -37,6 +38,12 @@ public class DataFlowAnalyzer {
 
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
                     Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
+                    
+                    // if(node.cmd.getClass().getSimpleName().contains( "IrCommandLabel")) { 
+                    //     System.out.println(entry.in);
+                    //     System.out.println(newIn + "  " + ((IrCommandLabel)node.cmd).getLabelName());
+                    //     Dbg.p("  " + ((IrCommandLabel)node.cmd).getLabelName()); 
+                    // }
                     Dbg.p("  IN : " + mapToStr(newIn));
                     Dbg.p("  OUT: " + mapToStr(newOut));
                     changed = true;

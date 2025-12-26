@@ -21,5 +21,5 @@ public class IrCommandLabel extends IrCommand
 	}
 	public String getLabelName() {
     return labelName;
-}
+	}
 }

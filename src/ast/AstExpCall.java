@@ -59,7 +59,6 @@ public class AstExpCall extends AstExp {
                 t = e.irMe();
             }
         }
-
         Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
 
         return null;

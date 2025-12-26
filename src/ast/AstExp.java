@@ -8,7 +8,7 @@ import variable.Variable;
 
 public abstract class AstExp extends AstStmt {
 
-    public Variable var;
+    // public Variable var;
     public Type semantMe() {
         return null;
     }

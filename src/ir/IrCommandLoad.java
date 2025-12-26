@@ -12,6 +12,7 @@ package ir;
 /*******************/
 import temp.*;
 import variable.Variable;
+import java.util.*;
 public class IrCommandLoad extends IrCommand
 {
 	Temp dst;
