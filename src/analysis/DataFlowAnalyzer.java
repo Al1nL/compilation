@@ -12,8 +12,6 @@ public class DataFlowAnalyzer {
     ) {
         CFGNode entry = cfg.get(0);
 
-        Set<Variable> usedBeforeSet = new HashSet<>();
-
         /* Entry IN = all vars not initiated yet */
         Map<Variable, Boolean> entryIn = new HashMap<>();
         for (Variable v : allVars) {
@@ -29,21 +27,14 @@ public class DataFlowAnalyzer {
 
             for (int idx = 0; idx < cfg.size(); idx++) {
                 CFGNode node = cfg.get(idx);
-
                 Map<Variable, Boolean> newIn
                         = node == entry ? entry.in : meet(node.preds);
 
                 Map<Variable, Boolean> newOut
-                        = node.cmd.computeOutSet(usedBeforeSet, newIn);
+                        = node.cmd.computeOutSet(new HashSet<>(), newIn);
 
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
                     Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
-                    
-                    // if(node.cmd.getClass().getSimpleName().contains( "IrCommandLabel")) { 
-                    //     System.out.println(entry.in);
-                    //     System.out.println(newIn + "  " + ((IrCommandLabel)node.cmd).getLabelName());
-                    //     Dbg.p("  " + ((IrCommandLabel)node.cmd).getLabelName()); 
-                    // }
                     Dbg.p("  IN : " + mapToStr(newIn));
                     Dbg.p("  OUT: " + mapToStr(newOut));
                     changed = true;
@@ -54,7 +45,11 @@ public class DataFlowAnalyzer {
 
             iter++;
         }
-
+        // 3. Final Pass: Now that IN/OUT are stable, collect the actual errors
+        Set<Variable> usedBeforeSet = new HashSet<>();
+        for (CFGNode node : cfg) {
+            node.cmd.computeOutSet(usedBeforeSet, node.in);
+        }
         return usedBeforeSet;
     }
 

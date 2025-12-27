@@ -5,6 +5,7 @@ import temp.*;
 import types.*;
 
 public class AstExpNil extends AstExp {
+    // public Variable var;
 
     public AstExpNil() {
         serialNumber = AstNodeSerialNumber.getFresh();
@@ -17,6 +18,7 @@ public class AstExpNil extends AstExp {
     }
 
     public Type semantMe() {
+        // var = Variable.get("NIL" + Integer.toString(serialNumber), SymbolTable.getInstance().currScopeLevel);
         return TypeNil.getInstance();
     }
 
@@ -40,8 +42,7 @@ public class AstExpNil extends AstExp {
 
         /*******************/
         /* [3] return dst */
-        /*******************/
-        dst.dependencySet = new HashSet<>();  
+        /*******************/  
         return dst;
     }
 }

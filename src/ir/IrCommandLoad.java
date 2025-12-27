@@ -20,7 +20,26 @@ public class IrCommandLoad extends IrCommand
 	
 	public IrCommandLoad(Temp dst,Variable var)
 	{
-		this.dst      = dst;
+		this.dst = dst;
 		this.var = var;
+	}
+
+	@Override
+    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
+    	
+		Map<Variable, Boolean> outSet = new HashMap<>(prevOutSet);
+
+		if (this.var != null) {
+			boolean isInitialized = prevOutSet.getOrDefault(this.var, false);
+			if (!isInitialized) {
+				usedAndUninited.add(this.var);
+			}
+		}
+
+		if (this.dst != null) {
+			outSet.put(this.var, true);
+		}
+
+		return outSet;
 	}
 }

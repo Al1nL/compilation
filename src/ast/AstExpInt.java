@@ -1,16 +1,13 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
+import java.util.*;
 import temp.*;
 import types.*;
-import symboltable.*;
-// import variable.Variable;
 
 public class AstExpInt extends AstExp {
 
     public int value;
-
     /* CONSTRUCTOR(S) */
     public AstExpInt(int value) {
         /* SET A UNIQUE SERIAL NUMBER */
@@ -33,17 +30,17 @@ public class AstExpInt extends AstExp {
     }
 
     public Type semantMe() {
-        // var = Variable.get("TypeInt" + Integer.toString(value), SymbolTable.getInstance().currScopeLevel);
         return TypeInt.getInstance();
     }
 
     public Type semantMe(Type expectedReturnType) {
-        return TypeInt.getInstance();
+        return semantMe();
     }
 
     public Temp irMe()
     {
-        Temp t = TempFactory.getInstance().getFreshTemp(); 
+        Temp t = TempFactory.getInstance().getFreshTemp();
+        
         Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
         return t;
     }
