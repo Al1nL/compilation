@@ -87,7 +87,7 @@ public class DataFlowAnalyzer {
         for (Variable v : universe) {
             boolean val = true;
             for (CFGNode p : preds) {
-                val &= p.out.getOrDefault(v, false);
+                val &= p.out.getOrDefault(v, true);
             }
             result.put(v, val);
         }

@@ -36,9 +36,7 @@ public class IrCommandLoad extends IrCommand
 			}
 		}
 
-		if (this.dst != null) {
-			outSet.put(this.var, true);
-		}
+		
 
 		return outSet;
 	}

@@ -6,6 +6,7 @@ import ir.*;
 import analysis.*;
 import java.util.*;
 import variable.Variable;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -68,13 +69,14 @@ public class Main {
              * Print required output
              * --------------------------------- */
             if (errors.isEmpty()) {
-                fileWriter.println("!OK");
+                fileWriter.print("!OK");
             } else {
-                errors.stream()
+                String output = errors.stream()
                       .map(v -> v.name)
                       .distinct()
                       .sorted()
-                      .forEach(fileWriter::println);
+                      .collect(Collectors.joining(System.lineSeparator()));
+                    fileWriter.write(output);
             }
             System.out.println("finished ir");
 
