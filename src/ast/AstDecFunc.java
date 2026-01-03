@@ -8,7 +8,7 @@ import ir.*;
 
 public class AstDecFunc extends AstDec {
 
-    private final String returnType;
+    public final String returnType;
     public final String name;
     private final AstParamList params;
     private final AstStmtList body;

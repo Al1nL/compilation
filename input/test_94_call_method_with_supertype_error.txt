@@ -1,0 +1,14 @@
+class Father
+{
+int abc;
+}
+class Son extends Father
+{
+int foo(Son f) { return 8; }
+}
+void main()
+{
+	Father f := new Father;
+	Son s := new Son;
+    	s.foo(f);//Error
+}

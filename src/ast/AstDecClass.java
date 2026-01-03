@@ -1,6 +1,6 @@
 package ast;
 
-import java.util.HashSet;
+import java.util.*;
 import symboltable.*;
 import types.*;
 import temp.*;
@@ -70,8 +70,7 @@ public class AstDecClass extends AstDec {
         SymbolTable.getInstance().beginScope();
 
         // PROCESS FIELDS
-        t.dataMembers = this.processFields(parentTypeClass);
-        // TypeList fieldTypes = fields.semantMe();
+        this.processFields(parentTypeClass , t);
 
         System.err.println("====== CLASS " + this.name + " END ======\n");
 
@@ -85,63 +84,44 @@ public class AstDecClass extends AstDec {
         return semantMe();
     }
 
-    public TypeClassVarDecList processFields(TypeClass parent) {
+    public void processFields(TypeClass parent, TypeClass curr) {
         TypeClassVarDecList result = null;
         TypeClassVarDecList last = null;
         HashSet<String> addedNames = new HashSet<>();
-
-        Type t;
-        String name;
+    
+        // Keep track of methods to resolve later
+        List<AstDecFunc> deferredMethods = new ArrayList<>();
+    
+        // FIRST LOOP: register all names, resolve vars immediately
         for (AstDecList it = fields; it != null; it = it.tail) {
             AstDec dec = it.head;
-
+            String name = null;
+            Type t = null;
+    
             if (dec instanceof AstDecVar) {
-                System.err.format("var:%s\n", ((AstDecVar) dec).name);
-                t = ((AstDecVar) dec).semantMe();
-                name = ((AstDecVar) dec).name;
-
+                AstDecVar varDec = (AstDecVar) dec;
+                name = varDec.name;
+                t = varDec.semantMe(); // safe to compute immediately
             } else if (dec instanceof AstDecFunc) {
-                System.err.format("method:%s\n", ((AstDecFunc) dec).name);
-                t = ((AstDecFunc) dec).semantMe();
-                name = ((AstDecFunc) dec).name;
+                AstDecFunc funcDec = (AstDecFunc) dec;
+                name = funcDec.name;
+                Type baseType = SymbolTable.getInstance().find(funcDec.returnType);
+                t = new TypeFunction(baseType, name, null); // placeholder
+                deferredMethods.add(funcDec); // defer type computation
             } else {
                 continue;
             }
-
-            if (parent != null) {
-                Type same = parent.findField(name);
-
-                if (same != null) {
-
-                    if (!same.isSameType(t)) {
-                        dec.report();
-                    }
-
-                    if (dec instanceof AstDecVar) {
-                        System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
-                        dec.report();
-                    } else {
-                        TypeFunction func = (TypeFunction) same;
-                        boolean ok = func.compareFunctions((TypeFunction) t);
-                        if (!ok) {
-                            dec.report();
-                        }
-                    }
-                }
-            }
-
+    
             if (addedNames.contains(name)) {
                 System.out.format(">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
                         name, lineNumber);
                 dec.report();
-            } else {
-                addedNames.add(name); // Add this name to the set
+                continue;
             }
-
-            // Convert Type → TypeClassVarDec
+    
+            addedNames.add(name);
+    
             TypeClassVarDec decv = new TypeClassVarDec(t, name);
-
-            // First element
             if (result == null) {
                 result = new TypeClassVarDecList(decv, null);
                 last = result;
@@ -150,9 +130,34 @@ public class AstDecClass extends AstDec {
                 last = last.tail;
             }
         }
-
-        return result;
+    
+        curr.dataMembers = result; // now all names exist
+    
+        // SECOND LOOP: resolve method types and check parent overrides
+        for (AstDecFunc funcDec : deferredMethods) {
+            TypeFunction t = (TypeFunction) funcDec.semantMe(); // now safe
+            String name = funcDec.name;
+    
+            // Check overrides
+            if (parent != null) {
+                Type same = parent.findField(name);
+                if (same != null) {
+                    if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions(t)) {
+                        funcDec.report();
+                    }
+                }
+            }
+    
+            // Update type in curr.dataMembers
+            for (TypeClassVarDecList node = curr.dataMembers; node != null; node = node.tail) {
+                if (node.head.name.equals(name)) {
+                    node.head.t = t;
+                    break;
+                }
+            }
+        }
     }
+    
 
     public Temp irMe(){
         /**************************************/

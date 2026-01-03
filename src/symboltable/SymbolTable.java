@@ -143,26 +143,28 @@ public class SymbolTable {
      */
     public Type find(String name) {
         SymbolTableEntry e;
-
+        System.err.println(" value of type " + name);
         for (e = table[hash(name)]; e != null; e = e.prevtop) {
             if(e.type instanceof TypeClass){
-                Type currentClass = (TypeClass)e.type;                        
+                
+                Type currentClass = (TypeClass)e.type;                      
                 if(currentClass != null && ((TypeClass)currentClass).father != null){
+                    
                     Type t = ((TypeClass)currentClass).father.findField(name); 
                     if(t != null) return t;
                 }
-  
             }
             if (name.equals(e.name)) {
                 return e.type;
             }
         }
-        TypeInt t =  TypeInt.getInstance();
-        return t;
+        // TypeInt t =  TypeInt.getInstance();
+        return null;
     }
 
     public Type findInScope(String name){
         SymbolTableEntry e = top;
+        System.err.println(" value of type " + name + " type " +e.type);
         while (e != null) {
             if(name.equals(e.name)){
                 return e.type;

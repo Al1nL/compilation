@@ -55,6 +55,7 @@ public abstract class AstExp extends AstStmt {
                 if (argType == null) {
                     System.err.format(">> ERROR: Argument %d in call to '%s' has no type\n",
                             i + 1, callName);
+                    args.get(i).report();
                     return null;
                 }
                 if (paramType == null) {
@@ -62,6 +63,7 @@ public abstract class AstExp extends AstStmt {
                             i + 1,
                             isMethodCall ? "method" : "function",
                             callName);
+                    args.get(i).report();
                     return null;
                 }
                 if (!argType.canAssignTo(paramType)) {
@@ -69,6 +71,7 @@ public abstract class AstExp extends AstStmt {
                             i + 1,
                             isMethodCall ? "method" : "function",
                             callName, paramType.name, argType.name);
+                    args.get(i).report();
                     return null;
                 }
 

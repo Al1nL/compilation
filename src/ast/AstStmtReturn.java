@@ -37,6 +37,10 @@ public class AstStmtReturn extends AstStmt {
             }
         } else {
             // return exp;
+            if(expectedReturnType instanceof TypeVoid){
+                System.err.println("ERROR: return <expression> is not allowed, even if the expression has type void");
+                report();
+            }
             Type returnType = exp.semantMe();
 
             if (!returnType.canAssignTo(expectedReturnType)) {
