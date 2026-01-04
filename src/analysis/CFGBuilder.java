@@ -9,17 +9,23 @@ public class CFGBuilder {
     /**
      * Builds a CFG from a linear list of IR commands.
      */
-    private final Set<Variable> allVars = new HashSet<>();
+    private final ArrayList<Variable> globals= new ArrayList<>();
+    private final ArrayList<Variable> locals= new ArrayList<>();
 
-    public Set<Variable> getAllVariables() {
-        return allVars;
+    public ArrayList<Variable> getAllVariables() {
+        ArrayList<Variable> all = new ArrayList<>();
+        if(!globals.isEmpty())
+            all.addAll(globals);
+        if(!locals.isEmpty())
+            all.addAll(locals);
+        return all;
     }
 
     public List<CFGNode> build(List<IrCommand> ir) {
 
         List<CFGNode> nodes = new ArrayList<>();
         Map<String, CFGNode> labelMap = new HashMap<>();
-
+        
         /* Create nodes and label map */
         for (IrCommand cmd : ir) {
             CFGNode node = new CFGNode(cmd);
@@ -66,11 +72,19 @@ public class CFGBuilder {
                 continue;
             }
             if (cmd instanceof IrCommandStore s) {
-                allVars.add(s.var);
+                if (s.var.isGlobal) {
+                    globals.add(s.var);
+                } else {
+                    locals.add(s.var);
+                }
             }
 
             if (cmd instanceof IrCommandLoad l) {
-                allVars.add(l.var);
+                if (l.var.isGlobal) {
+                    globals.add(l.var);
+                } else {
+                    locals.add(l.var);
+                }
             }
 
             /* Default: fall-through */

@@ -2,13 +2,12 @@ package analysis;
 
 import java.util.*;
 import variable.Variable;
-import ir.*;
 
 public class DataFlowAnalyzer {
 
     public static Set<Variable> analyze(
             List<CFGNode> cfg,
-            Set<Variable> allVars
+            ArrayList<Variable> allVars
     ) {
         CFGNode entry = cfg.get(0);
 
