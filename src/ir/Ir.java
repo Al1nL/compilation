@@ -21,26 +21,51 @@ public class Ir
 	/******************/
 	/* Add Ir command */
 	/******************/
-	public void AddIrCommand(IrCommand cmd)
-	{
-		if ((head == null) && (tail == null))
-		{
-			this.head = cmd;
-		}
-		else if ((head != null) && (tail == null))
-		{
-			this.tail = new IrCommandList(cmd,null);
-		}
-		else
-		{
-			IrCommandList it = tail;
-			while ((it != null) && (it.tail != null))
-			{
-				it = it.tail;
-			}
-			it.tail = new IrCommandList(cmd,null);
-		}
-	}
+	
+public void AddIrCommand(IrCommand cmd) {
+    // Check if the command is a load/store of a global variable
+    if (isGlobalVarCommand(cmd)) {
+        // Insert at beginning
+        if (head == null && tail == null) {
+            // empty list
+            head = cmd;
+        } else {
+            // Move current head into tail list
+            IrCommandList newTail;
+            if (tail == null) {
+                newTail = new IrCommandList(head, null);
+            } else {
+                newTail = new IrCommandList(head, tail);
+            }
+            head = cmd;
+            tail = newTail;
+        }
+    } else {
+        // Append at end (original behavior)
+        if (head == null && tail == null) {
+            head = cmd;
+        } else if (head != null && tail == null) {
+            tail = new IrCommandList(cmd, null);
+        } else {
+            IrCommandList it = tail;
+            while (it.tail != null) {
+                it = it.tail;
+            }
+            it.tail = new IrCommandList(cmd, null);
+        }
+    }
+}
+
+// Helper method to check if an IrCommand is a store/load of a global variable
+private boolean isGlobalVarCommand(IrCommand cmd) {
+    if (cmd instanceof IrCommandLoad load) {
+        return load.var.isGlobal;
+    }
+    if (cmd instanceof IrCommandStore store) {
+        return store.var.isGlobal;
+    }
+    return false;
+}
 
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
@@ -68,7 +93,6 @@ public class Ir
 	}
 	public List<IrCommand> getCommands() {
     List<IrCommand> result = new ArrayList<>();
-
     if (head != null) {
         result.add(head);
     }
