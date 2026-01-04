@@ -1,7 +1,6 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
 import symboltable.*;
 import temp.*;
 import types.*;
@@ -50,9 +49,9 @@ public class AstVarSimple extends AstVar
 	{
 	Type t = SymbolTable.getInstance().find(name);
 	SymbolTableEntry e = SymbolTable.getInstance().findEntry(this.name);
-	int scope = SymbolTable.getInstance().topIndex;
+	int scope = SymbolTable.getInstance().currScopeLevel;
 	if(e != null){ scope = e.scopeLevel; }
-	this.var = Variable.get(name, scope); //change name to getOrset
+	this.var = Variable.get(name, scope); 
     return t;	
 	}
 

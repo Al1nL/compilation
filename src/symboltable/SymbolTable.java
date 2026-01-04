@@ -104,7 +104,7 @@ public class SymbolTable {
         /**
          * ***********************************************************************
          */
-        SymbolTableEntry e = new SymbolTableEntry(name, t, hashValue, next, top, topIndex, ++currScopeLevel);
+        SymbolTableEntry e = new SymbolTableEntry(name, t, hashValue, next, top, topIndex, currScopeLevel);
 		topIndex++;
         /**
          * *******************************************
@@ -143,7 +143,6 @@ public class SymbolTable {
      */
     public Type find(String name) {
         SymbolTableEntry e;
-        System.err.println(" value of type " + name);
         for (e = table[hash(name)]; e != null; e = e.prevtop) {
             if(e.type instanceof TypeClass){
                 
@@ -164,7 +163,6 @@ public class SymbolTable {
 
     public Type findInScope(String name){
         SymbolTableEntry e = top;
-        System.err.println(" value of type " + name + " type " +e.type);
         while (e != null) {
             if(name.equals(e.name)){
                 return e.type;
@@ -195,6 +193,7 @@ public class SymbolTable {
         /**
          * *********************************************************************
          */
+        currScopeLevel++;
         enter(
                 "SCOPE-BOUNDARY",
                 new TypeForScopeBoundaries("NONE"));

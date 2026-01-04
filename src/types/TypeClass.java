@@ -37,8 +37,6 @@ public class TypeClass extends Type
         {
             if (current.head != null && current.head.name != null)
             {
-                // String realName = current.head.name.split(":", 2)[1];
-                // System.err.println(" value of type " + current.head.name + " after column " + realName);
                 if (current.head.name.equals(fieldName))
                 {
                     return current.head.t;
