@@ -86,7 +86,7 @@ public class Main {
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                e.printStackTrace();
+                //e.printStackTrace(fileWriter);
             }
             fileWriter.close();
         } catch (Exception e) {

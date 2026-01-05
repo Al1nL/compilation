@@ -42,6 +42,10 @@ public class CFGBuilder {
 
             CFGNode curr = nodes.get(i);
             IrCommand cmd = curr.cmd;
+            /* Default: fall-through */
+            if (i + 1 < nodes.size()) {
+                addEdge(curr, nodes.get(i + 1));
+            }
 
             /* RETURN has no successors */
             if (cmd instanceof IrCommandReturn) {
@@ -78,19 +82,7 @@ public class CFGBuilder {
                     locals.add(s.var);
                 }
             }
-
-            if (cmd instanceof IrCommandLoad l) {
-                if (l.var.isGlobal) {
-                    globals.add(l.var);
-                } else {
-                    locals.add(l.var);
-                }
-            }
-
-            /* Default: fall-through */
-            if (i + 1 < nodes.size()) {
-                addEdge(curr, nodes.get(i + 1));
-            }
+            
         }
         for (int i = 0; i < nodes.size(); i++) {
             CFGNode n = nodes.get(i);

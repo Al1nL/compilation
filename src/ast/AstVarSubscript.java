@@ -118,12 +118,13 @@ public class AstVarSubscript extends AstVar {
         /* [2] Evaluate index          */
 		/******************************/
         Temp idx = subscript.irMe();
-
-		/******************************/
+        /******************************/
         /* [3] Null check             */
-		/******************************/
+        /******************************/
+        String null_check = IrCommand.getFreshLabel("_null_pointer_error");
+
         Ir.getInstance().AddIrCommand(
-                new IrCommandJumpIfEqToZero(arr, "_null_pointer_error")
+                new IrCommandJumpIfEqToZero(arr, null_check)
         );
 
 		/******************************/

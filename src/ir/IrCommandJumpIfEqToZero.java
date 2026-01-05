@@ -10,15 +10,14 @@ import java.util.*;
 import temp.*;
 import variable.Variable;
 
-public class IrCommandJumpIfEqToZero extends IrCommand
+public class IrCommandJumpIfEqToZero extends IrCommandJumpLabel
 {
 	Temp t;
-	String labelName;
 	
 	public IrCommandJumpIfEqToZero(Temp t, String labelName)
 	{
-		this.t          = t;
-		this.labelName = labelName;
+		super(labelName);
+		this.t = t;
 	}
 
 
@@ -26,7 +25,5 @@ public class IrCommandJumpIfEqToZero extends IrCommand
     public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
 		return checkTempRead(usedAndUninited, prevOutSet, t);
 	}
-	public String getLabelName() {
-    return labelName;
-}
+
 }

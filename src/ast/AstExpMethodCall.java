@@ -1,7 +1,7 @@
 package ast;
-import temp.*;
 import ir.*;
 import java.util.ArrayList;
+import temp.*;
 import types.*;
 
 public class AstExpMethodCall extends AstExp {
@@ -85,11 +85,13 @@ public class AstExpMethodCall extends AstExp {
         /*****************************************/
         /* [2] Runtime check: object != nil      */
         /*****************************************/
+                String null_check = IrCommand.getFreshLabel("_null_pointer_error");
+
         Ir.
             getInstance().
             AddIrCommand(new IrCommandJumpIfEqToZero(
                 objTemp,
-                "_null_pointer_error"
+                null_check
             ));
 
         /******************************/
