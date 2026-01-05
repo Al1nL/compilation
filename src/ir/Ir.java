@@ -15,57 +15,29 @@ import java.util.*;
 
 public class Ir
 {
-	private IrCommand head=null;
-	private IrCommandList tail=null;
 
-	/******************/
-	/* Add Ir command */
-	/******************/
-	
-public void AddIrCommand(IrCommand cmd) {
-    // Check if the command is a load/store of a global variable
-    if (isGlobalVarCommand(cmd)) {
-        // Insert at beginning
-        if (head == null && tail == null) {
-            // empty list
-            head = cmd;
-        } else {
-            // Move current head into tail list
-            IrCommandList newTail;
-            if (tail == null) {
-                newTail = new IrCommandList(head, null);
-            } else {
-                newTail = new IrCommandList(head, tail);
-            }
-            head = cmd;
-            tail = newTail;
-        }
-    } else {
-        // Append at end (original behavior)
-        if (head == null && tail == null) {
-            head = cmd;
-        } else if (head != null && tail == null) {
-            tail = new IrCommandList(cmd, null);
-        } else {
-            IrCommandList it = tail;
-            while (it.tail != null) {
-                it = it.tail;
-            }
-            it.tail = new IrCommandList(cmd, null);
-        }
-    }
-}
+private List<IrCommand> globalInit = new ArrayList<>();
+    private List<IrCommand> mainCommands = new ArrayList<>();
 
-// Helper method to check if an IrCommand is a store/load of a global variable
-private boolean isGlobalVarCommand(IrCommand cmd) {
-    if (cmd instanceof IrCommandLoad load) {
-        return load.var.isGlobal;
+    private boolean buildingGlobals = true;
+
+    public void switchToMain() {
+        buildingGlobals = false;
     }
-    if (cmd instanceof IrCommandStore store) {
-        return store.var.isGlobal;
+
+    public void AddIrCommand(IrCommand cmd) {
+        if (buildingGlobals)
+            globalInit.add(cmd);
+        else
+            mainCommands.add(cmd);
     }
-    return false;
-}
+
+    public List<IrCommand> getCommands() {
+        List<IrCommand> all = new ArrayList<>();
+        all.addAll(globalInit);
+        all.addAll(mainCommands);
+        return all;
+    }
 
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
@@ -91,19 +63,5 @@ private boolean isGlobalVarCommand(IrCommand cmd) {
 		}
 		return instance;
 	}
-	public List<IrCommand> getCommands() {
-    List<IrCommand> result = new ArrayList<>();
-    if (head != null) {
-        result.add(head);
-    }
-
-    IrCommandList curr = tail;
-    while (curr != null) {
-        result.add(curr.head);
-        curr = curr.tail;
-    }
-
-    return result;
-}
 
 }
