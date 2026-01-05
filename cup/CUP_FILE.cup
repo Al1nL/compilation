@@ -108,7 +108,8 @@
 	non terminal AstVar var;
 	non terminal AstStmt stmt;
 	non terminal AstStmtList stmtList;
-	non terminal AstDecList program;
+	non terminal AstDecList dec_list;
+	non terminal AstProgram program;
 	non terminal String type;
 	non terminal AstTypedefArray arrayTypedef;
 
@@ -192,10 +193,15 @@ param 		::= 	type:t ID:name 		{: RESULT = new AstParam(t, name); setLineNum(RESU
 paramList 	::=		param:p COMMA paramList:l      {: RESULT = new AstParamList(p, l); :}
 					| param:p   			{: RESULT = new AstParamList(p, null); :}
 					;
-
-program 	::= 	dec:d								{: RESULT = new AstDecList(d, null); :}
-					| dec:d program:p					{: RESULT = new AstDecList(d, p); :}
-					;
+program ::= dec_list:dl
+           {: RESULT = new AstProgram(dl); :}
+           ;
+           
+dec_list ::= dec:d
+            {: RESULT = new AstDecList(d, null); :}
+            | dec:d dec_list:dl
+            {: RESULT = new AstDecList(d, dl); :}
+            ;
 					
 dec 		::= 	varDec:v          {: RESULT = v; :}
 					| funcDec:f         {: RESULT = f; :}
