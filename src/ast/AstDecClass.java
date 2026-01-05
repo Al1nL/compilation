@@ -111,7 +111,23 @@ public class AstDecClass extends AstDec {
             } else {
                 continue;
             }
-    
+            
+            if (parent != null) {
+                Type same = parent.findField(name);
+
+                if (same != null) {
+
+                    if (!same.isSameType(t)) {
+                        dec.report();
+                    }
+
+                    if (dec instanceof AstDecVar) {
+                        System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
+                        dec.report();
+                    }
+                }
+            }
+
             if (addedNames.contains(name)) {
                 System.out.format(">> ERROR class cannot define multiple fields with the same name %s in the same class %d\n",
                         name, lineNumber);

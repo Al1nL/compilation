@@ -143,13 +143,15 @@ public class SymbolTable {
      */
     public Type find(String name) {
         SymbolTableEntry e;
+        Type t = findInScope(name);
+        if(t != null) return t;
         for (e = table[hash(name)]; e != null; e = e.prevtop) {
             if(e.type instanceof TypeClass){
                 
                 Type currentClass = (TypeClass)e.type;                      
                 if(currentClass != null && ((TypeClass)currentClass).father != null){
                     
-                    Type t = ((TypeClass)currentClass).father.findField(name); 
+                    t = ((TypeClass)currentClass).father.findField(name); 
                     if(t != null) return t;
                 }
             }

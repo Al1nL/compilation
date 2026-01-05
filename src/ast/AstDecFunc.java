@@ -10,7 +10,7 @@ public class AstDecFunc extends AstDec {
 
     public final String returnType;
     public final String name;
-    private final AstParamList params;
+    public final AstParamList params;
     private final AstStmtList body;
 
     public AstDecFunc(String returnType, String name, AstParamList params, AstStmtList body) {
