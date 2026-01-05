@@ -48,7 +48,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/TEST_1.txt
+INPUT    = ${INPUT_DIR}/test_97_self_object_duplicating_class.txt
 OUTPUT   = ${OUTPUT_DIR}/Output.txt
 
 ##########
@@ -122,3 +122,45 @@ compile:
 	@echo "*                           *"
 	@echo "*****************************"
 	java -jar ANALYZER ${INPUT} ${OUTPUT}
+
+##############
+# TEST ALL   #
+##############
+test-all: compile
+	@echo "\n"
+	@echo "************************************"
+	@echo "*                                  *"
+	@echo "* Running all tests in input/      *"
+	@echo "*                                  *"
+	@echo "************************************"
+	@mkdir -p ${OUTPUT_DIR}
+	@for input_file in ${INPUT_DIR}/*.txt; do \
+		if [ -f "$$input_file" ]; then \
+			base_name=$$(basename "$$input_file" .txt); \
+			output_file="${OUTPUT_DIR}/$${base_name}_output.txt"; \
+			echo "\n>>> Testing: $$base_name"; \
+			echo "    Input:  $$input_file"; \
+			echo "    Output: $$output_file"; \
+			java -jar ANALYZER "$$input_file" "$$output_file"; \
+			echo "    [DONE]"; \
+		fi \
+	done
+	@echo "\n"
+	@echo "************************************"
+	@echo "*                                  *"
+	@echo "* All tests completed!             *"
+	@echo "*                                  *"
+	@echo "************************************"
+
+##############
+# CLEAN      #
+##############
+clean:
+	@echo "Cleaning up generated files..."
+	rm -rf ANALYZER
+	rm -rf ${JFlex_CUP_GENERATED_FILES}
+	rm -rf ${BIN_DIR}/*.class ${BIN_DIR}/*/*.class
+	rm -rf ${OUTPUT_DIR}/*.txt
+	@echo "Clean complete!"
+
+.PHONY: compile test-all clean
