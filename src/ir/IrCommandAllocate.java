@@ -11,12 +11,13 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 
+import variable.Variable;
 public class IrCommandAllocate extends IrCommand
 {
-	String varName;
+	Variable var;
 	
-	public IrCommandAllocate(String varName)
+	public IrCommandAllocate(Variable var)
 	{
-		this.varName = varName;
-	}
+		this.var = var;
+	}	
 }

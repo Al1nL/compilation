@@ -47,11 +47,14 @@ public class AstVarSimple extends AstVar
 
 	public Type semantMe()
 	{
-	Type t = SymbolTable.getInstance().find(name);
+
+	Type t = SymbolTable.getInstance().find(this.name);
 	SymbolTableEntry e = SymbolTable.getInstance().findEntry(this.name);
-	int scope = SymbolTable.getInstance().currScopeLevel;
-	if(e != null){ scope = e.scopeLevel; }
-	this.var = Variable.get(name, scope); 
+	if (e == null) {
+    	System.out.format(">> ERROR [%d] Variable %s used but not declared!\n", lineNumber + 1, name);
+        report();
+	}
+	this.var = Variable.get(name, e.scopeLevel); 
     return t;	
 	}
 
@@ -64,7 +67,7 @@ public class AstVarSimple extends AstVar
 		Temp t = TempFactory.getInstance().getFreshTemp();
 		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,var));
     	t.dependencySet.add(var);
-		analysis.Dbg.p("AstVarSimple.irMe name=" + name + " deps=" + t.dependencySet);
+		analysis.Dbg.p("AstVarSimple.irMe name=" + name + " dependencies=" + t.dependencySet);
 
 		return t;
 	}

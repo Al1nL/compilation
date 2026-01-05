@@ -65,7 +65,10 @@ public class AstDecVar extends AstDec {
 
         if (exp != null) {
             Type expType = exp.semantMe(null);
-
+            if (expType == null) {
+                            System.err.println("ERROR: the expression you want to assign to "+name+" is not defined");
+                            report();
+                        }
             if (!expType.canAssignTo(varType)) {
                 System.err.println("ERROR: Cannot assign expType " + expType.name + " to " + varType.name);
                 report();
@@ -75,7 +78,7 @@ public class AstDecVar extends AstDec {
     
         // Enter variable to symbol table   
     
-        SymbolTable.getInstance().enter(this.name, varType);
+        SymbolTable.getInstance().enter(name, varType);
         var = Variable.get(name, SymbolTable.getInstance().currScopeLevel);
         return varType;
     }
@@ -85,7 +88,8 @@ public class AstDecVar extends AstDec {
     }
 
     public Temp irMe() {
-        Ir.getInstance().AddIrCommand(new IrCommandAllocate(name));
+
+        Ir.getInstance().AddIrCommand(new IrCommandAllocate(var));
 
         if (exp != null) {
             Ir.getInstance().AddIrCommand(new IrCommandStore(var, exp.irMe()));
