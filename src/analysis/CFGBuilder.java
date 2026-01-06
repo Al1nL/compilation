@@ -9,15 +9,17 @@ public class CFGBuilder {
     /**
      * Builds a CFG from a linear list of IR commands.
      */
-    private final ArrayList<Variable> globals= new ArrayList<>();
-    private final ArrayList<Variable> locals= new ArrayList<>();
+    private final ArrayList<Variable> globals = new ArrayList<>();
+    private final ArrayList<Variable> locals = new ArrayList<>();
 
     public ArrayList<Variable> getAllVariables() {
         ArrayList<Variable> all = new ArrayList<>();
-        if(!globals.isEmpty())
+        if (!globals.isEmpty()) {
             all.addAll(globals);
-        if(!locals.isEmpty())
+        }
+        if (!locals.isEmpty()) {
             all.addAll(locals);
+        }
         return all;
     }
 
@@ -25,7 +27,7 @@ public class CFGBuilder {
 
         List<CFGNode> nodes = new ArrayList<>();
         Map<String, CFGNode> labelMap = new HashMap<>();
-        
+
         /* Create nodes and label map */
         for (IrCommand cmd : ir) {
             CFGNode node = new CFGNode(cmd);
@@ -36,16 +38,22 @@ public class CFGBuilder {
                 labelMap.put(lbl.getLabelName(), node);
             }
         }
-
+        /* collect globals and locals */
+        for (IrCommand cmd : ir) {
+            if (cmd instanceof IrCommandStore s) {
+                if (s.var.isGlobal) {
+                    globals.add(s.var); 
+                }else {
+                    locals.add(s.var);
+                }
+            }
+        }
         /* Add control-flow edges */
         for (int i = 0; i < nodes.size(); i++) {
 
             CFGNode curr = nodes.get(i);
             IrCommand cmd = curr.cmd;
-            /* Default: fall-through */
-            if (i + 1 < nodes.size()) {
-                addEdge(curr, nodes.get(i + 1));
-            }
+
 
             /* RETURN has no successors */
             if (cmd instanceof IrCommandReturn) {
@@ -75,15 +83,12 @@ public class CFGBuilder {
                 }
                 continue;
             }
-            if (cmd instanceof IrCommandStore s) {
-                if (s.var.isGlobal) {
-                    globals.add(s.var);
-                } else {
-                    locals.add(s.var);
-                }
+            /* Default: fall-through */
+            if (i + 1 < nodes.size()) {
+                addEdge(curr, nodes.get(i + 1));
             }
-            
         }
+
         for (int i = 0; i < nodes.size(); i++) {
             CFGNode n = nodes.get(i);
             Dbg.p("CFG node #" + i + " cmd=" + n.cmd.getClass().getSimpleName());
