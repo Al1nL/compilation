@@ -143,6 +143,7 @@ public class SymbolTable {
      */
     public Type find(String name) {
         SymbolTableEntry e;
+
         Type t = findInScope(name);
         if(t != null) return t;
         for (e = table[hash(name)]; e != null; e = e.prevtop) {
@@ -159,7 +160,7 @@ public class SymbolTable {
                 return e.type;
             }
         }
-        // TypeInt t =  TypeInt.getInstance();
+       
         return null;
     }
 

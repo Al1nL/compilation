@@ -105,8 +105,7 @@ public class AstDecClass extends AstDec {
             } else if (dec instanceof AstDecFunc) {
                 AstDecFunc funcDec = (AstDecFunc) dec;
                 name = funcDec.name;
-                Type baseType = SymbolTable.getInstance().find(funcDec.returnType);
-                t = new TypeFunction(baseType, name, null); // placeholder
+                t = (TypeFunction) funcDec.semantMe(); // placeholder
                 deferredMethods.add(funcDec); // defer type computation
             } else {
                 continue;
@@ -125,6 +124,11 @@ public class AstDecClass extends AstDec {
                         System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
                         dec.report();
                     }
+                   
+                    if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions((TypeFunction)t)) {
+                        dec.report();
+                    }
+                    
                 }
             }
 
@@ -150,28 +154,28 @@ public class AstDecClass extends AstDec {
         curr.dataMembers = result; // now all names exist
     
         // SECOND LOOP: resolve method types and check parent overrides
-        for (AstDecFunc funcDec : deferredMethods) {
-            TypeFunction t = (TypeFunction) funcDec.semantMe(); // now safe
-            String name = funcDec.name;
+        // for (AstDecFunc funcDec : deferredMethods) {
+        //     TypeFunction t = (TypeFunction) funcDec.semantMe(); // now safe
+        //     String name = funcDec.name;
     
-            // Check overrides
-            if (parent != null) {
-                Type same = parent.findField(name);
-                if (same != null) {
-                    if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions(t)) {
-                        funcDec.report();
-                    }
-                }
-            }
+        //     // Check overrides
+        //     if (parent != null) {
+        //         Type same = parent.findField(name);
+        //         if (same != null) {
+        //             if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions(t)) {
+        //                 funcDec.report();
+        //             }
+        //         }
+        //     }
     
-            // Update type in curr.dataMembers
-            for (TypeClassVarDecList node = curr.dataMembers; node != null; node = node.tail) {
-                if (node.head.name.equals(name)) {
-                    node.head.t = t;
-                    break;
-                }
-            }
-        }
+        //     // Update type in curr.dataMembers
+        //     for (TypeClassVarDecList node = curr.dataMembers; node != null; node = node.tail) {
+        //         if (node.head.name.equals(name)) {
+        //             node.head.t = t;
+        //             break;
+        //         }
+        //     }
+        // }
     }
     
 

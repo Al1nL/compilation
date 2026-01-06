@@ -67,4 +67,8 @@ public class TypeFunction extends Type {
 
         return true;
     }
+
+    public boolean isUninitilized(){
+        return returnType == null && params == null;
+    }
 }
