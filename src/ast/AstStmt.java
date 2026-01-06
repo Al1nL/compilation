@@ -10,7 +10,8 @@ public abstract class AstStmt extends AstNode {
     }
 
     public Type semantMe(Type expectedReturnType) {
-        return semantMe();
+        if(expectedReturnType == null) return semantMe();
+        return semantMe(expectedReturnType);
     }
 
     public Temp irMe()

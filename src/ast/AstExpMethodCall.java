@@ -44,8 +44,10 @@ public class AstExpMethodCall extends AstExp {
         }
 
     }
-
-    public Type semantMe() {
+    public Type semantMe(){
+        return semantMe(null);
+    }
+    public Type semantMe(Type expectedReturnType) {
         // Analyze the object to get its type
         Type objectType = object.semantMe();
 
@@ -62,16 +64,17 @@ public class AstExpMethodCall extends AstExp {
         }
 
         TypeClass classType = (TypeClass) objectType;
-
+        
         // Look up the method in the class
         Type methodType = classType.findField(method);
-
-        if (!(methodType instanceof TypeFunction)) {
+        if (!(methodType instanceof TypeFunction) && classType.isinitilized) {
             System.out.format(">> ERROR: Method '%s' not found in class '%s'\n",
                     method, classType.name);
             report();
         }
-
+        else if(!(methodType instanceof TypeFunction) && !classType.isinitilized){
+            return expectedReturnType;
+        }
         return validateCall(method, (TypeFunction) methodType, args, true);
     }
 

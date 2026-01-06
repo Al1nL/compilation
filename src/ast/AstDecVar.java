@@ -38,7 +38,8 @@ public class AstDecVar extends AstDec {
         Type varType = null;
         Type varname = null;
         // Check for dups
-        varname = SymbolTable.getInstance().findInScope(name);
+        SymbolTableEntry e = SymbolTable.getInstance().findInScope(name);
+        varname = e == null ? null : e.type;
         if (varname != null) {
             System.err.println("ERROR: Variable '" + this.name + "' is already defined in this scope");
             report();

@@ -142,9 +142,8 @@ public class SymbolTable {
      * ********************************************
      */
     public Type find(String name) {
-        SymbolTableEntry e;
-
-        Type t = findInScope(name);
+        SymbolTableEntry e = findInScope(name);
+        Type t = e == null ? null : e.type;
         if(t != null) return t;
         for (e = table[hash(name)]; e != null; e = e.prevtop) {
             if(e.type instanceof TypeClass){
@@ -164,11 +163,11 @@ public class SymbolTable {
         return null;
     }
 
-    public Type findInScope(String name){
+    public SymbolTableEntry findInScope(String name){
         SymbolTableEntry e = top;
         while (e != null) {
             if(name.equals(e.name)){
-                return e.type;
+                return e;
             }
             if ("SCOPE-BOUNDARY".equals(e.name)) {
                 return null;
@@ -450,59 +449,36 @@ public class SymbolTable {
         return true; // no scope boundary found -> global scope
     }
 
-    public Type findInClassScope(TypeClass tc, String fieldName) {
-    
-    SymbolTableEntry e = top;
+    public SymbolTableEntry findEntry(String name) {
+        SymbolTableEntry e;
 
-    // Locate the class's entry 
-    SymbolTableEntry classEntry = null;
-    while (e != null) {
-        if (e.type instanceof TypeClass && e.name.equals(tc.name)) {
-            classEntry = e;
-            break;
+        // 1. Look in current scope chain first
+        e = findInScope(name);
+        if (e != null) return e;
+
+        // 2. Look through all visible classes
+        for (SymbolTableEntry it = table[hash(name)];
+            it != null;
+            it = it.prevtop) {
+
+            if (it.type instanceof TypeClass) {
+                TypeClass cls = (TypeClass) it.type;
+                                    
+                if(cls != null && cls.father != null){
+                    
+                    Type t = cls.father.findField(name); 
+                    if(t != null) return findEntry(cls.father.name);
+                }
+                
+            }
+
+            // Fallback: global symbol
+            if (name.equals(it.name)) {
+                return it;
+            }
         }
-        e = e.prevtop;
-    }
-    if (classEntry == null) return null;
 
-    // The scope boundary is immediately ABOVE the classEntry
-    SymbolTableEntry boundary = null;
-	for (SymbolTableEntry x = top; x != null;  x= x.prevtop) {
-    if (x.name.equals("SCOPE-BOUNDARY") && x.prevtop == classEntry) {
-        boundary = x;
-        break;
-    }
-}
-    if (boundary == null || !"SCOPE-BOUNDARY".equals(boundary.name)) {
-        System.err.println("ERROR: Class " + tc.name + " has no scope boundary");
         return null;
     }
-
-    // Scan from the TOP downward until hitting boundary
-    e = top;
-    while (e != null && e != boundary) {
-        if (e.name.equals(fieldName)) {
-            return e.type;
-        }
-        e = e.prevtop;
-    }
-    // Not found in this class — try parent
-    if (tc.father != null) {
-        return findInClassScope(tc.father, fieldName);
-    }
-        return null; // field not found in this class
-    
-    }
-    public SymbolTableEntry findEntry(String name) {
-    for (SymbolTableEntry e = table[hash(name)];
-         e != null;
-         e = e.prevtop) {
-
-        if (name.equals(e.name)) {
-            return e;   // ← includes e.scopeLevel
-        }
-    }
-    return null;
-}
 
 }

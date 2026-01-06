@@ -54,7 +54,14 @@ public class AstStmtAssign extends AstStmt {
     }
 
     public Type semantMe(Type expectedReturnType) {
-        return semantMe();
+        Type varType = var.semantMe(expectedReturnType);
+        Type expType = exp.semantMe(expectedReturnType);
+
+        if (!expType.canAssignTo(varType)) {
+            System.err.println("ERROR: Cannot assign " + expType.name + " to " + varType + " " + lineNumber);
+            report();
+        }
+        return null;
     }
 
     public Temp irMe()

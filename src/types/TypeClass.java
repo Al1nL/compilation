@@ -13,14 +13,16 @@ public class TypeClass extends Type
 	/* packed together with the class methods         */
 	/**************************************************/
 	public TypeClassVarDecList dataMembers;
+    public boolean isinitilized;
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TypeClass(TypeClass father, String name, TypeClassVarDecList dataMembers)
+	public TypeClass(TypeClass father, String name, TypeClassVarDecList dataMembers, boolean isinitilized)
 	{
 		this.name = name;
 		this.father = father;
 		this.dataMembers = dataMembers;
+        this.isinitilized = isinitilized;
 	}
 
     @Override

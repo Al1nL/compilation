@@ -34,7 +34,7 @@ public class AstStmtCall extends AstStmt {
     }
 
     public Type semantMe(Type expectedReturnType) {
-        return semantMe();
+        return callExp.semantMe(expectedReturnType);
     }
 
     public Temp irMe()

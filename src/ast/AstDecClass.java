@@ -55,13 +55,14 @@ public class AstDecClass extends AstDec {
         if (parentName != null) {
             Type parentType = SymbolTable.getInstance().find(parentName);
             if (parentType == null || !(parentType instanceof TypeClass)) {
+                System.err.println("Class " + name + " parent not exists " + parentName);
                 report();
             }
             parentTypeClass = (TypeClass) parentType;
         }
 
         // Create empty class type first
-        TypeClass t = new TypeClass(parentTypeClass, this.name, null);
+        TypeClass t = new TypeClass(parentTypeClass, this.name, null, false);
 
         // ENTER class name
         SymbolTable.getInstance().enter(this.name, t);
@@ -73,7 +74,7 @@ public class AstDecClass extends AstDec {
         this.processFields(parentTypeClass , t);
 
         System.err.println("====== CLASS " + this.name + " END ======\n");
-
+        t.isinitilized = true;
         /* End Scope */
         SymbolTable.getInstance().endScope();
 
@@ -89,9 +90,6 @@ public class AstDecClass extends AstDec {
         TypeClassVarDecList last = null;
         HashSet<String> addedNames = new HashSet<>();
     
-        // Keep track of methods to resolve later
-        List<AstDecFunc> deferredMethods = new ArrayList<>();
-    
         // FIRST LOOP: register all names, resolve vars immediately
         for (AstDecList it = fields; it != null; it = it.tail) {
             AstDec dec = it.head;
@@ -106,7 +104,6 @@ public class AstDecClass extends AstDec {
                 AstDecFunc funcDec = (AstDecFunc) dec;
                 name = funcDec.name;
                 t = (TypeFunction) funcDec.semantMe(); // placeholder
-                deferredMethods.add(funcDec); // defer type computation
             } else {
                 continue;
             }
@@ -149,33 +146,9 @@ public class AstDecClass extends AstDec {
                 last.tail = new TypeClassVarDecList(decv, null);
                 last = last.tail;
             }
+            curr.dataMembers = result;
         }
     
-        curr.dataMembers = result; // now all names exist
-    
-        // SECOND LOOP: resolve method types and check parent overrides
-        // for (AstDecFunc funcDec : deferredMethods) {
-        //     TypeFunction t = (TypeFunction) funcDec.semantMe(); // now safe
-        //     String name = funcDec.name;
-    
-        //     // Check overrides
-        //     if (parent != null) {
-        //         Type same = parent.findField(name);
-        //         if (same != null) {
-        //             if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions(t)) {
-        //                 funcDec.report();
-        //             }
-        //         }
-        //     }
-    
-        //     // Update type in curr.dataMembers
-        //     for (TypeClassVarDecList node = curr.dataMembers; node != null; node = node.tail) {
-        //         if (node.head.name.equals(name)) {
-        //             node.head.t = t;
-        //             break;
-        //         }
-        //     }
-        // }
     }
     
 

@@ -47,13 +47,12 @@ public class AstVarSimple extends AstVar
 
 	public Type semantMe()
 	{
-
-	Type t = SymbolTable.getInstance().find(this.name);
 	SymbolTableEntry e = SymbolTable.getInstance().findEntry(this.name);
 	if (e == null) {
     	System.out.format(">> ERROR [%d] Variable %s used but not declared!\n", lineNumber + 1, name);
         report();
 	}
+	Type t = SymbolTable.getInstance().find(this.name);
 	this.var = Variable.get(name, e.scopeLevel); 
     return t;	
 	}

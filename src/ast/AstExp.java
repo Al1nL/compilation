@@ -13,7 +13,8 @@ public abstract class AstExp extends AstStmt {
     }
 
     public Type semantMe(Type expectedReturnType) {
-        return semantMe();
+        if(expectedReturnType == null) return semantMe();
+        return semantMe(expectedReturnType);
     }
 
     /*****************************************/
