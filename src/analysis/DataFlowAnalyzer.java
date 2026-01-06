@@ -6,15 +6,18 @@ import variable.Variable;
 public class DataFlowAnalyzer {
 
     public static Set<Variable> analyze(List<CFGNode> cfg, List<Variable> allVars) {
-        // Initialize IN/OUT maps
-        for (CFGNode node : cfg) {
-            node.in = new HashMap<>();
-            node.out = new HashMap<>();
-            for (Variable v : allVars) {
-                node.in.put(v, false);  // initially uninitialized
-                node.out.put(v, false); // initially uninitialized
-            }
+        if (cfg.isEmpty()) {
+            return Collections.emptySet();
         }
+
+        CFGNode entry = cfg.get(0);
+
+        /* Entry IN = all vars not initiated yet */
+        Map<Variable, Boolean> entryIn = new HashMap<>();
+        for (Variable v : allVars) {
+            entryIn.put(v, false);
+        }
+        entry.in = entryIn;
 
         boolean changed = true;
         int iter = 0;
@@ -25,7 +28,7 @@ public class DataFlowAnalyzer {
             for (int idx = 0; idx < cfg.size(); idx++) {
                 CFGNode node = cfg.get(idx);
                 // Compute IN as meet over predecessors
-                Map<Variable, Boolean> newIn = meet(node.preds, allVars);
+                Map<Variable, Boolean> newIn = node == entry ? entry.in : meet(node.preds, allVars);
 
                 // Compute OUT using node command
                 Map<Variable, Boolean> newOut = node.cmd.computeOutSet(new HashSet<>(), newIn);
@@ -57,8 +60,11 @@ public class DataFlowAnalyzer {
         for (Variable v : universe) {
             boolean val = true;
             for (CFGNode p : preds) {
-                // If predecessor does not define v, treat as uninitialized (false)
-                val &= p.out.getOrDefault(v, false);
+                // If predecessor's OUT is null, treat as "unknown / ignore"
+                if (p.out != null && !p.out.isEmpty()) {
+                    val &= p.out.getOrDefault(v, false);
+                }
+                // else ignore this predecessor (back edge not computed yet)
             }
             result.put(v, val);
         }
