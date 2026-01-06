@@ -11,11 +11,15 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 
-public class IrCommandJumpLabel extends IrCommandLabel
+public class IrCommandJumpLabel extends IrCommand
 {
-	
+		protected String labelName;
+
 	public IrCommandJumpLabel(String labelName)
 	{
-		super(labelName);
+		this.labelName = labelName;
+	}
+	public String getLabelName() {
+    return labelName;
 	}
 }

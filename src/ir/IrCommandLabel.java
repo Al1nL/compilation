@@ -13,7 +13,7 @@ package ir;
 
 public class IrCommandLabel extends IrCommand
 {
-	protected String labelName;
+	 String labelName;
 	
 	public IrCommandLabel(String labelName)
 	{
