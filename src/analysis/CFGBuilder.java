@@ -59,16 +59,7 @@ public class CFGBuilder {
             if (cmd instanceof IrCommandReturn) {
                 continue;
             }
-
-            /* Unconditional jump */
-            if (cmd instanceof IrCommandJumpLabel) {
-                IrCommandJumpLabel j = (IrCommandJumpLabel) cmd;
-                CFGNode target = labelMap.get(j.getLabelName());
-                addEdge(curr, target);
-                continue;
-            }
-
-            /* Conditional jump */
+ /* Conditional jump */
             if (cmd instanceof IrCommandJumpIfEqToZero) {
                 IrCommandJumpIfEqToZero j
                         = (IrCommandJumpIfEqToZero) cmd;
@@ -83,6 +74,17 @@ public class CFGBuilder {
                 }
                 continue;
             }
+            /* Unconditional jump */
+            if (cmd instanceof IrCommandJumpLabel) {
+                IrCommandJumpLabel j = (IrCommandJumpLabel) cmd;
+                System.out.println("i=" + i + " curr=" + curr.cmd + " i+1=" + (i+1) + " next=" + nodes.get(i+1).cmd);
+
+                CFGNode target = labelMap.get(j.getLabelName());
+                addEdge(curr, target);
+                continue;
+            }
+
+           
             /* Default: fall-through */
             if (i + 1 < nodes.size()) {
                 addEdge(curr, nodes.get(i + 1));
