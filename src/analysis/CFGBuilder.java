@@ -6,9 +6,7 @@ import variable.Variable;
 
 public class CFGBuilder {
 
-    /**
-     * Builds a CFG from a linear list of IR commands.
-     */
+    /*Builds a CFG from a linear list of IR commands.*/
     private final ArrayList<Variable> globals = new ArrayList<>();
     private final ArrayList<Variable> locals = new ArrayList<>();
 
@@ -42,8 +40,8 @@ public class CFGBuilder {
         for (IrCommand cmd : ir) {
             if (cmd instanceof IrCommandStore s) {
                 if (s.var.isGlobal) {
-                    globals.add(s.var); 
-                }else {
+                    globals.add(s.var);
+                } else {
                     locals.add(s.var);
                 }
             }
@@ -59,7 +57,7 @@ public class CFGBuilder {
             if (cmd instanceof IrCommandReturn) {
                 continue;
             }
- /* Conditional jump */
+            /* Conditional jump */
             if (cmd instanceof IrCommandJumpIfEqToZero) {
                 IrCommandJumpIfEqToZero j
                         = (IrCommandJumpIfEqToZero) cmd;
@@ -77,14 +75,12 @@ public class CFGBuilder {
             /* Unconditional jump */
             if (cmd instanceof IrCommandJumpLabel) {
                 IrCommandJumpLabel j = (IrCommandJumpLabel) cmd;
-                System.out.println("i=" + i + " curr=" + curr.cmd + " i+1=" + (i+1) + " next=" + nodes.get(i+1).cmd);
 
                 CFGNode target = labelMap.get(j.getLabelName());
                 addEdge(curr, target);
                 continue;
             }
 
-           
             /* Default: fall-through */
             if (i + 1 < nodes.size()) {
                 addEdge(curr, nodes.get(i + 1));
