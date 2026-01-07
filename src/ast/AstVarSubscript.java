@@ -121,7 +121,7 @@ public class AstVarSubscript extends AstVar {
         /******************************/
         /* [3] Null check             */
         /******************************/
-        String null_check = IrCommand.getFreshLabel("_null_pointer_error");
+        String null_check = IrCommand.getFreshLabel("null_"+var.var.name+"_check");
 
         Ir.getInstance().AddIrCommand(
                 new IrCommandJumpIfEqToZero(arr, null_check)
@@ -147,9 +147,17 @@ public class AstVarSubscript extends AstVar {
         dst.dependencySet.addAll(arr.dependencySet);
         dst.dependencySet.addAll(idx.dependencySet);
 
+
+        /*****************************************/
+        /* [6 ] Error handler (define label)    */
+        /*****************************************/
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(null_check));
+        //Ir.getInstance().AddIrCommand(new IrCommandRuntimeError("Null pointer dereference"));
+                
         /*****************************************************/
-        /* [6] Return value            */
+        /* [7] Return value            */
         /*****************************************************/
+
         return dst;
     }
 }

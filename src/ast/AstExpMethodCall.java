@@ -88,7 +88,7 @@ public class AstExpMethodCall extends AstExp {
         /*****************************************/
         /* [2] Runtime check: object != nil      */
         /*****************************************/
-                String null_check = IrCommand.getFreshLabel("_null_pointer_error");
+                String null_check = IrCommand.getFreshLabel("null_"+object.var.name+"_check");
 
         Ir.
             getInstance().
@@ -124,6 +124,12 @@ public class AstExpMethodCall extends AstExp {
                 argTemps
             ));
 
+        /*****************************************/
+        /* [5.5] Error handler (define label)    */
+        /*****************************************/
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(null_check));
+        //Ir.getInstance().AddIrCommand(new IrCommandRuntimeError("Null pointer dereference"));
+        
         /*******************/
         /* [6] return dst */
         /*******************/
