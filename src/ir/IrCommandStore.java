@@ -4,6 +4,8 @@ import analysis.Dbg;
 import java.util.*;
 import temp.Temp;
 import variable.Variable;
+import mips.MipsGenerator;
+
 
 public class IrCommandStore extends IrCommand {
 
@@ -40,5 +42,13 @@ public class IrCommandStore extends IrCommand {
 
         return out;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().store(varName,src);
+	}
 
 }

@@ -4,6 +4,8 @@ import analysis.Dbg;
 import java.util.*;
 import temp.Temp;
 import variable.Variable;
+import types.*;
+import mips.MipsGenerator;
 public abstract class IrCommand {
 
     /* Label Factory */
@@ -60,4 +62,9 @@ public abstract class IrCommand {
 
         return new HashMap<>(inSet);
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public abstract void mipsMe();
 }
