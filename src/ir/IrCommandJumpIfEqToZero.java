@@ -9,6 +9,7 @@ package ir;
 import java.util.*;
 import temp.*;
 import variable.Variable;
+import mips.MipsGenerator;
 
 public class IrCommandJumpIfEqToZero extends IrCommandJumpLabel
 {
@@ -24,6 +25,15 @@ public class IrCommandJumpIfEqToZero extends IrCommandJumpLabel
 	@Override
     public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
 		return checkTempRead(usedAndUninited, prevOutSet, t);
+	}
+
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().beqz(t, labelName);
 	}
 
 }

@@ -9,6 +9,8 @@ package ir;
 import java.util.*;
 import temp.*;
 import variable.Variable;
+import mips.MipsGenerator;
+
 
 public class IrCommandBinopMulIntegers extends IrCommand
 {
@@ -26,5 +28,13 @@ public class IrCommandBinopMulIntegers extends IrCommand
 	@Override
     public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
 		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+	}
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().mul(dst,t1,t2);
 	}
 }

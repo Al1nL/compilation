@@ -5,6 +5,7 @@ package ir;
 
 import java.util.*;
 
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -38,6 +39,14 @@ private List<IrCommand> globalInit = new ArrayList<>();
         all.addAll(mainCommands);
         return all;
     }
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		//complete here because provided code assumed linked list implementation.
+	}
 
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */

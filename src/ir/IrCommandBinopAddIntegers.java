@@ -14,6 +14,8 @@ import temp.*;
 import variable.Variable;
 import java.util.*;
 import analysis.Dbg;
+import mips.MipsGenerator;
+
 
 public class IrCommandBinopAddIntegers extends IrCommand
 {
@@ -31,5 +33,13 @@ public class IrCommandBinopAddIntegers extends IrCommand
 	@Override
     public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
 		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
+	}
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().add(dst,t1,t2);
 	}
 }
