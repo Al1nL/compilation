@@ -10,6 +10,7 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import mips.MipsGenerator;
 
 public class IrCommandLabel extends IrCommand
 {
@@ -21,5 +22,13 @@ public class IrCommandLabel extends IrCommand
 	}
 	public String getLabelName() {
     return labelName;
+	}
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().label(labelName);
 	}
 }

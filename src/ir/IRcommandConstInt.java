@@ -13,6 +13,8 @@ package ir;
 import temp.*;
 // import variable.Variable;
 import java.util.*;
+import mips.MipsGenerator;
+
 
 public class IRcommandConstInt extends IrCommand
 {
@@ -41,4 +43,12 @@ public class IRcommandConstInt extends IrCommand
 		
 	// 	return outSet;
 	// }
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		MipsGenerator.getInstance().li(t,value);
+	}
 }
