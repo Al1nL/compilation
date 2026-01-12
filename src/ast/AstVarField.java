@@ -79,7 +79,7 @@ public class AstVarField extends AstVar {
         Ir.getInstance().AddIrCommand(
             new IrCommandLoadField(t, base, this.fieldName)
         );
-        t.dependencySet = new HashSet<>();
+        
         t.dependencySet.addAll(base.dependencySet);
         return t;
     }

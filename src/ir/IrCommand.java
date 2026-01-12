@@ -37,8 +37,7 @@ public abstract class IrCommand {
             if (!inSet.getOrDefault(var, false)) {
                 usedAndUninited.add(var);
             }
-        }
-
+        } 
         return new HashMap<>(inSet);
     }
 
@@ -49,12 +48,14 @@ public abstract class IrCommand {
             Set<Variable> usedAndUninited,
             Map<Variable, Boolean> inSet,
             Temp t) {
-
-        for (Variable var : t.dependencySet) {
-            if (!inSet.getOrDefault(var, false)) {
-                usedAndUninited.add(var);
-                 Dbg.p("!!! USED BEFORE SET: " + var.name + "@" + var.scope
-        + " in " + this.getClass().getSimpleName());
+            
+        if(t != null){
+            for (Variable var : t.dependencySet) {
+                if (!inSet.getOrDefault(var, false)) {
+                    usedAndUninited.add(var);
+                    Dbg.p("!!! USED BEFORE SET: " + var.name + "@" + var.scope
+            + " in " + this.getClass().getSimpleName());
+                }
             }
         }
 

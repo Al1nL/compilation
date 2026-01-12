@@ -142,7 +142,7 @@ public class AstVarSubscript extends AstVar {
         Ir.getInstance().AddIrCommand(
                 new IrCommandAdd(dst, addr, null)
         );
-
+        
         dst.dependencySet = new HashSet<>();
         dst.dependencySet.addAll(arr.dependencySet);
         dst.dependencySet.addAll(idx.dependencySet);

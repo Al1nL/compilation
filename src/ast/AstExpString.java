@@ -41,7 +41,6 @@ public class AstExpString extends AstExp {
     public Temp irMe()
     {
         Temp t = TempFactory.getInstance().getFreshTemp();
-        t.dependencySet = new HashSet<>();  
         Ir.getInstance().AddIrCommand(new IRcommandConstString(t,value));
         return t;
     }
