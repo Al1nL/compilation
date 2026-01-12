@@ -28,4 +28,11 @@ public class IrCommandAdd extends IrCommand
 		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
 	}
 
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

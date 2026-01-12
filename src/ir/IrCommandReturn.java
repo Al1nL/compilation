@@ -29,4 +29,12 @@ public class IrCommandReturn extends IrCommand {
         }
         return checkTempRead(usedAndUninited, prevOutSet, t);
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

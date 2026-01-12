@@ -24,5 +24,13 @@ public class IrCommandLoadField extends IrCommand
         this.base = base;
         this.fieldname = name;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }
 

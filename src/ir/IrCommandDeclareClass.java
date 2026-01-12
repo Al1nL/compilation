@@ -29,4 +29,12 @@ public class IrCommandDeclareClass extends IrCommand
         this.parentName = parentName;
         this.fields     = fields;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

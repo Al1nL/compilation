@@ -32,4 +32,12 @@ public class IrCommandVirtualCall extends IrCommand
         this.method = method;
         this.args   = args;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

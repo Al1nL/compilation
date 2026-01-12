@@ -25,4 +25,11 @@ public class IrCommandBinopAddStrings extends IrCommand
 		this.t2 = t2;
 	}
 	
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

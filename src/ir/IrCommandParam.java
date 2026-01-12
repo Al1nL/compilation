@@ -23,4 +23,12 @@ public class IrCommandParam extends IrCommand {
         this.name = name;
         this.temp = temp;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

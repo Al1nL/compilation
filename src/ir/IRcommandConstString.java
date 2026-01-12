@@ -22,4 +22,12 @@ public class IRcommandConstString extends IrCommand
 		this.t = t;
 		this.value = value;
 	}
+
+	/***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

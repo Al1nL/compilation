@@ -21,4 +21,12 @@ public class IrCommandAllocateObject extends IrCommand
         this.dst  = dst;
         this.type = type;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

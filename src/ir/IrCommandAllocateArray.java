@@ -24,4 +24,12 @@ public class IrCommandAllocateArray extends IrCommand
         this.type = type;
         this.size = size;
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

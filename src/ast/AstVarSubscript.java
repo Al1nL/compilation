@@ -7,7 +7,7 @@ import types.*;
 
 public class AstVarSubscript extends AstVar {
 
-    public AstVar var;
+    public AstVar variable;
     public AstExp subscript;
 
     /**
@@ -34,7 +34,7 @@ public class AstVarSubscript extends AstVar {
         /**
          * ****************************
          */
-        this.var = var;
+        this.variable = var;
         this.subscript = subscript;
     }
 
@@ -51,8 +51,8 @@ public class AstVarSubscript extends AstVar {
 		/****************************************/
         /* RECURSIVELY PRINT VAR + SUBSCRIPT ... */
         /*****************************************************/
-        if (this.var != null) {
-            var.printMe();
+        if (this.variable != null) {
+            variable.printMe();
         }
         if (this.subscript != null) {
             subscript.printMe();
@@ -68,8 +68,8 @@ public class AstVarSubscript extends AstVar {
         /*****************************************************/
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /*****************************************************/
-        if (this.var != null) {
-            AstGraphviz.getInstance().logEdge(serialNumber, var.serialNumber);
+        if (this.variable != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, variable.serialNumber);
         }
         if (this.subscript != null) {
             AstGraphviz.getInstance().logEdge(serialNumber, subscript.serialNumber);
@@ -77,7 +77,7 @@ public class AstVarSubscript extends AstVar {
     }
 
     public Type semantMe() {
-        Type ret = var.semantMe();
+        Type ret = variable.semantMe();
         if (ret == null) {
             System.out.format(">> ERROR [%d] non existing type\n", lineNumber);
             report();
@@ -100,6 +100,7 @@ public class AstVarSubscript extends AstVar {
 
         }
         TypeArray convertedRet = (TypeArray) ret;
+        this.var = variable.var;
         return convertedRet.baseType;
     }
 
@@ -112,7 +113,7 @@ public class AstVarSubscript extends AstVar {
 		/******************************/
         /* [1] Evaluate array variable */
 		/******************************/
-        Temp arr = var.irMe();
+        Temp arr = variable.irMe();
 
 		/******************************/
         /* [2] Evaluate index          */
@@ -121,7 +122,7 @@ public class AstVarSubscript extends AstVar {
         /******************************/
         /* [3] Null check             */
         /******************************/
-        String null_check = IrCommand.getFreshLabel("null_"+var.var.name+"_check");
+        String null_check = IrCommand.getFreshLabel("null_"+variable.var.name+"_check");
 
         Ir.getInstance().AddIrCommand(
                 new IrCommandJumpIfEqToZero(arr, null_check)
