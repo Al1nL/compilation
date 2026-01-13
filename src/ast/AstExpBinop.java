@@ -11,6 +11,7 @@ public class AstExpBinop extends AstExp {
     int op;
     public AstExp left;
     public AstExp right;
+    public boolean isInteger = false;
 
     /* CONSTRUCTOR(S) */
     public AstExpBinop(AstExp left, AstExp right, int op) {
@@ -104,6 +105,7 @@ public class AstExpBinop extends AstExp {
         }
         if (op == 0) {
             if (t1.isSameType(TypeInt.getInstance()) && t2.isSameType(TypeInt.getInstance())) {
+                isInteger =  true;
                 return TypeInt.getInstance();
             }
             if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
@@ -155,10 +157,16 @@ public class AstExpBinop extends AstExp {
 
         if (op == 0)
         {
-            Ir.
+            if(isInteger) {
+                Ir.
                     getInstance().
-                    AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));  
-        
+                    AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2)); 
+            }else {
+                
+                Ir.
+                    getInstance().
+                    AddIrCommand(new IrCommandBinopAddStrings(dst,t1,t2)); 
+            }
         }
         if (op == 2)
         {

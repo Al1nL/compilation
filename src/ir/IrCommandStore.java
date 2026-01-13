@@ -22,10 +22,15 @@ public class IrCommandStore extends IrCommand {
     public Map<Variable, Boolean> computeOutSet(
             Set<Variable> usedAndUninited,
             Map<Variable, Boolean> in) {
+        
+        Map<Variable, Boolean> out = new HashMap<>(in);
+        if(src == null){
+
+            return out;
+        }
+
         Dbg.p("STORE " + var.name + "  deps=" + src.dependencySet);
         Dbg.p("  IN=" + in);
-        Map<Variable, Boolean> out = new HashMap<>(in);
-
         boolean rhsInitialized = true;
 
         // Check RHS usage
