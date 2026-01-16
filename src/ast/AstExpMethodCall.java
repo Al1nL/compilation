@@ -88,7 +88,7 @@ public class AstExpMethodCall extends AstExp {
         /*****************************************/
         /* [2] Runtime check: object != nil      */
         /*****************************************/
-                String null_check = IrCommand.getFreshLabel("null_"+object.var.name+"_check");
+        String null_check = IrCommand.getFreshLabel("null_"+object.var.name+"_check");
 
         Ir.
             getInstance().

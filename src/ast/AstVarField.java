@@ -75,13 +75,15 @@ public class AstVarField extends AstVar {
 
     public Temp irMe()
     {
+        
         Temp base = variable.irMe();  // object address
         Temp t = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(
             new IrCommandLoadField(t, base, this.fieldName)
         );
-        
+
         t.dependencySet.addAll(base.dependencySet);
+        analysis.Dbg.p("AstVarField.irMe name=" + var.name + " dependencies=" + t.dependencySet);
         return t;
     }
 }

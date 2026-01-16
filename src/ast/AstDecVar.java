@@ -89,7 +89,7 @@ public class AstDecVar extends AstDec {
     }
 
     public Temp irMe() {
-
+        analysis.Dbg.p("AstDecVar.irMe name=" + var.name);
         Ir.getInstance().AddIrCommand(new IrCommandAllocate(var));
 
         if (exp != null) {

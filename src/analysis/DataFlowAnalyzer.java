@@ -1,6 +1,8 @@
 package analysis;
 
 import java.util.*;
+
+import ir.IrCommandLabel;
 import variable.Variable;
 
 public class DataFlowAnalyzer {
@@ -35,6 +37,10 @@ public class DataFlowAnalyzer {
 
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
                     Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
+                    if(node.cmd instanceof IrCommandLabel){
+                        IrCommandLabel lbl = (IrCommandLabel) node.cmd;
+                        Dbg.p("name# " + lbl.getLabelName());
+                    }
                     Dbg.p("  IN : " + mapToStr(newIn));
                     Dbg.p("  OUT: " + mapToStr(newOut));
                     changed = true;

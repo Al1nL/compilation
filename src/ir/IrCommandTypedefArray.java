@@ -14,9 +14,9 @@ import temp.*;
 
 public class IrCommandTypedefArray extends IrCommand {
 
-    private final String type;
-    private final String name;
-    private final Temp temp;
+    public final String type;
+    public final String name;
+    public final Temp temp;
 
     public IrCommandTypedefArray(String type, String name, Temp temp) {
         this.type = type;

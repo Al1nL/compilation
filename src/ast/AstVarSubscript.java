@@ -131,9 +131,24 @@ public class AstVarSubscript extends AstVar {
 		/******************************/
         /* [4] Compute element address */
 		/******************************/
+
+        Temp scaled_idx = TempFactory.getInstance().getFreshTemp();
+        Temp elem_size = TempFactory.getInstance().getFreshTemp();
+        
+        // Load element size constant (usually 4 or 8 bytes depending on your system)
+        Ir.getInstance().AddIrCommand(
+            new IRcommandConstInt(elem_size, 4) // Assuming 4 bytes per array element
+        );
+        
+        // Multiply index by element size
+        Ir.getInstance().AddIrCommand(
+            new IrCommandBinopMulIntegers(scaled_idx, idx, elem_size)
+        );
+        
+        // Calculate actual address: array_base + (index * element_size)
         Temp addr = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(
-                new IrCommandAdd(addr, arr, idx)
+            new IrCommandBinopAddIntegers(addr, arr, scaled_idx)
         );
 
 		/******************************/
@@ -141,12 +156,17 @@ public class AstVarSubscript extends AstVar {
 		/******************************/
         Temp dst = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(
-                new IrCommandAdd(dst, addr, null)
+                new IrCommandLoadMemory(dst, addr, variable.var)
         );
         
-        dst.dependencySet = new HashSet<>();
-        dst.dependencySet.addAll(arr.dependencySet);
-        dst.dependencySet.addAll(idx.dependencySet);
+        
+        if(arr.dependencySet != null){
+            dst.dependencySet.addAll(arr.dependencySet);   
+        }
+        if(dst.dependencySet != null){
+            dst.dependencySet.addAll(idx.dependencySet);
+        }
+        
 
 
         /*****************************************/
@@ -158,7 +178,7 @@ public class AstVarSubscript extends AstVar {
         /*****************************************************/
         /* [7] Return value            */
         /*****************************************************/
-
+        analysis.Dbg.p("AstVarSubscript.irMe name=" + variable.var.name + " dependencies=" + dst.dependencySet);
         return dst;
     }
 }

@@ -52,7 +52,7 @@ public class AstExpCall extends AstExp {
     public Temp irMe()
     {
         Temp t = null;
-
+        
         if(args != null){
             for (AstExp e : args) {
                 t = e.irMe();
@@ -63,9 +63,9 @@ public class AstExpCall extends AstExp {
             Ir.getInstance().AddIrCommand(new IrCommandPrintString(t));
         }else if(name.equals("PrintInt")){
             Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+        }else{
+            
         }
-        
-
-        return null;
+        return t;
     }
 }

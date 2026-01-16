@@ -26,6 +26,9 @@ public class IrCommandBinopEqIntegers extends IrCommand
 
 	@Override
     public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
+		if(dst== null){
+			return  new HashMap<>(prevOutSet);
+		}
 		return this.generalComputeOutSet(usedAndUninited,prevOutSet,dst);
 	}
 

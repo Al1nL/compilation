@@ -44,12 +44,12 @@ public class Main {
                 /**********************/
                 /* [8] IR the AST ... */
                 /**********************/
-                
+                System.out.println("finished semantics, moving to ir");
                 ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
                 //fileWriter.print("OK");
-                System.out.println("finished semantics, moving to ir");
+                
 
 
 

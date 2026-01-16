@@ -52,8 +52,9 @@ public class AstVarSimple extends AstVar
     	System.out.format(">> ERROR [%d] Variable %s used but not declared!\n", lineNumber + 1, name);
         report();
 	}
-	Type t = SymbolTable.getInstance().find(this.name);
+	Type t = e.type;
 	this.var = Variable.get(name, e.scopeLevel); 
+	System.out.println("varname: " + name + " "+ lineNumber);
     return t;	
 	}
 
