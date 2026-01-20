@@ -71,5 +71,11 @@ import java.util.List;
                 head.semantMe();
             }
             return null;
-        }  
-        } 
+        }
+        public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		    if (head != null) {
+                curIdx = head.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            }
+            return curIdx;
+	    } 
+    } 

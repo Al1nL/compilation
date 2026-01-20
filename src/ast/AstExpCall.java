@@ -63,4 +63,13 @@ public class AstExpCall extends AstExp {
 
         return null;
     }
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        if(args != null){
+            for (AstExp e : args) {
+                curIdx = e.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            }
+        }
+        return curIdx;
+		
+	}
 }

@@ -138,4 +138,20 @@ public class AstDecFunc extends AstDec {
 
         return null;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		int bodyIdx=0;
+        int paramIdx=-1;
+        offsets = new HashMap<Variable, Integer>();
+        if (curClass != null) {
+            paramIdx--; 
+        }
+        if (params != null) {
+            params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        if (body != null) {
+            body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return 0;
+	}
 }

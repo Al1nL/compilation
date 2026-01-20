@@ -50,4 +50,10 @@ public class AstStmtDecVar extends AstStmt
 		return semantMe();
 	}
 	public Temp irMe() { return var.irMe(); }
+
+	public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        
+        return var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+		
+	}
 }

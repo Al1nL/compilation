@@ -98,5 +98,12 @@ public class AstExpNew extends AstExp {
         /*******************/
         return dst;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        if (sizeExp  != null){
+            curIdx = sizeExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return curIdx;
+	}
     
 }

@@ -166,5 +166,28 @@ public class AstDecClass extends AstDec {
 
         return null;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		curClass = name;
+        Map<String, Integer> newFields;
+        Map<String, Integer> newMethods;
+        if(parentName!=null){
+            newFields = new HashMap<String, Integer>(classFieldOffsets.get(parentName));
+            newMethods = new HashMap<String, Integer>(classMethodOffsets.get(parentName));
+        }
+        else{
+            newFields = new HashMap<String, Integer>();
+            newMethods = new HashMap<String, Integer>();
+        }
+        classFieldOffsets.put(curClass, newFields);
+        classMethodOffsets.put(curClass, newMethods);
+               
+        if(fields!=null){
+            fields.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+
+        }
+        return 0;
+        
+	}
     
 }

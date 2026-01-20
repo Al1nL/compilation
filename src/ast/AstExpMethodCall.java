@@ -9,6 +9,8 @@ public class AstExpMethodCall extends AstExp {
     public final AstVar object;
     public final String method;
     public final ArrayList<AstExp> args;
+    public String className;
+    public int offset;
 
     public AstExpMethodCall(AstVar object, String method, ArrayList<AstExp> args) {
         serialNumber = AstNodeSerialNumber.getFresh();
@@ -75,6 +77,7 @@ public class AstExpMethodCall extends AstExp {
         else if(!(methodType instanceof TypeFunction) && !classType.isinitilized){
             return expectedReturnType;
         }
+        className = classType.name;
         return validateCall(method, (TypeFunction) methodType, args, true);
     }
 
@@ -135,5 +138,17 @@ public class AstExpMethodCall extends AstExp {
         /*******************/
         return dst;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        offset = classMethodOffsets.get(className).get(method);
+        curIdx = object.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        if(args != null){
+            for (AstExp e : args) {
+                curIdx = e.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            }
+        }
+        return curIdx;
+		
+	}
 
 }

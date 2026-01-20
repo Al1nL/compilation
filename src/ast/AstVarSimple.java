@@ -12,6 +12,7 @@ public class AstVarSimple extends AstVar
 	/* simple variable name */
 	/************************/
 	public String name;
+	public Integer offset;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -69,5 +70,13 @@ public class AstVarSimple extends AstVar
 		analysis.Dbg.p("AstVarSimple.irMe name=" + name + " dependencies=" + t.dependencySet);
 
 		return t;
+	}
+
+	public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        
+        offset = offsets.get(var);
+		var.offset = offset;
+		return curIdx;
+		
 	}
 }
