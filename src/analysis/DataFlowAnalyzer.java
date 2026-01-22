@@ -1,86 +1,81 @@
 package analysis;
 
 import java.util.*;
+import temp.Temp;
 import variable.Variable;
 
 public class DataFlowAnalyzer {
 
-    public static Set<Variable> analyze(List<CFGNode> cfg, List<Variable> allVars) {
+    public static Map<CFGNode, Set<Temp>> analyze(List<CFGNode> cfg, List<Variable> allVars) {
         if (cfg.isEmpty()) {
-            return Collections.emptySet();
+            return Collections.emptyMap();
         }
-
-        CFGNode entry = cfg.get(0);
-
-        /* Entry IN = all vars not initiated yet */
-        Map<Variable, Boolean> entryIn = new HashMap<>();
-        for (Variable v : allVars) {
-            entryIn.put(v, false);
-        }
-        entry.in = entryIn;
-
+        
         boolean changed = true;
         int iter = 0;
         while (changed) {
             changed = false;
             Dbg.p("\n===== ITER " + iter + " =====");
 
-            for (int idx = 0; idx < cfg.size(); idx++) {
+            // Iterate backwards through CFG
+            for (int idx = cfg.size() - 1; idx >= 0; idx--) {
                 CFGNode node = cfg.get(idx);
-                // Compute IN as meet over predecessors
-                Map<Variable, Boolean> newIn = node == entry ? entry.in : meet(node.preds, allVars);
+                
+                Set<Temp> newOut = meet(node.succs);
 
-                // Compute OUT using node command
-                Map<Variable, Boolean> newOut = node.cmd.computeOutSet(new HashSet<>(), newIn);
+                // IN[n] = USE[n] ∪ (OUT[n] - DEF[n])
+                Set<Temp> newIn = node.cmd.computeInSet(newOut);
 
+        
+                // Check if changed
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
                     Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
-                    Dbg.p("  IN : " + mapToStr(newIn));
-                    Dbg.p("  OUT: " + mapToStr(newOut));
+                    Dbg.p("  OUT: " + tempSetToStr(newOut));
+                    Dbg.p("Def: " + tempSetToStr(node.cmd.getDefTemps()));
+                    Dbg.p("Use: " + tempSetToStr(node.cmd.getUseTemps()));
+                    Dbg.p("  IN : " + tempSetToStr(newIn));
                     changed = true;
                     node.in = newIn;
                     node.out = newOut;
                 }
             }
-
             iter++;
         }
 
-        // Collect used-before-initialization variables
-        Set<Variable> usedBeforeSet = new HashSet<>();
+        // Return mapping from nodes to their live-in sets
+        Map<CFGNode, Set<Temp>> result = new HashMap<>();
         for (CFGNode node : cfg) {
-            node.cmd.computeOutSet(usedBeforeSet, node.in);
+            result.put(node, node.in);
         }
-
-        return usedBeforeSet;
+        return result;
     }
-
-    private static Map<Variable, Boolean> meet(Set<CFGNode> preds, List<Variable> universe) {
-        Map<Variable, Boolean> result = new HashMap<>();
-        for (Variable v : universe) {
-            boolean val = true;
-            for (CFGNode p : preds) {
-                // If predecessor's OUT is null, treat as "unknown / ignore"
-                if (p.out != null && !p.out.isEmpty()) {
-                    val &= p.out.getOrDefault(v, false);
-                }
-                // else ignore this predecessor (back edge not computed yet)
+    
+    /**
+     * OUT[n] = ∪ IN[s] for all successors s of n
+     */
+    private static Set<Temp> meet(Set<CFGNode> succs) {
+        Set<Temp> result = new HashSet<>();
+        for (CFGNode succ : succs) {
+            if (succ.in != null) {
+                result.addAll(succ.in);
             }
-            result.put(v, val);
         }
         return result;
     }
 
-    private static String mapToStr(Map<Variable, Boolean> m) {
+    private static String tempSetToStr(Set<Temp> temps) {
+        if (temps.isEmpty()) {
+            return "{}";
+        }
+
         StringBuilder sb = new StringBuilder("{");
         boolean first = true;
-        for (var e : m.entrySet()) {
+        for (Temp t : temps) {
             if (!first) {
                 sb.append(", ");
             }
             first = false;
-            Variable v = e.getKey();
-            sb.append(v.name).append("@").append(v.scope).append("=").append(e.getValue());
+            sb.append("t").append(t.getSerialNumber());
         }
         sb.append("}");
         return sb.toString();
