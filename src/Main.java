@@ -7,6 +7,7 @@ import analysis.*;
 import java.util.*;
 import variable.Variable;
 import java.util.stream.Collectors;
+import temp.Temp;
 
 public class Main {
 
@@ -63,21 +64,7 @@ public class Main {
             /* ---------------------------------
              * Run data-flow analysis
              * --------------------------------- */
-            Set<Variable> errors = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
-
-            /* ---------------------------------
-             * Print required output
-             * --------------------------------- */
-            if (errors.isEmpty()) {
-                fileWriter.print("!OK");
-            } else {
-                String output = errors.stream()
-                      .map(v -> v.name)
-                      .distinct()
-                      .sorted()
-                      .collect(Collectors.joining(System.lineSeparator()));
-                    fileWriter.write(output);
-            }
+             Map<CFGNode, Set<Temp>> tempsGroups = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
             System.out.println("finished ir");
 
             } catch (Error le) {
@@ -86,7 +73,7 @@ public class Main {
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                //e.printStackTrace(fileWriter);
+                e.printStackTrace(fileWriter);
             }
             fileWriter.close();
         } catch (Exception e) {
