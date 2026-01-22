@@ -12,7 +12,6 @@ package ir;
  */
 import java.util.*;
 import temp.*;
-import variable.Variable;
 
 public class IrCommandReturn extends IrCommand {
 
@@ -23,10 +22,21 @@ public class IrCommandReturn extends IrCommand {
     }
 
     @Override
-    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet) {
-        if (t != null) {
-            return checkTempRead(usedAndUninited, prevOutSet, t);
-        }
-        return checkTempRead(usedAndUninited, prevOutSet, t);
+    public Set<Temp> getUseTemps() {
+        Set<Temp> use = new HashSet<>();
+        if (t != null) use.add(t); // value being returned
+        return use;
+    }
+    
+    // Return doesn't define temps
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

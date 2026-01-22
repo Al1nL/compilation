@@ -4,14 +4,7 @@
 package ir;
 
 import ast.*;
-
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+import java.util.Set;
 import temp.*;
 
 public class IrCommandDeclareClass extends IrCommand
@@ -29,4 +22,16 @@ public class IrCommandDeclareClass extends IrCommand
         this.parentName = parentName;
         this.fields     = fields;
     }
+    // Class declaration doesn't use or define temps
+    
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

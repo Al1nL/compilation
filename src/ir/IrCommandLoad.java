@@ -10,10 +10,10 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import temp.*;
-import variable.Variable;
 import java.util.*;
 import mips.MipsGenerator;
+import temp.*;
+import variable.Variable;
 
 public class IrCommandLoad extends IrCommand
 {
@@ -25,22 +25,17 @@ public class IrCommandLoad extends IrCommand
 		this.dst = dst;
 		this.var = var;
 	}
+	// Load reads from a variable (not a temp), so no temps are used
+	@Override
+	public Set<Temp> getDefTemps() {
+		Set<Temp> def = new HashSet<>();
+		if (dst != null) def.add(dst);
+		return def;
+	}
 
 	@Override
-    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
-    	
-		Map<Variable, Boolean> outSet = new HashMap<>(prevOutSet);
-
-		if (this.var != null) {
-			boolean isInitialized = prevOutSet.getOrDefault(this.var, false);
-			if (!isInitialized) {
-				usedAndUninited.add(this.var);
-			}
-		}
-
-		
-
-		return outSet;
+	public Set<Temp> computeInSet(Set<Temp> out) {
+		return generalComputeInSet(out);
 	}
 
 	/***************/
@@ -48,6 +43,6 @@ public class IrCommandLoad extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().load(dst, varName);
+		MipsGenerator.getInstance().load(dst, var.name);
 	}
 }

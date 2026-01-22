@@ -14,38 +14,28 @@ import java.util.HashSet;
 import java.util.Set;
 import temp.*;
 
-public class IrCommandBinopAddStrings extends IrCommand
+public class IrCommandConstString extends IrCommand
 {
-	public Temp t1;
-	public Temp t2;
-	public Temp dst;
+	Temp t;
+	String value;
 	
-	public IrCommandBinopAddStrings(Temp dst, Temp t1, Temp t2)
+	public IrCommandConstString(Temp t, String value)
 	{
-		this.dst = dst;
-		this.t1 = t1;
-		this.t2 = t2;
-	}
-
-	@Override
-	public Set<Temp> getUseTemps() {
-		Set<Temp> use = new HashSet<>();
-		if (t1 != null) use.add(t1);
-		if (t2 != null) use.add(t2);
-		return use;
+		this.t = t;
+		this.value = value;
 	}
 
 	@Override
 	public Set<Temp> getDefTemps() {
 		Set<Temp> def = new HashSet<>();
-		if (dst != null) def.add(dst);
+		if (t != null) def.add(t);
 		return def;
 	}
 
 	@Override
 	public Set<Temp> computeInSet(Set<Temp> out) {
 		return generalComputeInSet(out);
-	}	
+	}
 
     @Override
     public void mipsMe() {

@@ -11,8 +11,8 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 
-import variable.Variable;
 import mips.MipsGenerator;
+import variable.Variable;
 
 public class IrCommandAllocate extends IrCommand
 {
@@ -28,6 +28,6 @@ public class IrCommandAllocate extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().allocate(varName);
+		MipsGenerator.getInstance().allocate(var.name);
 	}	
 }
