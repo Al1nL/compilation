@@ -35,14 +35,10 @@ public class IrCommandReturn extends IrCommand {
         return generalComputeInSet(out);
     }
 
-    @Override
-    public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     /***************/
 	/* MIPS me !!! */
 	/***************/
+    @Override
 	public void mipsMe()
 	{
 		

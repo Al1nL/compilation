@@ -11,7 +11,7 @@ public abstract class IrCommand {
         return String.format("Label_%d_%s", labelCounter++, msg);
     }
 
-        /**
+    /**
      * Liveness analysis transfer function.
      * Default behavior: IN = OUT (no uses or defs).
      */
