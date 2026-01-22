@@ -66,7 +66,7 @@ public class Main {
              * --------------------------------- */
              Map<CFGNode, Set<Temp>> tempsGroups = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
             System.out.println("finished ir");
-
+            fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
             } catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
