@@ -7,7 +7,7 @@ import types.*;
 
 public class AstVarField extends AstVar {
 
-    public AstVar var;
+    public AstVar variable;
     public String fieldName;
 
     /* CONSTRUCTOR(S) */
@@ -15,7 +15,7 @@ public class AstVarField extends AstVar {
         /* SET A UNIQUE SERIAL NUMBER */
         serialNumber = AstNodeSerialNumber.getFresh();
 
-        this.var = var;
+        this.variable = var;
         this.fieldName = fieldName;
     }
 
@@ -25,8 +25,8 @@ public class AstVarField extends AstVar {
         System.out.print("AST NODE FIELD VAR\n");
 
         /* RECURSIVELY PRINT VAR, then FIELD NAME ... */
-        if (var != null) {
-            var.printMe();
+        if (variable != null) {
+            variable.printMe();
         }
         System.out.format("FIELD NAME( %s )\n", this.fieldName);
 
@@ -36,8 +36,8 @@ public class AstVarField extends AstVar {
                 String.format("FIELD\nVAR\n...->%s", this.fieldName));
 
         /* PRINT Edges to AST GRAPHVIZ DOT file */
-        if (var != null) {
-            AstGraphviz.getInstance().logEdge(serialNumber, var.serialNumber);
+        if (variable != null) {
+            AstGraphviz.getInstance().logEdge(serialNumber, variable.serialNumber);
         }
     }
 
@@ -46,8 +46,9 @@ public class AstVarField extends AstVar {
         TypeClass tc = null;
 
         /* Recursively semant var */
-        if (var != null) {
-            t = var.semantMe();
+        if (variable != null) {
+            t = variable.semantMe();
+            this.var = variable.var;
         }
 
         /* Make sure type is a class */
@@ -74,12 +75,12 @@ public class AstVarField extends AstVar {
 
     public Temp irMe()
     {
-        Temp base = var.irMe();  // object address
+        Temp base = variable.irMe();  // object address
         Temp t = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(
             new IrCommandLoadField(t, base, this.fieldName)
         );
-        t.dependencySet = new HashSet<>();
+        
         t.dependencySet.addAll(base.dependencySet);
         return t;
     }

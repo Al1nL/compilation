@@ -43,8 +43,12 @@ public class IrCommandAdd extends IrCommand {
         return generalComputeInSet(out);
     }
 
+    /***************/
+	/* MIPS me !!! */
+	/***************/
     @Override
-    public void mipsMe() {
-        return;
-    }
+	public void mipsMe()
+	{
+		
+	}
 }

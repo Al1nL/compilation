@@ -48,6 +48,5 @@ public class IrCommandAllocateArray extends IrCommand
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

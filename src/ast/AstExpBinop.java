@@ -11,6 +11,7 @@ public class AstExpBinop extends AstExp {
     int op;
     public AstExp left;
     public AstExp right;
+    public boolean isInteger = false;
 
     /* CONSTRUCTOR(S) */
     public AstExpBinop(AstExp left, AstExp right, int op) {
@@ -104,6 +105,7 @@ public class AstExpBinop extends AstExp {
         }
         if (op == 0) {
             if (t1.isSameType(TypeInt.getInstance()) && t2.isSameType(TypeInt.getInstance())) {
+                isInteger =  true;
                 return TypeInt.getInstance();
             }
             if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
@@ -157,7 +159,7 @@ public class AstExpBinop extends AstExp {
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));  
     }
-    if (op == 1)  // MINUS (ADD THIS!)
+    if (op == 1)  // MINUS
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopSubIntegers(dst,t1,t2));
     }
@@ -165,7 +167,7 @@ public class AstExpBinop extends AstExp {
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopMulIntegers(dst,t1,t2));
     }
-    if (op == 3)  // DIVIDE (FIX THIS!)
+    if (op == 3)  // DIVIDE
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopDivIntegers(dst,t1,t2));
     }
@@ -173,11 +175,11 @@ public class AstExpBinop extends AstExp {
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst,t1,t2));
     }
-    if (op == 5)  // GT (ADD THIS!)
+    if (op == 5)  // GT
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopGtIntegers(dst,t1,t2));
     }
-    if (op == 6)  // EQ (ADD THIS!)
+    if (op == 6)  // EQ
     {
         Ir.getInstance().AddIrCommand(new IrCommandBinopEqIntegers(dst,t1,t2));
     }

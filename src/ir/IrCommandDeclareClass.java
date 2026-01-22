@@ -31,7 +31,6 @@ public class IrCommandDeclareClass extends IrCommand
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

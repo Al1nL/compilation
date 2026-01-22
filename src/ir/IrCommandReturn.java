@@ -39,4 +39,12 @@ public class IrCommandReturn extends IrCommand {
     public void mipsMe() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /***************/
+	/* MIPS me !!! */
+	/***************/
+	public void mipsMe()
+	{
+		
+	}
 }

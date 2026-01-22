@@ -42,6 +42,5 @@ public class IrCommandTypedefArray extends IrCommand {
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
