@@ -6,13 +6,14 @@ import variable.Variable;
 
 public class DataFlowAnalyzer {
 
-    public static Map<CFGNode, Set<Temp>> analyze(List<CFGNode> cfg, List<Variable> allVars) {
+    public static List<CFGNode> analyze(List<CFGNode> cfg, List<Variable> allVars) {
         if (cfg.isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         
         boolean changed = true;
         int iter = 0;
+        Dbg.p("\n===== Starting analysis =====");
         while (changed) {
             changed = false;
             Dbg.p("\n===== ITER " + iter + " =====");
@@ -30,10 +31,10 @@ public class DataFlowAnalyzer {
                 // Check if changed
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
                     Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
-                    Dbg.p("  OUT: " + tempSetToStr(newOut));
-                    Dbg.p("Def: " + tempSetToStr(node.cmd.getDefTemps()));
-                    Dbg.p("Use: " + tempSetToStr(node.cmd.getUseTemps()));
-                    Dbg.p("  IN : " + tempSetToStr(newIn));
+                    Dbg.p(" OUT: " + tempSetToStr(newOut));
+                    Dbg.p(" Def: " + tempSetToStr(node.cmd.getDefTemps()));
+                    Dbg.p(" Use: " + tempSetToStr(node.cmd.getUseTemps()));
+                    Dbg.p(" IN : " + tempSetToStr(newIn));
                     changed = true;
                     node.in = newIn;
                     node.out = newOut;
@@ -41,13 +42,10 @@ public class DataFlowAnalyzer {
             }
             iter++;
         }
+            Dbg.p("\n===== Finished analysis =====");
 
-        // Return mapping from nodes to their live-in sets
-        Map<CFGNode, Set<Temp>> result = new HashMap<>();
-        for (CFGNode node : cfg) {
-            result.put(node, node.in);
-        }
-        return result;
+        // Return the annotated CFG
+        return cfg;
     }
     
     /**
