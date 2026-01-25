@@ -148,10 +148,10 @@ public class AstExpBinop extends AstExp {
             t2 = right.irMe();
         }
 
-        if (t1.dependencySet != null) {
+        if (t1 != null && t1.dependencySet != null) {
             dst.dependencySet.addAll(t1.dependencySet);
         }
-        if (t2.dependencySet != null) {
+        if (t2 != null && t2.dependencySet != null) {
             dst.dependencySet.addAll(t2.dependencySet);
         }
 
