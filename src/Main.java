@@ -5,9 +5,7 @@ import ast.*;
 import ir.*;
 import analysis.*;
 import java.util.*;
-import variable.Variable;
-import java.util.stream.Collectors;
-import temp.Temp;
+import regalloc.*;
 
 public class Main {
 
@@ -60,12 +58,21 @@ public class Main {
             CFGBuilder builder = new CFGBuilder();
             List<IrCommand> ir = Ir.getInstance().getCommands();
             List<CFGNode> cfg = builder.build(ir);
+            System.out.println("finished ir");
 
             /* ---------------------------------
              * Run data-flow analysis
              * --------------------------------- */
-             Map<CFGNode, Set<Temp>> tempsGroups = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
-            System.out.println("finished ir");
+             List<CFGNode> annotatedCfg = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
+            System.out.println("finished data flow analysis");
+           
+            /* ---------------------------------
+             * Build Interference Graph 
+            * --------------------------------- */
+            InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
+            Dbg.p(ig.toString()); // print the graph for debugging
+            System.out.println("finished building interference graph");
+
             fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
             } catch (Error le) {
                 // lexical error
