@@ -86,7 +86,8 @@ public class CFGBuilder {
                 addEdge(curr, nodes.get(i + 1));
             }
         }
-
+        /* Debug print CFG */
+        Dbg.p("\n===== CFG =====\n");
         for (int i = 0; i < nodes.size(); i++) {
             CFGNode n = nodes.get(i);
             Dbg.p("CFG node #" + i + " cmd=" + n.cmd.getClass().getSimpleName());

@@ -66,7 +66,6 @@ public class AstVarSimple extends AstVar
 		Temp t = TempFactory.getInstance().getFreshTemp();
 		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,var));
     	t.dependencySet.add(var);
-		analysis.Dbg.p("AstVarSimple.irMe name=" + name + " dependencies=" + t.dependencySet);
 
 		return t;
 	}
