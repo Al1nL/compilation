@@ -1,6 +1,8 @@
 package ast;
+import java.util.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstParamList extends AstNode {
 
@@ -61,5 +63,14 @@ public class AstParamList extends AstNode {
             curIdx = tail.offsetMe(offsets, curIdx-1, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
+	}
+
+    public void debugOffset(){
+		if (head != null) {
+            head.debugOffset();
+        }
+        if (tail != null) {
+            tail.debugOffset();
+        }
 	}
 }

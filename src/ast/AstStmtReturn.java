@@ -1,9 +1,11 @@
 package ast;
 
+import java.util.*;
 import temp.*;
 import ir.*;
 import returncounter.ReturnCounter;
 import types.*;
+import variable.*;
 
 public class AstStmtReturn extends AstStmt {
 
@@ -76,6 +78,13 @@ public class AstStmtReturn extends AstStmt {
             curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
+
+	}
+
+    public void debugOffset(){
+		if (exp != null) {
+            exp.debugOffset();
+        }
 
 	}
     

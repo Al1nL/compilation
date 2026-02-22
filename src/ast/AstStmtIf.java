@@ -1,9 +1,11 @@
 package ast;
 
+import java.util.*;
 import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstStmtIf extends AstStmt {
 
@@ -148,5 +150,17 @@ public class AstStmtIf extends AstStmt {
         }
         return curIdx;
 		
+	}
+
+    public void debugOffset(){
+		if (cond != null) {
+            cond.debugOffset();
+        }
+        if (body != null) {
+            body.debugOffset();
+        }
+        if(else_body != null) {
+            else_body.debugOffset();
+        }
 	}
 }

@@ -1,8 +1,10 @@
 package ast;
 
+import java.util.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstStmtList extends AstNode {
 
@@ -93,5 +95,14 @@ public class AstStmtList extends AstNode {
             curIdx = tail.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
+	}
+
+    public void debugOffset(){
+		if (head != null) {
+            head.debugOffset();
+        }
+        if (tail != null) {
+            tail.debugOffset();
+        }
 	}
 }

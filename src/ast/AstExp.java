@@ -1,9 +1,10 @@
 package ast;
 
-import java.util.ArrayList;
+import java.util.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public abstract class AstExp extends AstStmt {
 
@@ -85,4 +86,8 @@ public abstract class AstExp extends AstStmt {
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
 		return curIdx;
 	}
+    public void debugOffset(){
+		
+	}
+    
 }

@@ -1,8 +1,10 @@
 package ast;
 
+import java.util.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstStmtDecVar extends AstStmt
 {
@@ -55,5 +57,9 @@ public class AstStmtDecVar extends AstStmt
         
         return var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
 		
+	}
+
+	public void debugOffset(){
+		var.debugOffset();
 	}
 }

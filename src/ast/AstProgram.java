@@ -1,10 +1,11 @@
         package ast;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
         import temp.*;
         import types.*;
         import ir.*;
+        import variable.*;
+        
 
         public class AstProgram extends AstNode {
 
@@ -77,5 +78,11 @@ import java.util.List;
                 curIdx = head.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
             }
             return curIdx;
-	    } 
+	    }
+        public void debugOffset(){
+            if (head != null) {
+                head.debugOffset();
+            }
+            
+        }
     } 

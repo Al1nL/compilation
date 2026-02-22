@@ -66,5 +66,7 @@ public abstract class IrCommand {
     /***************/
 	/* MIPS me !!! */
 	/***************/
-	public abstract void mipsMe();
+	public void mipsMe(){
+        
+    };
 }

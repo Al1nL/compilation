@@ -1,7 +1,10 @@
 package ast;
+import java.util.*;
 import temp.*;
 import ir.*;
 import types.*;
+import variable.*;
+
 
 public class AstExpVar extends AstExp {
 
@@ -59,6 +62,10 @@ public class AstExpVar extends AstExp {
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         return var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
 		
+	}
+
+    public void debugOffset(){
+		var.debugOffset();
 	}
     
 }

@@ -1,10 +1,11 @@
 package ast;
 
-import java.util.ArrayList;
+import java.util.*;
 import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstExpCall extends AstExp {
 
@@ -71,5 +72,13 @@ public class AstExpCall extends AstExp {
         }
         return curIdx;
 		
+	}
+
+    public void debugOffset(){
+		if(args != null){
+            for (AstExp e : args) {
+                e.debugOffset();
+            }
+        }
 	}
 }

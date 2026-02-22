@@ -1,8 +1,10 @@
 package ast;
 
+import java.util.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstStmtCall extends AstStmt {
 
@@ -50,5 +52,11 @@ public class AstStmtCall extends AstStmt {
             curIdx = callExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
+	}
+
+    public void debugOffset(){
+		if (callExp != null) {
+            callExp.debugOffset();
+        }
 	}
 }

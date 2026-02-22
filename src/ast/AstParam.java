@@ -1,8 +1,10 @@
 package ast;
+import java.util.*;
 import temp.*;
 import ir.*;
 import symboltable.*;
 import types.*;
+import variable.*;
 
 public class AstParam extends AstNode {
 
@@ -82,5 +84,12 @@ public class AstParam extends AstNode {
         }
         return curIdx;
         
+	}
+
+    public void debugOffset(){
+        if(offset!=null){
+            System.out.println(var.name + "#" + var.scope + " - " + offset + ":");
+        }
+		
 	}
 }

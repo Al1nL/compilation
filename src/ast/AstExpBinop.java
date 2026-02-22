@@ -1,10 +1,11 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
+import java.util.*;
 import temp.*;
 import types.*;
 import symboltable.*;
+import variable.*;
 
 public class AstExpBinop extends AstExp {
 
@@ -190,4 +191,13 @@ public class AstExpBinop extends AstExp {
         return curIdx;
 
     }
+
+    public void debugOffset(){
+		if (left != null) {
+            left.debugOffset();
+        }
+        if (right != null) {
+            right.debugOffset();
+        }
+	}
 }

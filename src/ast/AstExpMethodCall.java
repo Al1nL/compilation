@@ -1,8 +1,9 @@
 package ast;
 import ir.*;
-import java.util.ArrayList;
+import java.util.*;
 import temp.*;
 import types.*;
+import variable.*;
 
 public class AstExpMethodCall extends AstExp {
 
@@ -10,7 +11,7 @@ public class AstExpMethodCall extends AstExp {
     public final String method;
     public final ArrayList<AstExp> args;
     public String className;
-    public int offset;
+    public Integer offset;
 
     public AstExpMethodCall(AstVar object, String method, ArrayList<AstExp> args) {
         serialNumber = AstNodeSerialNumber.getFresh();
@@ -149,6 +150,19 @@ public class AstExpMethodCall extends AstExp {
         }
         return curIdx;
 		
+	}
+
+    public void debugOffset(){
+		object.debugOffset();
+        if(offset!=null){
+           System.out.println(method + "#" + className + " - " + offset + ":"); 
+        }
+        
+        if(args != null){
+            for (AstExp e : args) {
+                e.debugOffset();
+            }
+        }
 	}
 
 }

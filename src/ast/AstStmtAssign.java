@@ -1,8 +1,10 @@
 package ast;
 
+import java.util.*;
 import ir.*;
 import temp.*;
 import types.*;
+import variable.*;
 
 public class AstStmtAssign extends AstStmt {
 
@@ -83,5 +85,14 @@ public class AstStmtAssign extends AstStmt {
             curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
+	}
+
+    public void debugOffset(){
+		if (var != null) {
+            var.debugOffset();
+        }
+        if (exp != null) {
+            exp.debugOffset();
+        }
 	}
 }

@@ -5,6 +5,7 @@ import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstDecClass extends AstDec {
 
@@ -183,11 +184,16 @@ public class AstDecClass extends AstDec {
         classMethodOffsets.put(curClass, newMethods);
                
         if(fields!=null){
-            fields.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+            fields.offsetMe(offsets, classFieldOffsets.get(curClass).size(), curClass, classFieldOffsets, classMethodOffsets);
 
         }
+        
         return 0;
         
+        
+	}
+    public void debugOffset(){
+		fields.debugOffset();
 	}
     
 }

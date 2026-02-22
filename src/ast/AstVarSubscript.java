@@ -1,14 +1,16 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
+import java.util.*;
 import temp.*;
 import types.*;
+import variable.*;
 
 public class AstVarSubscript extends AstVar {
 
     public AstVar var;
     public AstExp subscript;
+    public Integer offset;
 
     /**
      * ***************
@@ -163,8 +165,17 @@ public class AstVarSubscript extends AstVar {
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         
         curIdx = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        if (var.var!=null){
+           offset =  var.var.offset;
+        }
         return subscript.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
 
+		
+	}
+
+    public void debugOffset(){
+		var.debugOffset();
+        subscript.debugOffset();
 		
 	}
 }

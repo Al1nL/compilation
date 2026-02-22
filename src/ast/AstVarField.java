@@ -1,9 +1,10 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
+import java.util.*;
 import temp.*;
 import types.*;
+import variable.*;
 
 public class AstVarField extends AstVar {
 
@@ -89,8 +90,20 @@ public class AstVarField extends AstVar {
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         
-        fieldOffset = classFieldOffsets.get(className).get(fiedlName);
-        return var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        fieldOffset = classFieldOffsets.get(className).get(fieldName);
+        int res = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        return res;
+		
+	}
+
+    public void debugOffset(){
+        var.debugOffset();
+        if(fieldOffset!=null){
+            System.out.println(fieldName + "#" + className + " - " + fieldOffset + ":");
+        }
+        else{
+            System.out.println("Tried Class field and failed!!!!");
+        }
 		
 	}
 }

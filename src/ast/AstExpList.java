@@ -1,8 +1,11 @@
 package ast;
 
+import java.util.*;
 import temp.*;
 import temp.*;
 import ir.*;
+import variable.*;
+
 
 public class AstExpList extends AstNode
 {
