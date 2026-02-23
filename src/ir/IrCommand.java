@@ -54,4 +54,11 @@ public abstract class IrCommand {
 	/* MIPS me !!! */
 	/***************/
 	public abstract void mipsMe();
+
+    public Set<Temp> getAllTemps() {
+        Set<Temp> all = new HashSet<>();
+        all.addAll(getUseTemps());
+        all.addAll(getDefTemps());
+        return all;
+    }
 }
