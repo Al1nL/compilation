@@ -6,6 +6,7 @@ import ir.*;
 import analysis.*;
 import java.util.*;
 import regalloc.*;
+import temp.Temp;
 
 public class Main {
 
@@ -63,7 +64,7 @@ public class Main {
             /* ---------------------------------
              * Run data-flow analysis
              * --------------------------------- */
-             List<CFGNode> annotatedCfg = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
+             List<CFGNode> annotatedCfg = Analyzer.analyze(cfg,builder.getAllVariables());
             System.out.println("finished data flow analysis");
            
             /* ---------------------------------
@@ -72,6 +73,22 @@ public class Main {
             InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
             Dbg.p(ig.toString()); // print the graph for debugging
             System.out.println("finished building interference graph");
+
+            /* ---------------------------------
+             * Register Allocation
+             * --------------------------------- */
+            Map<Temp,String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
+            regalloc.RegisterAllocator.printAllocation(allocation); // print the allocation for debugging
+            System.out.println("finished register allocation process");
+            
+            /* ---------------------------------
+            * Substitute temps with allocated registers
+            * --------------------------------- */
+            regalloc.RegisterSubstitution.apply(annotatedCfg, allocation);
+            System.out.println("finished register substitution");
+            
+            Dbg.p("Annotated CFG after register substitution:\n");
+            Analyzer.printCfg(annotatedCfg);
 
             fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
             } catch (Error le) {
