@@ -23,7 +23,7 @@ public class Dbg {
             stringWriter = new StringWriter();
             // Create PrintWriter that writes to BOTH file and string
             out = new PrintWriter(new TeeWriter(
-                new FileWriter("output/dfa_debug.txt"),
+                new FileWriter("output/debug.txt"),
                 stringWriter
             ));
         } catch (Exception e) {
