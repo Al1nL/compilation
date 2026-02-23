@@ -37,21 +37,6 @@ public class InterferenceGraph {
     }
     
     /**
-     * Remove an interference edge 
-     */
-    public void removeEdge(Temp t1, Temp t2) {
-        Set<Temp> neighbors1 = adjList.get(t1);
-        Set<Temp> neighbors2 = adjList.get(t2);
-        
-        if (neighbors1 != null) {
-            neighbors1.remove(t2);
-        }
-        if (neighbors2 != null) {
-            neighbors2.remove(t1);
-        }
-    }
-    
-    /**
      * Get all temporaries that interfere with the given temporary
      */
     public Set<Temp> getNeighbors(Temp temp) {
@@ -83,13 +68,6 @@ public class InterferenceGraph {
             }
         }
         allTemps.remove(temp);
-    }
-    
-    /**
-     * Check if two temporaries interfere
-     */
-    public boolean interfere(Temp t1, Temp t2) {
-        return adjList.getOrDefault(t1, Collections.emptySet()).contains(t2);
     }
     
     @Override
