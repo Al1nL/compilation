@@ -4,7 +4,7 @@ import java.util.*;
 import temp.Temp;
 import variable.Variable;
 
-public class DataFlowAnalyzer {
+public class Analyzer {
 
     public static List<CFGNode> analyze(List<CFGNode> cfg, List<Variable> allVars) {
         if (cfg.isEmpty()) {
@@ -30,16 +30,12 @@ public class DataFlowAnalyzer {
         
                 // Check if changed
                 if (!newIn.equals(node.in) || !newOut.equals(node.out)) {
-                    Dbg.p("node#" + idx + " " + node.cmd.getClass().getSimpleName());
-                    Dbg.p(" OUT: " + tempSetToStr(newOut));
-                    Dbg.p(" Def: " + tempSetToStr(node.cmd.getDefTemps()));
-                    Dbg.p(" Use: " + tempSetToStr(node.cmd.getUseTemps()));
-                    Dbg.p(" IN : " + tempSetToStr(newIn));
                     changed = true;
                     node.in = newIn;
                     node.out = newOut;
                 }
             }
+            printCfg(cfg);
             iter++;
         }
             Dbg.p("\n===== Finished analysis =====");
@@ -61,21 +57,30 @@ public class DataFlowAnalyzer {
         return result;
     }
 
-    private static String tempSetToStr(Set<Temp> temps) {
-        if (temps.isEmpty()) {
-            return "{}";
+    public static void printCfg(List<CFGNode> cfg) {
+        for (int idx = 0; idx < cfg.size(); idx++) {
+            CFGNode node = cfg.get(idx);
+            Dbg.p("node#" + idx + ": " + node.cmd.getClass().getSimpleName());
+            Dbg.p(" OUT: " + tempSetToStr(node.out));
+            Dbg.p(" Def: " + tempSetToStr(node.cmd.getDefTemps()));
+            Dbg.p(" Use: " + tempSetToStr(node.cmd.getUseTemps()));
+            Dbg.p(" IN : " + tempSetToStr(node.in));
         }
+    }
+
+    private static String tempSetToStr(Set<Temp> temps) {
+        if (temps.isEmpty()) return "{}";
 
         StringBuilder sb = new StringBuilder("{");
         boolean first = true;
         for (Temp t : temps) {
-            if (!first) {
-                sb.append(", ");
-            }
+            if (!first) sb.append(", ");
             first = false;
-            sb.append("t").append(t.getSerialNumber());
+            sb.append(t.toString()); // uses physicalReg if set, else "tN"
         }
         sb.append("}");
         return sb.toString();
     }
+
+    // todo - add deadcode elimination after reg allocation - some defs may become unused
 }
