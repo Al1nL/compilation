@@ -146,7 +146,7 @@ public class AstExpBinop extends AstExp {
 
         if (left  != null) t1 = left.irMe();
         if (right != null) t2 = right.irMe();
-        System.out.println("t1: " + t1 + " t2: " + t2 + " " +right);
+        System.out.println("t1: " + t1 + " t2: " + t2);
         if(t1.dependencySet != null){
             dst.dependencySet.addAll(t1.dependencySet);
         }

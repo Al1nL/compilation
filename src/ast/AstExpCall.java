@@ -64,7 +64,8 @@ public class AstExpCall extends AstExp {
         }else if(name.equals("PrintInt")){
             Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
         }else{
-            
+            t = TempFactory.getInstance().getFreshTemp();
+            Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(name));
         }
         return t;
     }
