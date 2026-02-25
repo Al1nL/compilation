@@ -20,7 +20,7 @@ JFlex_CUP_GENERATED_FILES = ${JFlex_GENERATED_FILE} ${CUP_GENERATED_FILES}
 SRC_FILES                 = ${SRC_DIR}/*.java ${SRC_DIR}/*/*.java
 EXTERNAL_JAR_FILES        = ${EXTERNAL_JARS_DIR}/java-cup-11b-runtime.jar
 MANIFEST_FILE             = ${MANIFEST_DIR}/MANIFEST.MF
-
+COMPILER_NAME             = COMPILER
 ########################
 # DEFINITIONS :: JFlex #
 ########################
@@ -36,10 +36,6 @@ CUP_PROGRAM                    = java -jar ${EXTERNAL_JARS_DIR}/java-cup-11b.jar
 CUP_FILE                       = ${CUP_DIR}/CUP_FILE.cup
 CUP_GENERATED_PARSER_NAME      = Parser
 CUP_GENERATED_SYMBOLS_FILENAME = TokenNames
-
-######################
-# DEFINITIONS :: CUP #
-######################
 CUP_FLAGS =                                \
 -nowarn                                    \
 -parser  ${CUP_GENERATED_PARSER_NAME}      \
@@ -48,8 +44,8 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/Input.txt
-OUTPUT   = ${OUTPUT_DIR}/Output.txt
+INPUT    = ${INPUT_DIR}/TEST_11_Precedence.txt
+OUTPUT   = ${OUTPUT_DIR}/output.txt
 
 ##########
 # TARGET #
@@ -59,11 +55,11 @@ compile:
 	@echo "*******************************"
 	@echo "*                             *"
 	@echo "*                             *"
-	@echo "* [0] Remove ANALYZER program *"
+	@echo "* [0] Remove COMPILER program *"
 	@echo "*                             *"
 	@echo "*                             *"
 	@echo "*******************************"
-	rm -rf ANALYZER
+	rm -rf COMPILER
 	@echo "\n"
 	@echo "************************************************************"
 	@echo "*                                                          *"
@@ -112,7 +108,7 @@ compile:
 	@echo "*                                                         *"
 	@echo "*                                                         *"
 	@echo "***********************************************************"
-	jar cfm ANALYZER ${MANIFEST_FILE} -C ${BIN_DIR} .
+	jar cfm COMPILER ${MANIFEST_FILE} -C ${BIN_DIR} .
 	@echo "\n"
 	@echo "*****************************"
 	@echo "*                           *"
@@ -121,43 +117,26 @@ compile:
 	@echo "*                           *"
 	@echo "*                           *"
 	@echo "*****************************"
-	java -jar ANALYZER ${INPUT} ${OUTPUT}
-
-##############
-# TEST ALL   #
-##############
-test-all: compile
-	@echo "\n"
-	@echo "************************************"
-	@echo "*                                  *"
-	@echo "* Running all tests in input/      *"
-	@echo "*                                  *"
-	@echo "************************************"
-	@mkdir -p ${OUTPUT_DIR}
-	@for input_file in ${INPUT_DIR}/*.txt; do \
-		if [ -f "$$input_file" ]; then \
-			base_name=$$(basename "$$input_file" .txt); \
-			output_file="${OUTPUT_DIR}/$${base_name}_output.txt"; \
-			echo "\n>>> Testing: $$base_name"; \
-			echo "    Input:  $$input_file"; \
-			echo "    Output: $$output_file"; \
-			java -jar ANALYZER "$$input_file" "$$output_file"; \
-			echo "    [DONE]"; \
-		fi \
-	done
-	@echo "\n"
-	@echo "************************************"
-	@echo "*                                  *"
-	@echo "* All tests completed!             *"
-	@echo "*                                  *"
-	@echo "************************************"
+	java -jar COMPILER ${INPUT} ${OUTPUT}
+	@# Check if the output file contains the specific failure strings
+	@if grep -qE "ERROR|Register Allocation Failed" ${OUTPUT}; then \
+		echo "\n------------------------------------------------\n"; \
+		echo "COMPILER reported an error. Skipping SPIM phase."; \
+		echo "Content of ${OUTPUT}:"; \
+		cat ${OUTPUT}; \
+		echo "\n------------------------------------------------\n"; \
+	else \
+		echo "[7] Running MIPS program using SPIM"; \
+		spim -file ${OUTPUT} > ${OUTPUT_DIR}/MIPS_OUTPUT.txt; \
+		cat ${OUTPUT_DIR}/MIPS_OUTPUT.txt; \
+	fi
 
 ##############
 # CLEAN      #
 ##############
 clean:
 	@echo "Cleaning up generated files..."
-	rm -rf ANALYZER
+	rm -rf ${COMPILER_NAME}
 	rm -rf ${JFlex_CUP_GENERATED_FILES}
 	rm -rf ${BIN_DIR}/*.class ${BIN_DIR}/*/*.class
 	rm -rf ${OUTPUT_DIR}/*.txt
