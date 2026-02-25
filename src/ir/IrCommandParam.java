@@ -10,6 +10,8 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import java.util.HashSet;
+import java.util.Set;
 import temp.*;
 
 public class IrCommandParam extends IrCommand {
@@ -23,4 +25,24 @@ public class IrCommandParam extends IrCommand {
         this.name = name;
         this.temp = temp;
     }
+
+     // Param declaration doesn't use temps
+
+    @Override
+    public Set<Temp> getDefTemps() {
+        Set<Temp> def = new HashSet<>();
+        if (temp != null) def.add(temp); // param is defined
+        return def;
+    }
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

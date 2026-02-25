@@ -54,13 +54,18 @@ public class AstExpCall extends AstExp {
     {
         Temp t = null;
 
-        // if (args != null) { t = args.head.irMe(); }
         if(args != null){
             for (AstExp e : args) {
                 t = e.irMe();
             }
         }
-        Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+        
+        if(name.equals("PrintString")){
+            Ir.getInstance().AddIrCommand(new IrCommandPrintString(t));
+        }else if(name.equals("PrintInt")){
+            Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+        }
+        
 
         return null;
     }

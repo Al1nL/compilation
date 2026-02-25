@@ -11,8 +11,8 @@ package ir;
 /* PROJECT IMPORTS */
 /*******************/
 
-import variable.Variable;
 import mips.MipsGenerator;
+import variable.Variable;
 
 public class IrCommandAllocate extends IrCommand
 {

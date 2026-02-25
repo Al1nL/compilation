@@ -1,11 +1,7 @@
 package ir;
 
-import analysis.Dbg;
 import java.util.*;
 import temp.Temp;
-import variable.Variable;
-import types.*;
-import mips.MipsGenerator;
 public abstract class IrCommand {
 
     /* Label Factory */
@@ -16,57 +12,53 @@ public abstract class IrCommand {
     }
 
     /**
-     * Transfer function.
-     * Default behavior: OUT = IN.
+     * Liveness analysis transfer function.
+     * Default behavior: IN = OUT (no uses or defs).
      */
-    public Map<Variable, Boolean> computeOutSet(
-            Set<Variable> usedAndUninited,
-            Map<Variable, Boolean> inSet) {
-        return new HashMap<>(inSet);
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return new HashSet<>(out);
     }
 
     /**
-     * Helper for IR commands that ASSIGN to a TEMP.
-     * Checks that all variables used in computing the TEMP are initialized.
-     * Does not modify the initialized-variable set.
+     * General liveness transfer function for most IR commands.
+     * IN = USE ∪ (OUT - DEF)
      */
-    protected Map<Variable, Boolean> generalComputeOutSet(
-            Set<Variable> usedAndUninited,
-            Map<Variable, Boolean> inSet,
-            Temp t) {
-
-        for (Variable var : t.dependencySet) {
-            if (!inSet.getOrDefault(var, false)) {
-                usedAndUninited.add(var);
-            }
-        }
-
-        return new HashMap<>(inSet);
+    public Set<Temp> generalComputeInSet(Set<Temp> out) {
+        Set<Temp> use = getUseTemps();
+        Set<Temp> def = getDefTemps();
+        
+        // IN = USE ∪ (OUT - DEF)
+        Set<Temp> in = new HashSet<>(use);
+        Set<Temp> outMinusDef = new HashSet<>(out);
+        outMinusDef.removeAll(def);
+        in.addAll(outMinusDef);
+        
+        return in;
     }
 
     /**
-     * Helper for IR commands that READ a TEMP without assigning.
+     * Get the set of temps used (read) by this command.
      */
-    protected Map<Variable, Boolean> checkTempRead(
-            Set<Variable> usedAndUninited,
-            Map<Variable, Boolean> inSet,
-            Temp t) {
-
-        for (Variable var : t.dependencySet) {
-            if (!inSet.getOrDefault(var, false)) {
-                usedAndUninited.add(var);
-                 Dbg.p("!!! USED BEFORE SET: " + var.name + "@" + var.scope
-        + " in " + this.getClass().getSimpleName());
-            }
-        }
-
-        return new HashMap<>(inSet);
+    public Set<Temp> getUseTemps() {
+        return new HashSet<>();
     }
 
+    /**
+     * Get the set of temps defined (written) by this command.
+     */
+    public Set<Temp> getDefTemps() {
+        return new HashSet<>();
+    }
+    
     /***************/
 	/* MIPS me !!! */
 	/***************/
-	public void mipsMe(){
-        
-    };
+	public abstract void mipsMe();
+
+    public Set<Temp> getAllTemps() {
+        Set<Temp> all = new HashSet<>();
+        all.addAll(getUseTemps());
+        all.addAll(getDefTemps());
+        return all;
+    }
 }

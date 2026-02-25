@@ -7,9 +7,8 @@ package ir;
 /* GENERAL IMPORTS */
 /*******************/
 import java.util.*;
-import temp.*;
-import variable.Variable;
 import mips.MipsGenerator;
+import temp.*;
 
 public class IrCommandJumpIfEqToZero extends IrCommandJumpLabel
 {
@@ -21,10 +20,12 @@ public class IrCommandJumpIfEqToZero extends IrCommandJumpLabel
 		this.t = t;
 	}
 
-
 	@Override
-    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
-		return checkTempRead(usedAndUninited, prevOutSet, t);
+	public Set<Temp> getUseTemps() {
+		Set<Temp> use = new HashSet<>();
+		if (t != null) use.add(t); // temp being tested
+		else System.err.println("IrCommandJumpIfEqToZero: null temp");
+		return use;
 	}
 
 

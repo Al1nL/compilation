@@ -4,14 +4,8 @@
 package ir;
 
 import java.util.ArrayList;
-
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+import java.util.HashSet;
+import java.util.Set;
 import temp.*;
 
 public class IrCommandVirtualCall extends IrCommand
@@ -31,5 +25,33 @@ public class IrCommandVirtualCall extends IrCommand
         this.object = object;
         this.method = method;
         this.args   = args;
+    }
+
+    @Override
+    public Set<Temp> getUseTemps() {
+        Set<Temp> use = new HashSet<>();
+        if (object != null) use.add(object); // object on which method is called
+        if (args != null) {
+            for (Temp param : args) {
+                if (param != null) use.add(param);
+            }
+        }
+        return use;
+    }
+
+    @Override
+    public Set<Temp> getDefTemps() {
+        Set<Temp> def = new HashSet<>();
+        if (dst != null) def.add(dst); // return value (if any)
+        return def;
+    }
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
     }
 }

@@ -71,7 +71,7 @@ public class AstStmtAssign extends AstStmt {
         Temp src = exp.irMe();
         Ir.
                 getInstance().
-                AddIrCommand(new IrCommandStore(((AstVarSimple) var).var,src));
+                AddIrCommand(new IrCommandStore( var.var,src));
 
         return null;
     }

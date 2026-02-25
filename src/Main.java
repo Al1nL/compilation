@@ -5,8 +5,8 @@ import ast.*;
 import ir.*;
 import analysis.*;
 import java.util.*;
-import variable.Variable;
-import java.util.stream.Collectors;
+import regalloc.*;
+import temp.Temp;
 
 public class Main {
 
@@ -62,35 +62,45 @@ public class Main {
             CFGBuilder builder = new CFGBuilder();
             List<IrCommand> ir = Ir.getInstance().getCommands();
             List<CFGNode> cfg = builder.build(ir);
+            System.out.println("finished ir");
 
             /* ---------------------------------
              * Run data-flow analysis
              * --------------------------------- */
-            Set<Variable> errors = DataFlowAnalyzer.analyze(cfg,builder.getAllVariables());
+             List<CFGNode> annotatedCfg = Analyzer.analyze(cfg,builder.getAllVariables());
+            System.out.println("finished data flow analysis");
+           
+            /* ---------------------------------
+             * Build Interference Graph 
+            * --------------------------------- */
+            InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
+            Dbg.p(ig.toString()); // print the graph for debugging
+            System.out.println("finished building interference graph");
 
             /* ---------------------------------
-             * Print required output
+             * Register Allocation
              * --------------------------------- */
-            if (errors.isEmpty()) {
-                fileWriter.print("!OK");
-            } else {
-                String output = errors.stream()
-                      .map(v -> v.name)
-                      .distinct()
-                      .sorted()
-                      .collect(Collectors.joining(System.lineSeparator()));
-                    fileWriter.write(output);
-            }
+            Map<Temp,String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
+            regalloc.RegisterAllocator.printAllocation(allocation); // print the allocation for debugging
+            System.out.println("finished register allocation process");
             
-            System.out.println("finished ir");
+            /* ---------------------------------
+            * Substitute temps with allocated registers
+            * --------------------------------- */
+            regalloc.RegisterSubstitution.apply(annotatedCfg, allocation);
+            System.out.println("finished register substitution");
+            
+            Dbg.p("Annotated CFG after register substitution:\n");
+            Analyzer.printCfg(annotatedCfg);
 
+            fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
             } catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                //e.printStackTrace(fileWriter);
+                e.printStackTrace(fileWriter);
             }
             fileWriter.close();
         } catch (Exception e) {

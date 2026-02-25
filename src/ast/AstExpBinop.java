@@ -12,6 +12,7 @@ public class AstExpBinop extends AstExp {
     int op;
     public AstExp left;
     public AstExp right;
+    public boolean isInteger = false;
 
     /* CONSTRUCTOR(S) */
     public AstExpBinop(AstExp left, AstExp right, int op) {
@@ -105,6 +106,7 @@ public class AstExpBinop extends AstExp {
         }
         if (op == 0) {
             if (t1.isSameType(TypeInt.getInstance()) && t2.isSameType(TypeInt.getInstance())) {
+                isInteger = true;
                 return TypeInt.getInstance();
             }
             if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
@@ -137,47 +139,53 @@ public class AstExpBinop extends AstExp {
         return semantMe();
     }
 
-    public Temp irMe()
-    {
+    public Temp irMe() {
         Temp t1 = null;
         Temp t2 = null;
         Temp dst = TempFactory.getInstance().getFreshTemp();
 
-        if (left  != null) t1 = left.irMe();
-        if (right != null) t2 = right.irMe();
-        
-        if(t1.dependencySet != null){
+        if (left != null) {
+            t1 = left.irMe();
+        }
+        if (right != null) {
+            t2 = right.irMe();
+        }
+
+        if (t1 != null && t1.dependencySet != null) {
             dst.dependencySet.addAll(t1.dependencySet);
         }
-        if(t2.dependencySet != null){
+        if (t2 != null && t2.dependencySet != null) {
             dst.dependencySet.addAll(t2.dependencySet);
         }
-        
 
-        if (op == 0)
+        if (op == 0) // PLUS
         {
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandBinopAddIntegers(dst,t1,t2));  
-        
+            Ir.getInstance().AddIrCommand(new IrCommandBinopAddIntegers(dst, t1, t2));
         }
-        if (op == 2)
+        if (op == 1) // MINUS
         {
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandBinopMulIntegers(dst,t1,t2));
+            Ir.getInstance().AddIrCommand(new IrCommandBinopSubIntegers(dst, t1, t2));
         }
-        if (op == 3)
+        if (op == 2) // TIMES
         {
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandBinopEqIntegers(dst,t1,t2));
+            Ir.getInstance().AddIrCommand(new IrCommandBinopMulIntegers(dst, t1, t2));
         }
-        if (op == 4)
+        if (op == 3) // DIVIDE
         {
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandBinopLtIntegers(dst,t1,t2));
+            Ir.getInstance().AddIrCommand(new IrCommandBinopDivIntegers(dst, t1, t2));
+        }
+        if (op == 4) // LT
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst, t1, t2));
+        }
+        if (op == 5) // GT
+        {
+            // a > b is equivalent to b < a
+            Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst, t2, t1));
+        }
+        if (op == 6) // EQ
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopEqIntegers(dst, t1, t2));
         }
         return dst;
     }

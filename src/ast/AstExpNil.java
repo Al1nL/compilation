@@ -1,6 +1,5 @@
 package ast;
 import ir.*;
-import java.util.HashSet;
 import temp.*;
 import types.*;
 
@@ -38,7 +37,7 @@ public class AstExpNil extends AstExp {
         /******************************/
         Ir.
             getInstance().
-            AddIrCommand(new IRcommandConstInt(dst, 0));
+            AddIrCommand(new IrCommandConstInt(dst, 0));
 
         /*******************/
         /* [3] return dst */

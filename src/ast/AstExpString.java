@@ -1,7 +1,6 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
 import temp.*;
 import types.*;
 
@@ -41,8 +40,7 @@ public class AstExpString extends AstExp {
     public Temp irMe()
     {
         Temp t = TempFactory.getInstance().getFreshTemp();
-        t.dependencySet = new HashSet<>();  
-        Ir.getInstance().AddIrCommand(new IRcommandConstString(t,value));
+        Ir.getInstance().AddIrCommand(new IrCommandConstString(t,value));
         return t;
     }
 }
