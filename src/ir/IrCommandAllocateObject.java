@@ -1,27 +1,24 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import mips.MipsGenerator;
 import temp.*;
 public class IrCommandAllocateObject extends IrCommand
 {
     public Temp dst;
     public String type;
+    // if type is a class
+    public Map<String,Integer> methodOffsets;
+    public int fieldCount;
 
-    public IrCommandAllocateObject(Temp dst, String type)
+    public IrCommandAllocateObject(Temp dst, String type, Map<String,Integer> methodOffsets, int fieldCount)
     {
         this.dst  = dst;
         this.type = type;
+        this.methodOffsets = methodOffsets;
+        this.fieldCount = fieldCount;
     }
 
     @Override
@@ -38,6 +35,6 @@ public class IrCommandAllocateObject extends IrCommand
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MipsGenerator.getInstance().allocateObject(dst, type,methodOffsets, fieldCount);
     }
 }

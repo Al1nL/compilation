@@ -1,6 +1,7 @@
 package ir;
 
 import java.util.*;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandBinopSubIntegers extends IrCommand
@@ -41,5 +42,6 @@ public class IrCommandBinopSubIntegers extends IrCommand
     /***************/
     public void mipsMe()
     {
+        MipsGenerator.getInstance().sub(dst,t1,t2);
     }
 }

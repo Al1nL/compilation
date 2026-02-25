@@ -3,6 +3,7 @@ package ir;
 
 /* GENERAL IMPORTS */
 import java.util.*;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandAdd extends IrCommand {
@@ -49,6 +50,15 @@ public class IrCommandAdd extends IrCommand {
     @Override
 	public void mipsMe()
 	{
-		
+		if (t2 != null)
+		{
+			// pointer arithmetic: dst = t1 + t2 (base + index, scaled by word size)
+			MipsGenerator.getInstance().addOffset(dst, t1, t2);
+		}
+		else
+		{
+			// dereference: dst = Memory[t1]
+			MipsGenerator.getInstance().loadFromPointer(dst, t1);
+		}
 	}
 }

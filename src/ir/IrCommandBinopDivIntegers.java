@@ -1,11 +1,5 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
 import java.util.*;
 import mips.MipsGenerator;
 import temp.*;
@@ -48,5 +42,6 @@ public class IrCommandBinopDivIntegers extends IrCommand
     /***************/
     public void mipsMe()
     {
+        MipsGenerator.getInstance().div(dst,t1,t2);
     }
 }

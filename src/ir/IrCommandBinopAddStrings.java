@@ -1,17 +1,8 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
 import java.util.HashSet;
 import java.util.Set;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandBinopAddStrings extends IrCommand
@@ -49,6 +40,6 @@ public class IrCommandBinopAddStrings extends IrCommand
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MipsGenerator.getInstance().addStrings(dst, t1, t2);
     }
 }
