@@ -44,7 +44,10 @@ public class Main {
                 /**********************/
                 /* [8] IR the AST ... */
                 /**********************/
-                
+                ast.offsetMe(null, 0, null, new HashMap<>(), new HashMap<>());
+                System.out.println("finished offsetting");
+                ast.debugOffset();
+                System.out.println("finished printing offset");
                 ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
@@ -78,6 +81,7 @@ public class Main {
                       .collect(Collectors.joining(System.lineSeparator()));
                     fileWriter.write(output);
             }
+            
             System.out.println("finished ir");
 
             } catch (Error le) {

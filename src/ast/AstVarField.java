@@ -1,14 +1,17 @@
 package ast;
 
 import ir.*;
-import java.util.HashSet;
+import java.util.*;
 import temp.*;
 import types.*;
+import variable.*;
 
 public class AstVarField extends AstVar {
 
     public AstVar var;
     public String fieldName;
+    public String className;
+    public Integer fieldOffset;
 
     /* CONSTRUCTOR(S) */
     public AstVarField(AstVar var, String fieldName) {
@@ -64,6 +67,7 @@ public class AstVarField extends AstVar {
             System.out.format(">> ERROR [%d] field %s does not exist in class\n", lineNumber, fieldName);
             report();
         }
+        className = tc.name;
 
         return found;
     }
@@ -83,4 +87,23 @@ public class AstVarField extends AstVar {
         t.dependencySet.addAll(base.dependencySet);
         return t;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        
+        fieldOffset = classFieldOffsets.get(className).get(fieldName);
+        int res = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        return res;
+		
+	}
+
+    public void debugOffset(){
+        var.debugOffset();
+        if(fieldOffset!=null){
+            System.out.println(fieldName + "#" + className + " - " + fieldOffset + ":");
+        }
+        else{
+            System.out.println("Tried Class field and failed!!!!");
+        }
+		
+	}
 }

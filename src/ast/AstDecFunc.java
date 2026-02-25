@@ -1,10 +1,13 @@
 package ast;
 
+import java.util.*;
 import returncounter.ReturnCounter;
 import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
+
 
 public class AstDecFunc extends AstDec {
 
@@ -12,6 +15,7 @@ public class AstDecFunc extends AstDec {
     public final String name;
     public final AstParamList params;
     private final AstStmtList body;
+    public Integer offset;
 
     public AstDecFunc(String returnType, String name, AstParamList params, AstStmtList body) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
@@ -97,6 +101,7 @@ public class AstDecFunc extends AstDec {
                 }
 
                 SymbolTable.getInstance().enter(it.head.name, paramType);
+                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel);
             }
         }
         if (type_list != null) {
@@ -138,4 +143,43 @@ public class AstDecFunc extends AstDec {
 
         return null;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		if (curClass!=null){
+            offset = classMethodOffsets.get(curClass).size();
+            if(!classMethodOffsets.get(curClass).containsKey(name)){
+                classMethodOffsets.get(curClass).put(name, offset);
+            }
+            else{
+                offset = classMethodOffsets.get(curClass).get(name);
+            }
+            
+        }
+        int bodyIdx=0;
+        int paramIdx=-1;
+        offsets = new HashMap<Variable, Integer>();
+        if (curClass != null) {
+            paramIdx--; 
+        }
+        if (params != null) {
+            params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        if (body != null) {
+            body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        
+        return 0;
+	}
+
+    public void debugOffset(){
+        if (offset!=null){
+            System.out.println(name + " - " + offset + ":");
+        }
+		if (params != null) {
+            params.debugOffset();
+        }
+        if (body != null) {
+            body.debugOffset();
+        }
+	}
 }

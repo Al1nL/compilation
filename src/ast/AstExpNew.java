@@ -1,9 +1,11 @@
 package ast;
 
+import java.util.*;
 import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstExpNew extends AstExp {
 
@@ -98,5 +100,18 @@ public class AstExpNew extends AstExp {
         /*******************/
         return dst;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        if (sizeExp  != null){
+            curIdx = sizeExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return curIdx;
+	}
+
+    public void debugOffset(){
+		if(sizeExp != null){
+            sizeExp.debugOffset();
+        }
+	}
     
 }

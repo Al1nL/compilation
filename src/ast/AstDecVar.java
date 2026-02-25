@@ -1,16 +1,18 @@
 package ast;
 
+import java.util.*;
 import ir.*;
 import symboltable.*;
 import temp.*;
 import types.*;
-import variable.Variable;
+import variable.*;
 public class AstDecVar extends AstDec {
 
     public String type;
     public String name;
     public AstExp exp;
     public Variable var;
+    public Integer offset;
     public AstDecVar(String type, String name, AstExp exp) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
         this.type = type;
@@ -97,4 +99,64 @@ public class AstDecVar extends AstDec {
         }
         return null;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		
+        if(curClass!=null){
+            classFieldOffsets.get(curClass).put(name, curIdx);
+            var.offset = curIdx;
+            offset = curIdx;
+            curIdx++;
+        }
+
+        else if (offsets!=null){
+            if (!offsets.containsKey(var)) {
+                offsets.put(var, curIdx);
+                var.offset = curIdx;
+                curIdx++;
+                offset = var.offset;
+                //TODO: figure out where to save the index in here?
+                //in its own field or vairble
+            }
+            else{
+                offset = offsets.get(var);
+            }
+            
+        }
+
+        if (exp != null) {
+            curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return curIdx;
+
+        /*if (offsets!=null){
+            offsets.put(var, curIdx);
+            var.offset = curIdx;
+            curIdx++;
+            offset = var.offset;
+            //TODO: figure out where to save the index in here?
+            //in its own field or vairble
+
+        }
+        else if(curClass!=null){
+            classFieldOffsets.get(curClass).put(name, curIdx);
+            var.offset = curIdx;
+            curIdx++;
+        }
+        if (exp != null) {
+            curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return curIdx;
+        */
+        
+	}
+    public void debugOffset(){
+        if(offset!=null){
+            System.out.println(var.name + "#" + var.scope + " - " + offset + ":");
+        }
+
+		if (exp != null) {
+            exp.debugOffset();
+        }
+	}
 }
