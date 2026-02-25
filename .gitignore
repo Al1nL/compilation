@@ -33,4 +33,4 @@ src/Parser.java
 src/Lexer.java
 src/TokenNames.java
 
-ANALYZER
+COMPILER
