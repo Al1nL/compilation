@@ -92,13 +92,13 @@ public class AstVarField extends AstVar {
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         
         fieldOffset = classFieldOffsets.get(className).get(fieldName);
-        int res = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        int res = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         return res;
 		
 	}
 
     public void debugOffset(){
-        var.debugOffset();
+        variable.debugOffset();
         if(fieldOffset!=null){
             System.out.println(fieldName + "#" + className + " - " + fieldOffset + ":");
         }

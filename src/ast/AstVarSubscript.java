@@ -165,9 +165,9 @@ public class AstVarSubscript extends AstVar {
     }
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         
-        curIdx = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
-        if (var.var!=null){
-           offset =  var.var.offset;
+        curIdx = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        if (variable.var!=null){
+           offset =  variable.var.offset;
         }
         return subscript.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
 
@@ -175,7 +175,7 @@ public class AstVarSubscript extends AstVar {
 	}
 
     public void debugOffset(){
-		var.debugOffset();
+		variable.debugOffset();
         subscript.debugOffset();
 		
 	}
