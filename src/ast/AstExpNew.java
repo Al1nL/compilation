@@ -1,16 +1,19 @@
 package ast;
 
+import ir.*;
 import java.util.*;
 import symboltable.*;
-import types.*;
 import temp.*;
-import ir.*;
+import types.*;
 import variable.*;
 
 public class AstExpNew extends AstExp {
 
     public final String type;
     public final AstExp sizeExp; // may be null
+    // if type is a class    
+    private Map<String,Integer> _MethodOffsets; // set during offsetMe
+    private int _FieldCount=0;
 
     public AstExpNew(String type, AstExp sizeExp) {
         serialNumber = AstNodeSerialNumber.getFresh();
@@ -78,7 +81,8 @@ public class AstExpNew extends AstExp {
         {
             Ir.
                 getInstance().
-                AddIrCommand(new IrCommandAllocateObject(dst, type));
+                AddIrCommand(new IrCommandAllocateObject(dst, type,_MethodOffsets != null ? _MethodOffsets : new HashMap<>(),
+                _FieldCount));
     
             /*******************/
             /* [3] return dst */
@@ -104,6 +108,11 @@ public class AstExpNew extends AstExp {
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         if (sizeExp  != null){
             curIdx = sizeExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        // save class info for irMe — only relevant for new ClassName (not arrays)
+        if (sizeExp == null && classFieldOffsets.containsKey(type)) {
+            _FieldCount    = classFieldOffsets.get(type).size();
+            _MethodOffsets = new HashMap<>(classMethodOffsets.get(type));
         }
         return curIdx;
 	}

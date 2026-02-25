@@ -8,10 +8,13 @@ import ir.*;
 import variable.*;
 
 public class AstDecClass extends AstDec {
-
+    
     public final String name;         // class name
     public final String parentName;   // null if no EXTENDS
     public final AstDecList fields;   // linked list of cFields
+
+    private Map<String,Integer> _MethodOffsets; // set during offsetMe
+    private int _FieldCount;
 
     public AstDecClass(String name, String parentName, AstDecList fields) {
         serialNumber = AstNodeSerialNumber.getFresh();
@@ -162,7 +165,9 @@ public class AstDecClass extends AstDec {
             AddIrCommand(new IrCommandDeclareClass(
                 name,
                 parentName,
-                fields
+                fields,
+                _MethodOffsets != null ? _MethodOffsets : new HashMap<>(),
+                _FieldCount
             ));
 
         return null;
@@ -187,6 +192,9 @@ public class AstDecClass extends AstDec {
             fields.offsetMe(offsets, classFieldOffsets.get(curClass).size(), curClass, classFieldOffsets, classMethodOffsets);
 
         }
+        
+        _MethodOffsets = new HashMap<>(classMethodOffsets.get(curClass));
+        _FieldCount = classFieldOffsets.get(curClass).size();
         
         return 0;
         
