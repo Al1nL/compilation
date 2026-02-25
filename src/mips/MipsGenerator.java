@@ -17,11 +17,10 @@ public class MipsGenerator {
     private Map<String, Integer> classFieldCount = new HashMap<>();
     private Map<String, List<String>> classMethods = new HashMap<>();
 
-
     /**
-    * Emits the exit syscall and closes the output file.
-    * Must be called once after all IR commands are done.  
-    */
+     * Emits the exit syscall and closes the output file. Must be called once
+     * after all IR commands are done.
+     */
     public void finalizeFile() {
         fileWriter.print("\tli $v0,10\n");
         fileWriter.print("\tsyscall\n");
@@ -276,54 +275,59 @@ public class MipsGenerator {
     protected MipsGenerator() {
     }
 
-    public static MipsGenerator getInstance() {
+    public static void init(String outputFilePath) {
         if (instance == null) {
             instance = new MipsGenerator();
-
             try {
-                String dirname = "./output/";
-                String filename = "MIPS.txt";
-                instance.fileWriter = new PrintWriter(dirname + filename);
+                instance.fileWriter = new PrintWriter(outputFilePath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            /* Preamble: error strings + runtime helper functions */
-            instance.fileWriter.print(".data\n");
-            instance.fileWriter.print("string_access_violation: .asciiz \"Access Violation\"\n");
-            instance.fileWriter.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
-            instance.fileWriter.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
-            instance.fileWriter.print(".text\n");
-
-            /* __strlen: $a0=string ptr -> $v0=length. Uses $s0,$s1 as scratch */
-            instance.fileWriter.print("__strlen:\n");
-            instance.fileWriter.print("\tmove $s0,$a0\n");
-            instance.fileWriter.print("__strlen_loop:\n");
-            instance.fileWriter.print("\tlb $s1,0($s0)\n");
-            instance.fileWriter.print("\tbeq $s1,$zero,__strlen_done\n");
-            instance.fileWriter.print("\taddi $s0,$s0,1\n");
-            instance.fileWriter.print("\tj __strlen_loop\n");
-            instance.fileWriter.print("__strlen_done:\n");
-            instance.fileWriter.print("\tsubu $v0,$s0,$a0\n");
-            instance.fileWriter.print("\tjr $ra\n");
-
-            /**
-             * __strcpy: $a0=src, $a1=dst -> copies bytes until null, writes
-             * null terminator, returns updated dst in $v0. Uses $s0 as scratch.
-             */
-            instance.fileWriter.print("__strcpy:\n");
-            instance.fileWriter.print("__strcpy_loop:\n");
-            instance.fileWriter.print("\tlb $s0,0($a0)\n");
-            instance.fileWriter.print("\tbeq $s0,$zero,__strcpy_done\n");
-            instance.fileWriter.print("\tsb $s0,0($a1)\n");
-            instance.fileWriter.print("\taddi $a0,$a0,1\n");
-            instance.fileWriter.print("\taddi $a1,$a1,1\n");
-            instance.fileWriter.print("\tj __strcpy_loop\n");
-            instance.fileWriter.print("__strcpy_done:\n");
-            instance.fileWriter.print("\tsb $zero,0($a1)\n");
-            instance.fileWriter.print("\tmove $v0,$a1\n");
-            instance.fileWriter.print("\tjr $ra\n");
+            // Write the preamble once during initialization
+            instance.writePreamble();
         }
+    }
+
+    public static MipsGenerator getInstance() {
         return instance;
+    }
+
+    private void writePreamble() {
+        /* Preamble: error strings + runtime helper functions */
+        instance.fileWriter.print(".data\n");
+        instance.fileWriter.print("string_access_violation: .asciiz \"Access Violation\"\n");
+        instance.fileWriter.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
+        instance.fileWriter.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
+        instance.fileWriter.print(".text\n");
+
+        /* __strlen: $a0=string ptr -> $v0=length. Uses $s0,$s1 as scratch */
+        instance.fileWriter.print("__strlen:\n");
+        instance.fileWriter.print("\tmove $s0,$a0\n");
+        instance.fileWriter.print("__strlen_loop:\n");
+        instance.fileWriter.print("\tlb $s1,0($s0)\n");
+        instance.fileWriter.print("\tbeq $s1,$zero,__strlen_done\n");
+        instance.fileWriter.print("\taddi $s0,$s0,1\n");
+        instance.fileWriter.print("\tj __strlen_loop\n");
+        instance.fileWriter.print("__strlen_done:\n");
+        instance.fileWriter.print("\tsubu $v0,$s0,$a0\n");
+        instance.fileWriter.print("\tjr $ra\n");
+
+        /**
+         * __strcpy: $a0=src, $a1=dst -> copies bytes until null, writes null
+         * terminator, returns updated dst in $v0. Uses $s0 as scratch.
+         */
+        instance.fileWriter.print("__strcpy:\n");
+        instance.fileWriter.print("__strcpy_loop:\n");
+        instance.fileWriter.print("\tlb $s0,0($a0)\n");
+        instance.fileWriter.print("\tbeq $s0,$zero,__strcpy_done\n");
+        instance.fileWriter.print("\tsb $s0,0($a1)\n");
+        instance.fileWriter.print("\taddi $a0,$a0,1\n");
+        instance.fileWriter.print("\taddi $a1,$a1,1\n");
+        instance.fileWriter.print("\tj __strcpy_loop\n");
+        instance.fileWriter.print("__strcpy_done:\n");
+        instance.fileWriter.print("\tsb $zero,0($a1)\n");
+        instance.fileWriter.print("\tmove $v0,$a1\n");
+        instance.fileWriter.print("\tjr $ra\n");
     }
 }

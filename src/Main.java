@@ -101,19 +101,18 @@ public class Main {
             /* ---------------------------------
              * Generate MIPS code
              * --------------------------------- */
+            MipsGenerator.init(outputFileName);
             for (CFGNode node : annotatedCfg) {
                     node.cmd.mipsMe();
                 }
                 MipsGenerator.getInstance().finalizeFile();
 
-            fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
             } catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                e.printStackTrace(fileWriter);
             }
             fileWriter.close();
         } catch (Exception e) {
