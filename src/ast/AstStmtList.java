@@ -1,8 +1,10 @@
 package ast;
 
+import java.util.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstStmtList extends AstNode {
 
@@ -83,4 +85,24 @@ public class AstStmtList extends AstNode {
 
         return null;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		if (head != null) {
+            curIdx = head.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+
+        if (tail != null) {
+            curIdx = tail.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        }
+        return curIdx;
+	}
+
+    public void debugOffset(){
+		if (head != null) {
+            head.debugOffset();
+        }
+        if (tail != null) {
+            tail.debugOffset();
+        }
+	}
 }

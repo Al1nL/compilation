@@ -1,13 +1,17 @@
 package ast;
+import java.util.*;
 import temp.*;
 import ir.*;
 import symboltable.*;
 import types.*;
+import variable.*;
 
 public class AstParam extends AstNode {
 
     public final String type;
     public final String name;
+    public Variable var;
+    public Integer offset;
 
     public AstParam(String type, String name) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
@@ -71,4 +75,21 @@ public class AstParam extends AstNode {
         /*******************/
         return paramTemp;
     }
+
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+		if (offsets!=null){
+            offsets.put(var, curIdx);
+            var.offset = curIdx;
+            offset = curIdx;
+        }
+        return curIdx;
+        
+	}
+
+    public void debugOffset(){
+        if(offset!=null){
+            System.out.println(var.name + "#" + var.scope + " - " + offset + ":");
+        }
+		
+	}
 }

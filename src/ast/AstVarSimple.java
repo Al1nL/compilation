@@ -1,10 +1,11 @@
 package ast;
 
+import java.util.*;
 import ir.*;
 import symboltable.*;
 import temp.*;
 import types.*;
-import variable.Variable;
+import variable.*;
 
 public class AstVarSimple extends AstVar
 {
@@ -12,6 +13,7 @@ public class AstVarSimple extends AstVar
 	/* simple variable name */
 	/************************/
 	public String name;
+	public Integer offset;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -68,5 +70,27 @@ public class AstVarSimple extends AstVar
     	t.dependencySet.add(var);
 
 		return t;
+	}
+
+	public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        
+		if(curClass!=null && classFieldOffsets.get(curClass).containsKey(name)){
+			offset = classFieldOffsets.get(curClass).get(name);
+		}
+		else{
+			offset = offsets.get(var);
+		}
+        
+		return curIdx;
+		
+	}
+
+	public void debugOffset(){
+		
+		if(offset!=null){
+			System.out.println(var.name + "#" + var.scope + " - " + offset + ":");
+		}
+
+		
 	}
 }

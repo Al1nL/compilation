@@ -1,10 +1,11 @@
 package ast;
 
-import java.util.ArrayList;
+import java.util.*;
 import symboltable.*;
 import types.*;
 import temp.*;
 import ir.*;
+import variable.*;
 
 public class AstExpCall extends AstExp {
 
@@ -68,4 +69,21 @@ public class AstExpCall extends AstExp {
 
         return null;
     }
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+        if(args != null){
+            for (AstExp e : args) {
+                curIdx = e.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            }
+        }
+        return curIdx;
+		
+	}
+
+    public void debugOffset(){
+		if(args != null){
+            for (AstExp e : args) {
+                e.debugOffset();
+            }
+        }
+	}
 }
