@@ -2,6 +2,9 @@ package mips;
 
 import ir.IrCommand;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import temp.*;
 
@@ -10,9 +13,15 @@ public class MipsGenerator {
     private static final int WORD_SIZE = 4;
     private PrintWriter fileWriter;
 
-    /* finalizeFile                                          */
- /* Emits the exit syscall and closes the output file.    */
- /* Must be called once after all IR commands are done.   */
+    // Track number of fields and vtable per class */
+    private Map<String, Integer> classFieldCount = new HashMap<>();
+    private Map<String, List<String>> classMethods = new HashMap<>();
+
+
+    /**
+    * Emits the exit syscall and closes the output file.
+    * Must be called once after all IR commands are done.  
+    */
     public void finalizeFile() {
         fileWriter.print("\tli $v0,10\n");
         fileWriter.print("\tsyscall\n");
@@ -158,6 +167,9 @@ public class MipsGenerator {
             ordered[e.getValue()] = e.getKey();
         }
 
+        classMethods.put(className, Arrays.asList(ordered));
+        classFieldCount.put(className, fieldCount);
+
         // emit vtable in .data
         if (ordered.length > 0) {
             fileWriter.format(".data\n");
@@ -173,16 +185,17 @@ public class MipsGenerator {
      * Allocates heap memory for a class instance: (1 vtable ptr + numFields) *
      * 4 bytes via sbrk. Stores vtable pointer at word [0] of the object.
      */
-    public void allocateObject(Temp dst, String className, Map<String, Integer> methodOffsets, int fieldCount) {
-        int numFields = fieldCount;
+    public void allocateObject(Temp dst, String type) {
+
+        int numFields = classFieldCount.getOrDefault(type, 0);
         int size = (1 + numFields) * WORD_SIZE; // word[0]=vtable, rest=fields
         fileWriter.format("\tli $a0,%d\n", size);
         fileWriter.format("\tli $v0,9\n");
         fileWriter.format("\tsyscall\n");
         fileWriter.format("\tmove %s,$v0\n", dst);
-        // store vtable pointer at offset 0
-        if (!methodOffsets.isEmpty()) {
-            fileWriter.format("\tla $s0,%s_vtable\n", className);
+        // store vtable pointer at offset 0 if its class has any methods
+        if (!classMethods.getOrDefault(type, new java.util.ArrayList<String>()).isEmpty()) {
+            fileWriter.format("\tla $s0,%s_vtable\n", type);
             fileWriter.format("\tsw $s0,0(%s)\n", dst);
         }
     }

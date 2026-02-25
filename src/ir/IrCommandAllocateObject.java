@@ -1,7 +1,6 @@
 package ir;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import mips.MipsGenerator;
 import temp.*;
@@ -9,16 +8,11 @@ public class IrCommandAllocateObject extends IrCommand
 {
     public Temp dst;
     public String type;
-    // if type is a class
-    public Map<String,Integer> methodOffsets;
-    public int fieldCount;
 
-    public IrCommandAllocateObject(Temp dst, String type, Map<String,Integer> methodOffsets, int fieldCount)
+    public IrCommandAllocateObject(Temp dst, String type)
     {
         this.dst  = dst;
         this.type = type;
-        this.methodOffsets = methodOffsets;
-        this.fieldCount = fieldCount;
     }
 
     @Override
@@ -35,6 +29,6 @@ public class IrCommandAllocateObject extends IrCommand
 
     @Override
     public void mipsMe() {
-        MipsGenerator.getInstance().allocateObject(dst, type,methodOffsets, fieldCount);
+        MipsGenerator.getInstance().allocateObject(dst, type);
     }
 }
