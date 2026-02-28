@@ -10,6 +10,8 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import java.util.HashSet;
+import java.util.Set;
 import temp.*;
 public class IrCommandAllocateObject extends IrCommand
 {
@@ -22,11 +24,20 @@ public class IrCommandAllocateObject extends IrCommand
         this.type = type;
     }
 
-    /***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		
-	}
+    @Override
+    public Set<Temp> getDefTemps() {
+        Set<Temp> def = new HashSet<>();
+        if (dst != null) def.add(dst);
+        return def;
+    }
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

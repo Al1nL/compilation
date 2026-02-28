@@ -10,6 +10,8 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import java.util.HashSet;
+import java.util.Set;
 import temp.*;
 
 public class IrCommandAllocateArray extends IrCommand
@@ -25,11 +27,26 @@ public class IrCommandAllocateArray extends IrCommand
         this.size = size;
     }
 
-    /***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		
-	}
+        @Override
+    public Set<Temp> getUseTemps() {
+        Set<Temp> use = new HashSet<>();
+        if (size != null) use.add(size); // size temp
+        return use;
+    }
+
+    @Override
+    public Set<Temp> getDefTemps() {
+        Set<Temp> def = new HashSet<>();
+        if (dst != null) def.add(dst);
+        return def;
+    }
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+    }
 }

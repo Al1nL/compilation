@@ -10,7 +10,9 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import java.util.Set;
 import mips.MipsGenerator;
+import temp.Temp;
 
 public class IrCommandLabel extends IrCommand
 {
@@ -23,6 +25,14 @@ public class IrCommandLabel extends IrCommand
 	public String getLabelName() {
     return labelName;
 	}
+	
+	// jump doesn't or use define temps
+	
+	@Override
+	public Set<Temp> computeInSet(Set<Temp> out) {
+		return generalComputeInSet(out);
+	}
+
 
 	/***************/
 	/* MIPS me !!! */

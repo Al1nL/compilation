@@ -7,6 +7,7 @@ public class Variable implements Comparable<Variable> {
     public String name;
     public final int scope;
     public boolean isGlobal = false;
+    public int offset;
     private static final Map<String, Variable> pool = new HashMap<>();
 
     public Variable(String name, int scope) {

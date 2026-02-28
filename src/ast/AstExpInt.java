@@ -1,7 +1,6 @@
 package ast;
 
 import ir.*;
-import java.util.*;
 import temp.*;
 import types.*;
 
@@ -41,7 +40,7 @@ public class AstExpInt extends AstExp {
     {
         Temp t = TempFactory.getInstance().getFreshTemp();
         
-        Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
+        Ir.getInstance().AddIrCommand(new IrCommandConstInt(t,value));
         return t;
     }
 }

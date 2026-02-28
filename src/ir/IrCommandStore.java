@@ -1,10 +1,9 @@
 package ir;
 
-import analysis.Dbg;
 import java.util.*;
+import mips.MipsGenerator;
 import temp.Temp;
 import variable.Variable;
-import mips.MipsGenerator;
 
 
 public class IrCommandStore extends IrCommand {
@@ -19,35 +18,16 @@ public class IrCommandStore extends IrCommand {
     }
 
     @Override
-    public Map<Variable, Boolean> computeOutSet(
-            Set<Variable> usedAndUninited,
-            Map<Variable, Boolean> in) {
-        
-        Map<Variable, Boolean> out = new HashMap<>(in);
-        if(src == null){
-
-            return out;
-        }
-
-        Dbg.p("STORE " + var.name + "  deps=" + src.dependencySet);
-        Dbg.p("  IN=" + in);
-        boolean rhsInitialized = true;
-
-        // Check RHS usage
-        for (Variable v : src.dependencySet) {
-            if (!in.getOrDefault(v, false)) {
-                usedAndUninited.add(v);
-                rhsInitialized = false;
-            }
-        }
-
-        // Update only the assigned variable
-        out.put(var, rhsInitialized);
-        Dbg.p("  rhsInitialized=" + rhsInitialized);
-
-        return out;
+    public Set<Temp> getUseTemps() {
+        Set<Temp> use = new HashSet<>();
+        if (src != null) use.add(src); // The temp being stored
+        return use;
     }
 
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
     /***************/
 	/* MIPS me !!! */
 	/***************/

@@ -10,6 +10,8 @@ package ir;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import java.util.HashSet;
+import java.util.Set;
 import temp.*;
 
 public class IrCommandTypedefArray extends IrCommand {
@@ -24,11 +26,21 @@ public class IrCommandTypedefArray extends IrCommand {
         this.temp = temp;
     }
 
-    /***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		
-	}
+    // Array typedef declaration doesn't define temps
+    
+    @Override
+    public Set<Temp> getDefTemps() {
+    Set<Temp> def = new HashSet<>();
+        if (temp != null) def.add(temp);
+        return def;
+    }
+
+    @Override
+    public Set<Temp> computeInSet(Set<Temp> out) {
+        return generalComputeInSet(out);
+    }
+
+    @Override
+    public void mipsMe() {
+    }
 }
