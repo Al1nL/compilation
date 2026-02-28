@@ -31,8 +31,20 @@ public class MipsGenerator {
         fileWriter.format("\tmove $a0,%s\n", t);
         fileWriter.format("\tli $v0,1\n");
         fileWriter.format("\tsyscall\n");
+
+        /*
+
+        * Do we need this part? starter code they gave...
         fileWriter.format("\tli $a0,32\n");
         fileWriter.format("\tli $v0,11\n");
+        fileWriter.format("\tsyscall\n");
+        
+        */
+    }
+
+    public void printString(Temp t) {
+        fileWriter.format("\tmove $a0,%s\n", t);
+        fileWriter.format("\tli $v0,4\n");
         fileWriter.format("\tsyscall\n");
     }
 
@@ -52,12 +64,19 @@ public class MipsGenerator {
         fileWriter.format("\tglobal_%s: .word 0\n", varName);
     }
 
-    public void load(Temp dst, String varName) {
+    public void loadGlobal(Temp dst, String varName) {
         fileWriter.format("\tlw %s,global_%s\n", dst, varName);
     }
+    public void loadLocal(Temp dst, int offset) {
+        //lw $t1, 12($fp)
+        fileWriter.format("\tlw %s, %d($fp)\n", dst, offset);
+    }
 
-    public void store(String varName, Temp src) {
+    public void storeGlobal(String varName, Temp src) {
         fileWriter.format("\tsw %s,global_%s\n", src, varName);
+    }
+    public void storeLocal(int offset, Temp src) {
+        fileWriter.format("\tsw %s, %d($fp)\n", src, offset);
     }
 
     public void li(Temp t, int value) {
@@ -74,8 +93,10 @@ public class MipsGenerator {
     }
 
     /* Dereferences a pointer: dst = Memory[ptr] */
-    public void loadFromPointer(Temp dst, Temp ptr) {
-        fileWriter.format("\tlw %s,0(%s)\n", dst, ptr);
+    public void loadFromPointer(Temp dst, Temp ptr, int offset) {
+        //Where should go: Error message: Invalid Pointer Dereference
+        fileWriter.format("beq %s, 0, abort\n", ptr);
+        fileWriter.format("\tlw %s,%d(%s)\n", dst, offset, ptr);
     }
 
     /**
@@ -152,6 +173,57 @@ public class MipsGenerator {
         fileWriter.format("\tsyscall\n");
         fileWriter.format("\tmove %s,$v0\n", dst);        // dst = base pointer
         fileWriter.format("\tsw %s,0(%s)\n", size, dst);  // store length at [0]
+    }
+
+    // call method of object
+    public void callMethod(Temp dst, Temp object, int offset, List<Temp> args){
+
+        
+        int argsNumber = 1;
+
+        fileWriter.format("beq %s, 0, abort\n", object);
+        //print error
+        fileWriter.format("\tlw $s0, 0(%s)\n", object); //loading dv of object to $s0
+        fileWriter.format("\tlw $s0, %d($s0)\n", offset, object); //loading method address to $s0
+
+        fileWriter.print("\tsubu $sp, $sp, 4\n");
+        fileWriter.format("\tsw %s 0($sp)\n", object);
+
+        for(int i=args.size()-1; i>=0; i--){
+            argsNumber++;
+            fileWriter.print("\tsubu $sp, $sp, 4\n");
+            fileWriter.format("\tsw %s 0($sp)\n", args.get(i));
+        }
+        fileWriter.print("\tjalr $s0\n");
+
+        fileWriter.format("\taddu $sp, $sp, %d\n", argsNumber*4);
+        fileWriter.format("\tmove %s, $v0\n", dst);
+
+    }
+
+    // call function with label
+    public void callFunc(Temp dst, String label, List<Temp> args){
+        
+        int argsNumber = 0;
+
+        for(int i=args.size()-1; i>=0; i--){
+            argsNumber++;
+            fileWriter.print("\tsubu $sp, $sp, 4\n");
+            fileWriter.format("\tsw %s 0($sp)\n", args.get(i));
+        }
+        fileWriter.format("\tjal %s\n", label);
+        if(argsNumber>0){
+            fileWriter.format("\taddu $sp, $sp, %d\n", argsNumber*4);
+        }        
+        fileWriter.format("\tmove %s, $v0\n", dst);
+
+    }
+
+    public void returnToCaller(Temp t){
+        
+        fileWriter.format("\tmove $v0, %s\n", t);
+        fileWriter.print("\tj epilogue\n"); //should it be different for each? In the examples it is the same for all functions.
+
     }
 
     /**

@@ -125,6 +125,7 @@ public class AstExpMethodCall extends AstExp {
                 dst,
                 objTemp,
                 method,
+                offset,
                 argTemps
             ));
 

@@ -83,7 +83,7 @@ public class AstVarField extends AstVar {
         Temp base = variable.irMe();  // object address
         Temp t = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(
-            new IrCommandLoadField(t, base, this.fieldName)
+            new IrCommandLoadField(t, base, this.fieldName, fieldOffset)
         );
 
         t.dependencySet.addAll(base.dependencySet);

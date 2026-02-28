@@ -23,6 +23,6 @@ public class IrCommandPrintString extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().printInt(t);
+		MipsGenerator.getInstance().printString(t);
 	}
 }

@@ -3,6 +3,7 @@
 /***********/
 package ir;
 
+import mips.MipsGenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,17 +14,20 @@ public class IrCommandVirtualCall extends IrCommand
     public Temp dst;
     public Temp object;
     public String method;
+    public int offset;
     public ArrayList<Temp> args;
 
     public IrCommandVirtualCall(
         Temp dst,
         Temp object,
         String method,
+        int offset,
         ArrayList<Temp> args)
     {
         this.dst    = dst;
         this.object = object;
         this.method = method;
+        this.offset = offset;
         this.args   = args;
     }
 
@@ -53,5 +57,6 @@ public class IrCommandVirtualCall extends IrCommand
 
     @Override
     public void mipsMe() {
+        MipsGenerator.getInstance().callMethod(dst, object, offset, args);
     }
 }

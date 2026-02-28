@@ -10,6 +10,7 @@ package ir;
 /**
  * ****************
  */
+import mips.MipsGenerator;
 import java.util.*;
 import temp.*;
 
@@ -41,6 +42,6 @@ public class IrCommandReturn extends IrCommand {
     @Override
 	public void mipsMe()
 	{
-		
+        MipsGenerator.getInstance().returnToCaller(t);
 	}
 }
