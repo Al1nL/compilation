@@ -5,6 +5,7 @@ import ast.*;
 import ir.*;
 import analysis.*;
 import java.util.*;
+import mips.MipsGenerator;
 import regalloc.*;
 import temp.Temp;
 
@@ -52,8 +53,6 @@ public class Main {
                 ast.irMe();
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
-                //fileWriter.print("OK");
-                
 
 
 
@@ -83,6 +82,11 @@ public class Main {
              * --------------------------------- */
             Map<Temp,String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
             regalloc.RegisterAllocator.printAllocation(allocation); // print the allocation for debugging
+            if (allocation == null) {
+                fileWriter.print("Register Allocation Failed");
+                fileWriter.close();
+                return;
+            }
             System.out.println("finished register allocation process");
             
             /* ---------------------------------
@@ -94,14 +98,21 @@ public class Main {
             Dbg.p("Annotated CFG after register substitution:\n");
             Analyzer.printCfg(annotatedCfg);
 
-            fileWriter.print(Dbg.getOutput()); // Write all debug output to file TODO: delete later
+            /* ---------------------------------
+             * Generate MIPS code
+             * --------------------------------- */
+            MipsGenerator.init(outputFileName);
+            for (CFGNode node : annotatedCfg) {
+                    node.cmd.mipsMe();
+                }
+                MipsGenerator.getInstance().finalizeFile();
+
             } catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
             } catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
-                e.printStackTrace(fileWriter);
             }
             fileWriter.close();
         } catch (Exception e) {

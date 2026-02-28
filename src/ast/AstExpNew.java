@@ -1,10 +1,10 @@
 package ast;
 
+import ir.*;
 import java.util.*;
 import symboltable.*;
-import types.*;
 import temp.*;
-import ir.*;
+import types.*;
 import variable.*;
 
 public class AstExpNew extends AstExp {

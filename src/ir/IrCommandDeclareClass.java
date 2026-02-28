@@ -1,10 +1,9 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
 import ast.*;
+import java.util.Map;
 import java.util.Set;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandDeclareClass extends IrCommand
@@ -12,15 +11,21 @@ public class IrCommandDeclareClass extends IrCommand
     public String className;
     public String parentName;
     public AstDecList fields;
+    public Map<String,Integer> methodOffsets;
+    public int fieldCount;
 
     public IrCommandDeclareClass(
         String className,
         String parentName,
-        AstDecList fields)
+        AstDecList fields, 
+        Map<String,Integer> methodOffsets,
+        int fieldCount)
     {
         this.className  = className;
         this.parentName = parentName;
         this.fields     = fields;
+        this.methodOffsets = methodOffsets;
+        this.fieldCount = fieldCount;
     }
     // Class declaration doesn't use or define temps
     
@@ -31,6 +36,7 @@ public class IrCommandDeclareClass extends IrCommand
 
     @Override
     public void mipsMe() {
+        MipsGenerator.getInstance().declareClass(className, methodOffsets, fieldCount);
     }
 
 }
