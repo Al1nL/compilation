@@ -139,7 +139,7 @@ public class AstVarSubscript extends AstVar {
         
         // Load element size constant (usually 4 or 8 bytes depending on your system)
         Ir.getInstance().AddIrCommand(
-            new IRcommandConstInt(elem_size, 4) // Assuming 4 bytes per array element
+            new IrCommandConstInt(elem_size, 4) // Assuming 4 bytes per array element
         );
         
         // Multiply index by element size

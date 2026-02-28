@@ -29,22 +29,16 @@ public class IrCommandLoadMemory extends IrCommand
 	}
 
 	@Override
-    public Map<Variable, Boolean> computeOutSet(Set<Variable> usedAndUninited, Map<Variable, Boolean> prevOutSet){ 
-    	
-		Map<Variable, Boolean> outSet = new HashMap<>(prevOutSet);
-
-		if (this.var != null) {
-			boolean isInitialized = prevOutSet.getOrDefault(this.var, false);
-			if (!isInitialized) {
-				usedAndUninited.add(this.var);
-			}
-		}
-
-		
-
-		return outSet;
+	public Set<Temp> getDefTemps() {
+		Set<Temp> def = new HashSet<>();
+		if (dst != null) def.add(dst);
+		return def;
 	}
 
+	@Override
+	public Set<Temp> computeInSet(Set<Temp> out) {
+		return generalComputeInSet(out);
+	}
 	/***************/
 	/* MIPS me !!! */
 	/***************/
