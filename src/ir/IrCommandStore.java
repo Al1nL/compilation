@@ -33,7 +33,14 @@ public class IrCommandStore extends IrCommand {
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().store(var.name,src);
+
+        if (var.isGlobal){
+			MipsGenerator.getInstance().storeGlobal(var.name, src);
+		}
+		else{
+			int offset = var.offset<0? -4*var.offset+4 : -4*var.offset;
+			MipsGenerator.getInstance().storeLocal(offset, src);
+		}
 	}
 
 }

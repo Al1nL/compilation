@@ -80,6 +80,7 @@ public class AstVarSimple extends AstVar
 		else{
 			offset = offsets.get(var);
 		}
+		var.offset = offset;
         
 		return curIdx;
 		

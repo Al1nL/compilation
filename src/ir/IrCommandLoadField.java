@@ -12,6 +12,7 @@ package ir;
 /*******************/
 import java.util.HashSet;
 import java.util.Set;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandLoadField extends IrCommand
@@ -19,12 +20,14 @@ public class IrCommandLoadField extends IrCommand
     public Temp dst;
     public Temp base;
     public String fieldname;
+    public int offset;
 
-    public IrCommandLoadField(Temp dst, Temp base, String name)
+    public IrCommandLoadField(Temp dst, Temp base, String name, int offset)
     {
         this.dst = dst;
         this.base = base;
         this.fieldname = name;
+        this.offset = offset;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class IrCommandLoadField extends IrCommand
 
     @Override
     public void mipsMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MipsGenerator.getInstance().loadFromPointer(dst, base, (1+offset)*4);
     }
 }
 

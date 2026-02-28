@@ -43,6 +43,13 @@ public class IrCommandLoad extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().load(dst, var.name);
+		if (var.isGlobal){
+			MipsGenerator.getInstance().loadGlobal(dst, var.name);
+		}
+		else{
+			int offset = var.offset<0? -4*var.offset+4 : -4*var.offset;
+			MipsGenerator.getInstance().loadLocal(dst, offset);
+		}
+		
 	}
 }

@@ -58,7 +58,7 @@ public class IrCommandAdd extends IrCommand {
 		else
 		{
 			// dereference: dst = Memory[t1]
-			MipsGenerator.getInstance().loadFromPointer(dst, t1);
+			MipsGenerator.getInstance().loadFromPointer(dst, t1, 0);
 		}
 	}
 }
