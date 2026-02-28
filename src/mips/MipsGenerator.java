@@ -94,8 +94,15 @@ public class MipsGenerator {
 
     /* Dereferences a pointer: dst = Memory[ptr] */
     public void loadFromPointer(Temp dst, Temp ptr, int offset) {
-        //Where should go: Error message: Invalid Pointer Dereference
-        fileWriter.format("beq %s, 0, abort\n", ptr);
+        String okLabel = IrCommand.getFreshLabel("reference_ok");
+        fileWriter.format("bne %s, 0, %s\n", ptr, okLabel);
+        fileWriter.format("\tla $a0,string_invalid_ptr_dref\n");
+        fileWriter.format("\tli $v0,4\n");
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("\tli $v0,10\n");
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("%s:\n", okLabel);
+        
         fileWriter.format("\tlw %s,%d(%s)\n", dst, offset, ptr);
     }
 
@@ -181,8 +188,16 @@ public class MipsGenerator {
         
         int argsNumber = 1;
 
-        fileWriter.format("beq %s, 0, abort\n", object);
-        //print error
+        String okLabel = IrCommand.getFreshLabel("reference_ok");
+        fileWriter.format("bne %s, 0, %s\n", object, okLabel);
+        fileWriter.format("\tla $a0,string_invalid_ptr_dref\n");
+        fileWriter.format("\tli $v0,4\n");
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("\tli $v0,10\n");
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("%s:\n", okLabel);
+
+        
         fileWriter.format("\tlw $s0, 0(%s)\n", object); //loading dv of object to $s0
         fileWriter.format("\tlw $s0, %d($s0)\n", offset, object); //loading method address to $s0
 
