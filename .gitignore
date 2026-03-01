@@ -34,3 +34,4 @@ src/Lexer.java
 src/TokenNames.java
 
 COMPILER
+ANALYZER
