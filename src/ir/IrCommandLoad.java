@@ -47,7 +47,9 @@ public class IrCommandLoad extends IrCommand
 			MipsGenerator.getInstance().loadGlobal(dst, var.name);
 		}
 		else{
-			int offset = var.offset<0? -4*var.offset+4 : -4*var.offset;
+			int offset = var.offset < 0
+                    ? -4 * var.offset + 4       // arguments: above $fp (positive offsets) - unchanged
+                    : -(4 * var.offset + 44);   // locals: skip 40 bytes of saved $t registers
 			MipsGenerator.getInstance().loadLocal(dst, offset);
 		}
 		
