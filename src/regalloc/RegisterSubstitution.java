@@ -1,8 +1,8 @@
 package regalloc;
 
 import analysis.CFGNode;
-import temp.Temp;
 import java.util.*;
+import temp.Temp;
 
 public class RegisterSubstitution {
 
@@ -13,8 +13,8 @@ public class RegisterSubstitution {
                 if (reg != null) {
                     t.setPhysicalReg(reg);
                 } else {
-                    System.err.println("Warning: no allocation for t" + t.getSerialNumber());
-                }
+                    // temp is never live (dead), assign unused register (e.g., $s3) for safety
+                    t.setPhysicalReg("$s3");}
             }
         }
     }

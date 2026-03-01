@@ -58,12 +58,12 @@ public class RegisterAllocator {
 
         // Simplification
         if (!simplify(workGraph)) {
-            return null; // Allocation failed
+            throw new RuntimeException("Register Allocation Failed");
         }
 
         // Assign colors
         if (!select()) {
-            return null; // Allocation failed
+            throw new RuntimeException("Register Allocation Failed");
         }
 
         return allocation;
