@@ -39,83 +39,77 @@ public class Main {
             try {
                 ast = (AstNode) p.parse().value;
 
-                /* [6] Print the AST ... */
-                // ast.printMe();
                 ast.semantMe();
-                /**********************/
                 /* [8] IR the AST ... */
-                /**********************/
                 System.out.println("finished semantics, moving to offseting");
                 ast.offsetMe(null, 0, null, new HashMap<>(), new HashMap<>());
                 System.out.println("finished offsetting");
-                ast.debugOffset();
-                System.out.println("finished printing offset");
+
                 ast.irMe();
+
                 /* Finalize AST GRAPHIZ DOT file */
                 AstGraphviz.getInstance().finalizeFile();
 
+                /* ---------------------------------
+                * Build CFG
+                * --------------------------------- */
+                CFGBuilder builder = new CFGBuilder();
+                List<IrCommand> ir = Ir.getInstance().getCommands();
+                List<CFGNode> cfg = builder.build(ir);
+                System.out.println("finished ir");
 
+                /* ---------------------------------
+                * Run data-flow analysis
+                * --------------------------------- */
+                List<CFGNode> annotatedCfg = Analyzer.analyze(cfg, builder.getAllVariables());
+                System.out.println("finished data flow analysis");
 
-            /* ---------------------------------
-             * Build CFG
-             * --------------------------------- */
-            CFGBuilder builder = new CFGBuilder();
-            List<IrCommand> ir = Ir.getInstance().getCommands();
-            List<CFGNode> cfg = builder.build(ir);
-            System.out.println("finished ir");
+                /* ---------------------------------
+                * Build Interference Graph 
+                * --------------------------------- */
+                InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
+                Dbg.p(ig.toString()); // print the graph for debugging
+                System.out.println("finished building interference graph");
 
-            /* ---------------------------------
-             * Run data-flow analysis
-             * --------------------------------- */
-             List<CFGNode> annotatedCfg = Analyzer.analyze(cfg,builder.getAllVariables());
-            System.out.println("finished data flow analysis");
-           
-            /* ---------------------------------
-             * Build Interference Graph 
-            * --------------------------------- */
-            InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
-            Dbg.p(ig.toString()); // print the graph for debugging
-            System.out.println("finished building interference graph");
+                /* ---------------------------------
+                * Register Allocation
+                * --------------------------------- */
+                try {
+                    Map<Temp, String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
+                    regalloc.RegisterAllocator.printAllocation(allocation);
+                    System.out.println("finished register allocation process");
 
-            /* ---------------------------------
-             * Register Allocation
-             * --------------------------------- */
-            Map<Temp,String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
-            regalloc.RegisterAllocator.printAllocation(allocation); // print the allocation for debugging
-            if (allocation == null) {
-                fileWriter.print("Register Allocation Failed");
-                fileWriter.close();
-                return;
-            }
-            System.out.println("finished register allocation process");
-            
-            /* ---------------------------------
-            * Substitute temps with allocated registers
-            * --------------------------------- */
-            regalloc.RegisterSubstitution.apply(annotatedCfg, allocation);
-            System.out.println("finished register substitution");
-            
-            Dbg.p("Annotated CFG after register substitution:\n");
-            Analyzer.printCfg(annotatedCfg);
-
-            /* ---------------------------------
-             * Generate MIPS code
-             * --------------------------------- */
-            MipsGenerator.init(outputFileName);
-            for (CFGNode node : annotatedCfg) {
+                    /* ---------------------------------
+                    * Substitute temps with allocated registers
+                    * --------------------------------- */
+                    regalloc.RegisterSubstitution.apply(annotatedCfg, allocation);
+                    System.out.println("finished register substitution");
+                } 
+                catch (RuntimeException re) {
+                    fileWriter.print(re.getMessage());
+                    fileWriter.close();
+                    return;
+                }
+                /* ---------------------------------
+                * Generate MIPS code
+                * --------------------------------- */
+                MipsGenerator.init(outputFileName);
+                for (CFGNode node : annotatedCfg) {
                     node.cmd.mipsMe();
                 }
                 MipsGenerator.getInstance().finalizeFile();
-
-            } catch (Error le) {
+            }
+            catch (Error le) {
                 // lexical error
                 fileWriter.print("ERROR");
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // syntax\semantic error with location
                 fileWriter.print(e.getMessage());
             }
             fileWriter.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
