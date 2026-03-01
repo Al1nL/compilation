@@ -1,9 +1,9 @@
         package ast;
 
-import java.util.*;
+import ir.*;
+        import java.util.*;
         import temp.*;
         import types.*;
-        import ir.*;
         import variable.*;
         
 
@@ -36,6 +36,7 @@ import java.util.*;
 
                 List<AstDecVar> globals = new ArrayList<>();
                 List<AstDecFunc> functions = new ArrayList<>();
+                List<AstDec> classes = new ArrayList<>();
 
                 // ----- PASS 1: Traverse the list and classify -----
                 AstDecList it = this.head;
@@ -47,8 +48,16 @@ import java.util.*;
                     } else if (dec instanceof AstDecFunc funcDec) {
                         functions.add(funcDec);
                     }
+                    else if (dec instanceof AstDecClass classDec) {
+                        classes.add(classDec);
+                    }
 
                     it = it.tail;
+                }
+
+                // proccess class declarations to set up class field and method offsets
+                for (AstDec c : classes) {
+                    c.irMe(); 
                 }
 
                 // ----- PASS 2: Emit globals -----
