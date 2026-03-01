@@ -1,4 +1,5 @@
 package ast;
+
 import ir.*;
 import java.util.*;
 import temp.*;
@@ -47,9 +48,11 @@ public class AstExpMethodCall extends AstExp {
         }
 
     }
-    public Type semantMe(){
+
+    public Type semantMe() {
         return semantMe(null);
     }
+
     public Type semantMe(Type expectedReturnType) {
         // Analyze the object to get its type
         Type objectType = object.semantMe();
@@ -67,103 +70,70 @@ public class AstExpMethodCall extends AstExp {
         }
 
         TypeClass classType = (TypeClass) objectType;
-        
+
         // Look up the method in the class
         Type methodType = classType.findField(method);
         if (!(methodType instanceof TypeFunction) && classType.isinitilized) {
             System.out.format(">> ERROR: Method '%s' not found in class '%s'\n",
                     method, classType.name);
             report();
-        }
-        else if(!(methodType instanceof TypeFunction) && !classType.isinitilized){
+        } else if (!(methodType instanceof TypeFunction) && !classType.isinitilized) {
             return expectedReturnType;
         }
         className = classType.name;
         return validateCall(method, (TypeFunction) methodType, args, true);
     }
 
-    public Temp irMe()
-    {
-        /******************************/
-        /* [1] Evaluate object        */
-        /******************************/
+    public Temp irMe() {
+        String nullErrLabel = IrCommand.getFreshLabel("null_deref_error");
+        String afterCallLabel = IrCommand.getFreshLabel("after_method_call");
+
+        // If null → error
         Temp objTemp = object.irMe();
+        Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(objTemp, nullErrLabel));
 
-        /*****************************************/
-        /* [2] Runtime check: object != nil      */
-        /*****************************************/
-        String null_check = IrCommand.getFreshLabel("null_"+object.var.name+"_check");
-
-        Ir.
-            getInstance().
-            AddIrCommand(new IrCommandJumpIfEqToZero(
-                objTemp,
-                null_check
-            ));
-
-        /******************************/
-        /* [3] Evaluate arguments     */
-        /******************************/
+        // eval args + call
         ArrayList<Temp> argTemps = new ArrayList<>();
-
-        for (AstExp exp : args)
-        {
+        for (AstExp exp : args) {
             argTemps.add(exp.irMe());
         }
-
-        /******************************/
-        /* [4] Allocate return temp   */
-        /******************************/
         Temp dst = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps));
 
-        /********************************************/
-        /* [5] Virtual method call                  */
-        /********************************************/
-        Ir.
-            getInstance().
-            AddIrCommand(new IrCommandVirtualCall(
-                dst,
-                objTemp,
-                method,
-                offset,
-                argTemps
-            ));
+        // Jump past error handler
+        Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(afterCallLabel));
 
-        /*****************************************/
-        /* [5.5] Error handler (define label)    */
-        /*****************************************/
-        Ir.getInstance().AddIrCommand(new IrCommandLabel(null_check));
-        //Ir.getInstance().AddIrCommand(new IrCommandRuntimeError("Null pointer dereference"));
-        
-        /*******************/
-        /* [6] return dst */
-        /*******************/
+        // Error handler
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(nullErrLabel));
+        // IrCommandRuntimeError("null pointer dereference") — print + exit
+
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(afterCallLabel));
         return dst;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets) {
         offset = classMethodOffsets.get(className).get(method);
         curIdx = object.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
-        if(args != null){
+        if (args != null) {
             for (AstExp e : args) {
                 curIdx = e.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
             }
         }
         return curIdx;
-		
-	}
 
-    public void debugOffset(){
-		object.debugOffset();
-        if(offset!=null){
-           System.out.println(method + "#" + className + " - " + offset + ":"); 
+    }
+
+    public void debugOffset() {
+        object.debugOffset();
+        if (offset != null) {
+            System.out.println(method + "#" + className + " - " + offset + ":");
         }
-        
-        if(args != null){
+
+        if (args != null) {
             for (AstExp e : args) {
                 e.debugOffset();
             }
         }
-	}
+    }
 
 }

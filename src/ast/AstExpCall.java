@@ -50,26 +50,23 @@ public class AstExpCall extends AstExp {
         return semantMe();
     }
 
-    public Temp irMe()
-    {
-        Temp t = null;
-        
-        if(args != null){
-            for (AstExp e : args) {
-                t = e.irMe();
-            }
+   public Temp irMe() {
+    ArrayList<Temp> argTemps = new ArrayList<>();
+    if (args != null) {
+        for (AstExp e : args) {
+            argTemps.add(e.irMe());   // collect ALL arg temps
         }
-        
-        if(name.equals("PrintString")){
-            Ir.getInstance().AddIrCommand(new IrCommandPrintString(t));
-        }else if(name.equals("PrintInt")){
-            Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
-        }else{
-            t = TempFactory.getInstance().getFreshTemp();
-            Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(name));
-        }
-        return t;
     }
+    Temp dst = TempFactory.getInstance().getFreshTemp();
+    if (name.equals("PrintString")) {
+        Ir.getInstance().AddIrCommand(new IrCommandPrintString(argTemps.get(0)));
+    } else if (name.equals("PrintInt")) {
+        Ir.getInstance().AddIrCommand(new IrCommandPrintInt(argTemps.get(0)));
+    } else {
+        Ir.getInstance().AddIrCommand(new IrCommandCallFunc(dst, name, argTemps)); // jal
+    }
+    return dst;
+}
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         if(args != null){
             for (AstExp e : args) {
