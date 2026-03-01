@@ -28,6 +28,7 @@ public class IrCommandAllocate extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		MipsGenerator.getInstance().allocate(var.name);
+		if (var.isGlobal)
+			MipsGenerator.getInstance().allocate(var.name);
 	}	
 }
