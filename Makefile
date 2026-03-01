@@ -44,7 +44,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/TEST_01_Print_Primes.txt
+INPUT    = ${INPUT_DIR}/TEST_03_Merge_Lists.txt
 OUTPUT   = ${OUTPUT_DIR}/output.txt
 
 ##########
@@ -131,6 +131,26 @@ compile:
 		cat ${OUTPUT_DIR}/MIPS_OUTPUT.txt; \
 	fi
 
+############
+# TEST ALL #
+############
+test-all:
+	@echo "Running tests on all files in ${INPUT_DIR}..."
+	@for file in $(wildcard ${INPUT_DIR}/*.txt); do \
+		filename=$$(basename $$file .txt); \
+		echo "------------------------------------------------"; \
+		echo "Testing: $$filename"; \
+		java -jar ${COMPILER_NAME} $$file ${OUTPUT_DIR}/$$filename.s; \
+		if grep -qE "ERROR|Register Allocation Failed" ${OUTPUT_DIR}/$$filename.s; then \
+			echo "COMPILER reported an error for $$filename. Skipping SPIM."; \
+		else \
+			echo "Running SPIM for $$filename..."; \
+			spim -file ${OUTPUT_DIR}/$$filename.s > ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt; \
+			echo "Output saved to ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt"; \
+		fi; \
+	done
+	@echo "------------------------------------------------"
+	@echo "All tests complete."
 ##############
 # CLEAN      #
 ##############
