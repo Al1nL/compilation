@@ -91,6 +91,21 @@ public class AstVarField extends AstVar {
         return t;
     }
 
+    public Temp irMeAsAddress() {
+        // 1. Get the base address of the object (the heap pointer)
+        Temp base = variable.irMe(); 
+
+        // 2. Put the constant fieldOffset into a Temp
+        Temp offsetTemp = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(new IrCommandConstInt(offsetTemp, this.fieldOffset));
+
+        // 3. Add the base address and the offset to get the exact memory location
+        Temp addr = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(new IrCommandAddOffset(addr, base, offsetTemp));
+
+        return addr;
+    }
+
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
         
         fieldOffset = classFieldOffsets.get(className).get(fieldName);

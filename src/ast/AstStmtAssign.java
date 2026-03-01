@@ -1,7 +1,7 @@
 package ast;
 
-import java.util.*;
 import ir.*;
+import java.util.*;
 import temp.*;
 import types.*;
 import variable.*;
@@ -66,18 +66,31 @@ public class AstStmtAssign extends AstStmt {
         return null;
     }
 
-    public Temp irMe()
-    {
+    public Temp irMe() {
         Temp src = exp.irMe();
-        Ir.
-                getInstance().
-                AddIrCommand(new IrCommandStore( var.var,src));
+
+        if (var instanceof AstVarSubscript) {
+            // Get the computed element address without emitting a load
+            Temp addr = ((AstVarSubscript) var).irMeAsAddress();
+            // Store src into *addr
+            Ir.getInstance().AddIrCommand(new IrCommandStoreMemory(addr, src, var.var));
+        }
+        else if (var instanceof AstVarField) {
+            // Get the computed field address without emitting a load
+            Temp addr = ((AstVarField) var).irMeAsAddress();
+            // Store src into *addr
+            Ir.getInstance().AddIrCommand(new IrCommandStoreMemory(addr, src, var.var));
+        }
+         else {
+            // Normal variable assignment (stack slot)
+            Ir.getInstance().AddIrCommand(new IrCommandStore(var.var, src));
+        }
 
         return null;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
-		if (var != null) {
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets) {
+        if (var != null) {
             curIdx = var.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
 
@@ -85,14 +98,14 @@ public class AstStmtAssign extends AstStmt {
             curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
-	}
+    }
 
-    public void debugOffset(){
-		if (var != null) {
+    public void debugOffset() {
+        if (var != null) {
             var.debugOffset();
         }
         if (exp != null) {
             exp.debugOffset();
         }
-	}
+    }
 }
