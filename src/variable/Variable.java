@@ -44,12 +44,13 @@ public class Variable implements Comparable<Variable> {
 
     public static Variable get(String name, int scope) {
         String key = name + "#" + scope;
-        //If pool already contains key → return its value
-        //Otherwise, create a new value using the function, store it, and return it
-        return pool.computeIfAbsent(
-                key,
-                k -> new Variable(name, scope)
-        );
+        return pool.computeIfAbsent(key, k -> new Variable(name, scope));
+    }
+
+// New overload that includes function context
+    public static Variable get(String name, int scope, String functionName) {
+        String key = name + "#" + scope + "#" + functionName;
+        return pool.computeIfAbsent(key, k -> new Variable(name, scope));
     }
 
 }
