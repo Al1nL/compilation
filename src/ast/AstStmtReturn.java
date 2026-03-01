@@ -1,14 +1,15 @@
 package ast;
 
-import java.util.*;
-import temp.*;
 import ir.*;
+import java.util.*;
 import returncounter.ReturnCounter;
+import temp.*;
 import types.*;
 import variable.*;
 
 public class AstStmtReturn extends AstStmt {
 
+    public static String currentFunctionName = null;
     public final AstExp exp;  // The expression being returned, can be null for `return;`
 
     public AstStmtReturn(AstExp exp) {
@@ -39,7 +40,7 @@ public class AstStmtReturn extends AstStmt {
             }
         } else {
             // return exp;
-            if(expectedReturnType instanceof TypeVoid){
+            if (expectedReturnType instanceof TypeVoid) {
                 System.err.println("ERROR: return <expression> is not allowed, even if the expression has type void");
                 report();
             }
@@ -59,33 +60,30 @@ public class AstStmtReturn extends AstStmt {
         return null;
     }
 
-    public Temp irMe()
-    {
+    public Temp irMe() {
         Temp t = null;
         if (this.exp != null) {
             t = this.exp.irMe();
-            Ir.getInstance().AddIrCommand(
-                new IrCommandReturn(t)
-            );
         }
-
+        // Always emit return — handles both void and non-void
+        Ir.getInstance().AddIrCommand(new IrCommandReturn(t, currentFunctionName));
         return t;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
-        
-        if (exp != null){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets) {
+
+        if (exp != null) {
             curIdx = exp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         return curIdx;
 
-	}
+    }
 
-    public void debugOffset(){
-		if (exp != null) {
+    public void debugOffset() {
+        if (exp != null) {
             exp.debugOffset();
         }
 
-	}
-    
+    }
+
 }

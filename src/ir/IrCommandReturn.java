@@ -10,16 +10,18 @@ package ir;
 /**
  * ****************
  */
-import mips.MipsGenerator;
 import java.util.*;
+import mips.MipsGenerator;
 import temp.*;
 
 public class IrCommandReturn extends IrCommand {
 
     Temp t;
+    String functionName;
 
-    public IrCommandReturn(Temp t) {
+    public IrCommandReturn(Temp t, String functionName) {
         this.t = t;
+        this.functionName = functionName;
     }
 
     @Override
@@ -42,6 +44,6 @@ public class IrCommandReturn extends IrCommand {
     @Override
 	public void mipsMe()
 	{
-        MipsGenerator.getInstance().returnToCaller(t);
+        MipsGenerator.getInstance().returnToCaller(t, functionName);
 	}
 }
