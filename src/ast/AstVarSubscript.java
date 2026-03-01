@@ -124,15 +124,13 @@ public Temp irMe() {
         return addr;
     }    
     
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass,
-                        Map<String, Map<String, Integer>> classFieldOffsets,
-                        Map<String, Map<String, Integer>> classMethodOffsets) {
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels) {
 
-        curIdx = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        curIdx = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         if (variable.var != null) {
             offset = variable.var.offset;
         }
-        return subscript.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        return subscript.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
     }
 
     public void debugOffset() {

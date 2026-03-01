@@ -146,7 +146,7 @@ public class AstDecFunc extends AstDec {
     return null;
 }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
 		if (curClass!=null){
             offset = classMethodOffsets.get(curClass).size();
             if(!classMethodOffsets.get(curClass).containsKey(name)){
@@ -164,10 +164,10 @@ public class AstDecFunc extends AstDec {
             paramIdx--; 
         }
         if (params != null) {
-            params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets);
+            params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         if (body != null) {
-            localVarCount = body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+            localVarCount = body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         
         return 0;

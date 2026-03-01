@@ -46,10 +46,10 @@ public class AstStmtCall extends AstStmt {
         return null;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
         
         if (callExp != null){
-            curIdx = callExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            curIdx = callExp.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         return curIdx;
 	}

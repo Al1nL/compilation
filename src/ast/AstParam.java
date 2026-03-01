@@ -78,7 +78,7 @@ public class AstParam extends AstNode {
         return paramTemp;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
 		if (offsets!=null){
             offsets.put(var, curIdx);
             var.offset = curIdx;

@@ -44,7 +44,7 @@ CUP_FLAGS =                                \
 #########################
 # DEFINITIONS :: PARSER #
 #########################
-INPUT    = ${INPUT_DIR}/TEST_03_Merge_Lists.txt
+INPUT    = ${INPUT_DIR}/TEST_01_Print_Primes.txt
 OUTPUT   = ${OUTPUT_DIR}/output.txt
 
 ##########

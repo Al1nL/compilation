@@ -42,7 +42,7 @@ public class Main {
                 ast.semantMe();
                 /* [8] IR the AST ... */
                 System.out.println("finished semantics, moving to offseting");
-                ast.offsetMe(null, 0, null, new HashMap<>(), new HashMap<>());
+                ast.offsetMe(null, 0, null, new HashMap<>(), new HashMap<>(), new HashMap<>());
                 System.out.println("finished offsetting");
 
                 ast.irMe();

@@ -110,13 +110,13 @@ public class AstStmtWhile extends AstStmt {
         return null;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
         
         if (cond != null) {
-            curIdx = cond.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            curIdx = cond.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         if (body != null) {
-            curIdx = body.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            curIdx = body.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         return curIdx;
 		

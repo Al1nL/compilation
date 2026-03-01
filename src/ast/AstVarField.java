@@ -106,10 +106,10 @@ public class AstVarField extends AstVar {
         return addr;
     }
 
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
         
         fieldOffset = classFieldOffsets.get(className).get(fieldName);
-        int res = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+        int res = variable.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         return res;
 		
 	}

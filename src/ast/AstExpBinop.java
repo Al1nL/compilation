@@ -190,12 +190,12 @@ public class AstExpBinop extends AstExp {
         }
         return dst;
     }
-    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
+    public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
         if (left  != null){
-            curIdx = left.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);
+            curIdx = left.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
         if (right != null){
-            curIdx =right.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets);	
+            curIdx =right.offsetMe(offsets, curIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);	
 	    }
         return curIdx;
 
