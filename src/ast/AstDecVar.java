@@ -1,7 +1,7 @@
 package ast;
 
-import java.util.*;
 import ir.*;
+import java.util.*;
 import symboltable.*;
 import temp.*;
 import types.*;
@@ -82,7 +82,7 @@ public class AstDecVar extends AstDec {
         // Enter variable to symbol table   
     
         SymbolTable.getInstance().enter(name, varType);
-        var = Variable.get(name, SymbolTable.getInstance().currScopeLevel);
+        var = Variable.get(name, SymbolTable.getInstance().currScopeLevel, AstDecFunc.currentFunctionName);
         return varType;
     }
 

@@ -1,21 +1,23 @@
 package ast;
 
+import ir.*;
 import java.util.*;
 import returncounter.ReturnCounter;
 import symboltable.*;
-import types.*;
 import temp.*;
-import ir.*;
+import types.*;
 import variable.*;
 
 
 public class AstDecFunc extends AstDec {
 
+    public static String currentFunctionName = null;
     public final String returnType;
     public final String name;
     public final AstParamList params;
     private final AstStmtList body;
     public Integer offset;
+    public int localVarCount;
 
     public AstDecFunc(String returnType, String name, AstParamList params, AstStmtList body) {
         this.serialNumber = AstNodeSerialNumber.getFresh();
@@ -50,6 +52,7 @@ public class AstDecFunc extends AstDec {
     }
 
     public Type semantMe() {
+        currentFunctionName = name; 
         /* Forbid overriding built-ins */
         if (name.equals("PrintInt") || name.equals("PrintString")) {
             System.out.format(">> ERROR [%d] cannot override built-in function %s\n",
@@ -101,7 +104,7 @@ public class AstDecFunc extends AstDec {
                 }
 
                 SymbolTable.getInstance().enter(it.head.name, paramType);
-                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel);
+                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel,name);
             }
         }
         if (type_list != null) {
@@ -134,15 +137,14 @@ public class AstDecFunc extends AstDec {
         return semantMe();
     }
 
-    public Temp irMe()
-    {
-        Ir.
-                getInstance().
-                AddIrCommand(new IrCommandLabel(name));
-        if (body != null) body.irMe();
-
-        return null;
-    }
+    public Temp irMe() {
+    Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
+    if (params != null) params.irMe();                           // must come first
+    AstStmtReturn.currentFunctionName = name;
+    if (body != null) body.irMe();
+    Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
+    return null;
+}
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets){
 		if (curClass!=null){
@@ -165,7 +167,7 @@ public class AstDecFunc extends AstDec {
             params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         if (body != null) {
-            body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
+            localVarCount = body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets);
         }
         
         return 0;

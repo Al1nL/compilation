@@ -1,7 +1,7 @@
 package ast;
 
-import java.util.*;
 import ir.*;
+import java.util.*;
 import symboltable.*;
 import temp.*;
 import types.*;
@@ -55,7 +55,7 @@ public class AstVarSimple extends AstVar
         report();
 	}
 	Type t = e.type;
-	this.var = Variable.get(name, e.scopeLevel); 
+	this.var = Variable.get(name, e.scopeLevel, AstDecFunc.currentFunctionName);
 	System.out.println("varname: " + name + " "+ lineNumber);
     return t;	
 	}

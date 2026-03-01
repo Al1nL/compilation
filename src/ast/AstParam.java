@@ -1,8 +1,8 @@
 package ast;
-import java.util.*;
-import temp.*;
 import ir.*;
+import java.util.*;
 import symboltable.*;
+import temp.*;
 import types.*;
 import variable.*;
 
@@ -61,6 +61,8 @@ public class AstParam extends AstNode {
         /*******************************/
         /* [1] Allocate a temporary for this parameter */
         /*******************************/
+            this.var = Variable.get(name, var.scope, AstDecFunc.currentFunctionName); // unique key per function
+
         Temp paramTemp = TempFactory.getInstance().getFreshTemp();
 
         /******************************************/
