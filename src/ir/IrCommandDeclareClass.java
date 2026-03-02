@@ -12,6 +12,7 @@ public class IrCommandDeclareClass extends IrCommand
     public String parentName;
     public AstDecList fields;
     public Map<String,Integer> methodOffsets;
+    public Map<String,String> methodLabels;
     public int fieldCount;
 
     public IrCommandDeclareClass(
@@ -19,12 +20,14 @@ public class IrCommandDeclareClass extends IrCommand
         String parentName,
         AstDecList fields, 
         Map<String,Integer> methodOffsets,
-        int fieldCount)
+        int fieldCount,
+        Map<String,String> methodLabels)
     {
         this.className  = className;
         this.parentName = parentName;
         this.fields     = fields;
         this.methodOffsets = methodOffsets;
+        this.methodLabels = methodLabels;
         this.fieldCount = fieldCount;
     }
     // Class declaration doesn't use or define temps
@@ -36,7 +39,7 @@ public class IrCommandDeclareClass extends IrCommand
 
     @Override
     public void mipsMe() {
-        MipsGenerator.getInstance().declareClass(className, methodOffsets, fieldCount);
+        MipsGenerator.getInstance().declareClass(className, methodOffsets, fieldCount, methodLabels);
     }
 
 }

@@ -14,6 +14,7 @@ public class AstDecFunc extends AstDec {
     public static String currentFunctionName = null;
     public final String returnType;
     public final String name;
+    public String label;
     public final AstParamList params;
     private final AstStmtList body;
     public Integer offset;
@@ -138,16 +139,19 @@ public class AstDecFunc extends AstDec {
     }
 
     public Temp irMe() {
-    Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
-    if (params != null) params.irMe();                           // must come first
-    AstStmtReturn.currentFunctionName = name;
-    if (body != null) body.irMe();
-    Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
-    return null;
+        String name = this.label!=null? this.label : this.name;
+        Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
+        if (params != null) params.irMe();                           // must come first
+        AstStmtReturn.currentFunctionName = name;
+        if (body != null) body.irMe();
+        Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
+        return null;
 }
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
 		if (curClass!=null){
+            this.label = IrCommand.getFreshLabel(String.format("%s_%s", curClass, this.name));
+            methodLabels.get(curClass).put(name, label);
             offset = classMethodOffsets.get(curClass).size();
             if(!classMethodOffsets.get(curClass).containsKey(name)){
                 classMethodOffsets.get(curClass).put(name, offset);

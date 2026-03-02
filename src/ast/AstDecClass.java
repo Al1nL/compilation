@@ -14,6 +14,7 @@ public class AstDecClass extends AstDec {
     public final AstDecList fields;   // linked list of cFields
 
     private Map<String,Integer> _MethodOffsets; // set during offsetMe
+    private Map<String,String> _MethodLabels;
     private int _FieldCount;
 
     public AstDecClass(String name, String parentName, AstDecList fields) {
@@ -167,9 +168,10 @@ public class AstDecClass extends AstDec {
                 parentName,
                 fields,
                 _MethodOffsets != null ? _MethodOffsets : new HashMap<>(),
-                _FieldCount
+                _FieldCount,
+                _MethodLabels
             ));
-
+        fields.irMe();
         return null;
     }
 
@@ -177,16 +179,20 @@ public class AstDecClass extends AstDec {
 		curClass = name;
         Map<String, Integer> newFields;
         Map<String, Integer> newMethods;
+        Map<String, String> newLabels;
         if(parentName!=null){
             newFields = new HashMap<String, Integer>(classFieldOffsets.get(parentName));
             newMethods = new HashMap<String, Integer>(classMethodOffsets.get(parentName));
+            newLabels = new HashMap<String, String>(methodLabels.get(parentName));
         }
         else{
             newFields = new HashMap<String, Integer>();
             newMethods = new HashMap<String, Integer>();
+            newLabels = new HashMap<String, String>();
         }
         classFieldOffsets.put(curClass, newFields);
         classMethodOffsets.put(curClass, newMethods);
+        methodLabels.put(curClass, newLabels);
                
         if(fields!=null){
             fields.offsetMe(offsets, classFieldOffsets.get(curClass).size(), curClass, classFieldOffsets, classMethodOffsets, methodLabels);
@@ -195,6 +201,7 @@ public class AstDecClass extends AstDec {
         
         _MethodOffsets = new HashMap<>(classMethodOffsets.get(curClass));
         _FieldCount = classFieldOffsets.get(curClass).size();
+        _MethodLabels = new HashMap<>(methodLabels.get(curClass));
         
         return 0;
         

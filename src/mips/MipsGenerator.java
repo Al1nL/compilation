@@ -18,8 +18,10 @@ public class MipsGenerator {
     // Separate buffers for .data and .text sections
     private StringWriter dataBuffer = new StringWriter();
     private StringWriter textBuffer = new StringWriter();
+    //private StringWriter vtBuffer = new StringWriter();
     private PrintWriter  dataSec    = new PrintWriter(dataBuffer);
     private PrintWriter  textSec    = new PrintWriter(textBuffer);
+    //private PrintWriter  vtSec    = new PrintWriter(vtBuffer);
 
     // Track number of fields and vtable per class
     private Map<String, Integer> classFieldCount = new HashMap<>();
@@ -31,7 +33,7 @@ public class MipsGenerator {
      * Must be called once after all IR commands are done.
      */
     public void finalizeFile() {
-        // 1. Write entire .data section
+        // 1. Write .data section
         fileWriter.print(".data\n");
         dataSec.flush();
         fileWriter.print(dataBuffer.toString());
@@ -44,6 +46,12 @@ public class MipsGenerator {
         // 3. Exit syscall
         fileWriter.print("\tli $v0,10\n");
         fileWriter.print("\tsyscall\n");
+/*
+        // 4. Write vt .data section
+        fileWriter.print(".data\n");
+        vtSec.flush();
+        fileWriter.print(vtBuffer.toString());
+*/
         fileWriter.close();
     }
 
@@ -212,7 +220,7 @@ public class MipsGenerator {
         textSec.format("%s:\n", okLabel);
 
         textSec.format("\tlw $s0, 0(%s)\n", object);
-        textSec.format("\tlw $s0, %d($s0)\n", offset);
+        textSec.format("\tlw $s0, %d($s0)\n", offset*4);
 
         textSec.print("\tsubu $sp, $sp, 4\n");
         textSec.format("\tsw %s, 0($sp)\n", object);
@@ -252,7 +260,7 @@ public class MipsGenerator {
      * Emits the vtable for a class into the .data section.
      * Layout: className_vtable: .word method0 method1 ...
      */
-    public void declareClass(String className, Map<String, Integer> methodOffsets, int fieldCount) {
+    public void declareClass(String className, Map<String, Integer> methodOffsets, int fieldCount, Map<String,String> methodLabels) {
         String[] ordered = new String[methodOffsets.size()];
         for (Map.Entry<String, Integer> e : methodOffsets.entrySet()) {
             ordered[e.getValue()] = e.getKey();
@@ -264,7 +272,7 @@ public class MipsGenerator {
         if (ordered.length > 0) {
             dataSec.format("%s_vtable:", className);
             for (String m : ordered) {
-                dataSec.format(" .word %s", m);
+                dataSec.format(" .word %s\n", methodLabels.get(m));
             }
             dataSec.format("\n");
         }
