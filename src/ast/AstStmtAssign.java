@@ -67,24 +67,25 @@ public class AstStmtAssign extends AstStmt {
     }
 
     public Temp irMe() {
-        Temp src = exp.irMe();
-
+        Temp src; 
         if (var instanceof AstVarSubscript) {
             // Get the computed element address without emitting a load
             Temp addr = ((AstVarSubscript) var).irMeAsAddress();
+            src =  exp.irMe(); //must be after addr, because it can change it
             // Store src into *addr
             Ir.getInstance().AddIrCommand(new IrCommandStoreMemory(addr, src, var.var));
         }
         else if (var instanceof AstVarField) {
             // Get the computed field address without emitting a load
             Temp addr = ((AstVarField) var).irMeAsAddress();
+            src =  exp.irMe();
             // Store src into *addr
             Ir.getInstance().AddIrCommand(new IrCommandStoreMemory(addr, src, var.var));
         }
          else {
+            src =  exp.irMe();
             AstVarSimple simpleVar =  (AstVarSimple) var;
             if(simpleVar.isFieldInMethod){
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! "+simpleVar.name);
                 Temp base = TempFactory.getInstance().getFreshTemp();
                 Ir.getInstance().AddIrCommand(new IrCommandLoad(base,null)); //loading the object
 				Ir.getInstance().AddIrCommand(new IrCommandStoreField(src, base, simpleVar.name, simpleVar.offset)); //storing into the field in the object
