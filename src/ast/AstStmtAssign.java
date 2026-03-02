@@ -82,8 +82,18 @@ public class AstStmtAssign extends AstStmt {
             Ir.getInstance().AddIrCommand(new IrCommandStoreMemory(addr, src, var.var));
         }
          else {
-            // Normal variable assignment (stack slot)
-            Ir.getInstance().AddIrCommand(new IrCommandStore(var.var, src));
+            AstVarSimple simpleVar =  (AstVarSimple) var;
+            if(simpleVar.isFieldInMethod){
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!! "+simpleVar.name);
+                Temp base = TempFactory.getInstance().getFreshTemp();
+                Ir.getInstance().AddIrCommand(new IrCommandLoad(base,null)); //loading the object
+				Ir.getInstance().AddIrCommand(new IrCommandStoreField(src, base, simpleVar.name, simpleVar.offset)); //storing into the field in the object
+            }
+            else{
+                // Normal variable assignment (stack slot)
+                Ir.getInstance().AddIrCommand(new IrCommandStore(var.var, src));
+            }
+            
         }
 
         return null;

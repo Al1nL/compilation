@@ -63,7 +63,14 @@ public class AstExpCall extends AstExp {
     } else if (name.equals("PrintInt")) {
         Ir.getInstance().AddIrCommand(new IrCommandPrintInt(argTemps.get(0)));
     } else {
-        Ir.getInstance().AddIrCommand(new IrCommandCallFunc(dst, name, argTemps)); // jal
+        IrCommand curIrCommand = new IrCommandCallFunc(dst, name, argTemps);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(curIrCommand); // jal
+        }
+        
     }
     return dst;
 }

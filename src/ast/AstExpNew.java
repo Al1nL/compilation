@@ -70,15 +70,51 @@ public class AstExpNew extends AstExp {
         /* [1] Allocate fresh temp   */
         /******************************/
         Temp dst = TempFactory.getInstance().getFreshTemp();
+        IrCommand curIrCommand;
     
         /*********************************************/
         /* [2] Case 1: new TYPE (object allocation) */
         /*********************************************/
         if (sizeExp == null)
         {
-            Ir.
-                getInstance().
-                AddIrCommand(new IrCommandAllocateObject(dst, type));
+            curIrCommand = new IrCommandAllocateObject(dst, type);
+            IrCommandAllocateObject alocObjCommand = (IrCommandAllocateObject) curIrCommand;
+            Map<Integer, List<IrCommand>> initObjectCommands = Ir.fieldInitIrCommands.get(type);
+
+            if(Ir.curClass!=null){
+                List<IrCommand> commandList = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField); 
+                commandList.add(alocObjCommand);
+                if(!initObjectCommands.isEmpty()){
+                    List<Integer> sortedKeys = new ArrayList<>(initObjectCommands.keySet());
+                    Collections.sort(sortedKeys);
+                    for (Integer key : sortedKeys) {
+                        List<IrCommand> fieldsCommands = initObjectCommands.get(key);
+                        for(IrCommand cmnd: fieldsCommands){
+                            cmnd.allocatedObject = alocObjCommand;
+                            commandList.add(cmnd);
+                        }
+                        
+                    }
+    
+                }
+            }
+            else{
+                Ir.getInstance().AddIrCommand(alocObjCommand);
+                if(!initObjectCommands.isEmpty()){
+                    List<Integer> sortedKeys = new ArrayList<>(initObjectCommands.keySet());
+                    Collections.sort(sortedKeys);
+                    for (Integer key : sortedKeys) {
+                        List<IrCommand> fieldsCommands = initObjectCommands.get(key);
+                        for(IrCommand cmnd: fieldsCommands){
+                            cmnd.allocatedObject = alocObjCommand;
+                            Ir.getInstance().AddIrCommand(cmnd);
+                        }
+                        
+                    }
+    
+                } 
+            }
+            
     
             /*******************/
             /* [3] return dst */
@@ -90,10 +126,13 @@ public class AstExpNew extends AstExp {
         /* [4] Case 2: new TYPE[size] (array alloc) */
         /********************************************/
         Temp sizeTemp = sizeExp.irMe();
-    
-        Ir.
-            getInstance().
-            AddIrCommand(new IrCommandAllocateArray(dst, type, sizeTemp));
+        curIrCommand = new IrCommandAllocateArray(dst, type, sizeTemp);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(curIrCommand); 
+        }
     
         /*******************/
         /* [5] return dst */

@@ -98,16 +98,26 @@ public class AstExpMethodCall extends AstExp {
             argTemps.add(exp.irMe());
         }
         Temp dst = TempFactory.getInstance().getFreshTemp();
-        Ir.getInstance().AddIrCommand(new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps));
+        IrCommand vcCommand1, vcCommand2, vcCommand3, vcCommand4;
+        vcCommand1 = new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps);
+        vcCommand2 = new  IrCommandJumpLabel(afterCallLabel); // Jump past error handler
+        vcCommand3 = new IrCommandLabel(nullErrLabel); // Error handler
+        vcCommand4 = new IrCommandLabel(afterCallLabel); // IrCommandRuntimeError("null pointer dereference") — print + exit
+        if(Ir.curClass!=null){
+            List<IrCommand> commandList = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField);
 
-        // Jump past error handler
-        Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(afterCallLabel));
-
-        // Error handler
-        Ir.getInstance().AddIrCommand(new IrCommandLabel(nullErrLabel));
-        // IrCommandRuntimeError("null pointer dereference") — print + exit
-
-        Ir.getInstance().AddIrCommand(new IrCommandLabel(afterCallLabel));
+            commandList.add(vcCommand1);
+            commandList.add(vcCommand2);
+            commandList.add(vcCommand3);
+            commandList.add(vcCommand4);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(vcCommand1);
+            Ir.getInstance().AddIrCommand(vcCommand2);
+            Ir.getInstance().AddIrCommand(vcCommand3);
+            Ir.getInstance().AddIrCommand(vcCommand4);
+        }
+        
         return dst;
     }
 

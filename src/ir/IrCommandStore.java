@@ -35,7 +35,11 @@ public class IrCommandStore extends IrCommand {
 
         if (var.isGlobal) {
             MipsGenerator.getInstance().storeGlobal(var.name, src);
-        } else {
+        }
+        else if(this.allocatedObject!=null){
+            MipsGenerator.getInstance().storeToPointer(src, this.allocatedObject.dst, (1+var.offset)*4); //store in object's field
+        }
+         else {
             int offset = var.offset < 0
                     ? -4 * var.offset + 4       // arguments: above $fp (positive offsets) - unchanged
                     : -(4 * var.offset + 44);   // locals: skip 40 bytes of saved $t registers

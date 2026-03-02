@@ -82,9 +82,14 @@ public class AstVarField extends AstVar {
         
         Temp base = variable.irMe();  // object address
         Temp t = TempFactory.getInstance().getFreshTemp();
-        Ir.getInstance().AddIrCommand(
-            new IrCommandLoadField(t, base, this.fieldName, fieldOffset)
-        );
+        IrCommand curIrCommand = new IrCommandLoadField(t, base, this.fieldName, fieldOffset);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(curIrCommand); 
+        }
+        
 
         t.dependencySet.addAll(base.dependencySet);
         analysis.Dbg.p("AstVarField.irMe name=" + var.name + " dependencies=" + t.dependencySet);

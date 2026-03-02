@@ -14,6 +14,7 @@ public class AstVarSimple extends AstVar
 	/************************/
 	public String name;
 	public Integer offset;
+	public boolean isFieldInMethod = false;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -67,7 +68,20 @@ public class AstVarSimple extends AstVar
 	public Temp irMe()
 	{
 		Temp t = TempFactory.getInstance().getFreshTemp();
-		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,var));
+		IrCommand curIrCommand = new IrCommandLoad(t,var);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+			if(isFieldInMethod){ //we're referncing a field in a method
+				Temp base = TempFactory.getInstance().getFreshTemp();
+				IrCommand loadObjectCommand = new IrCommandLoad(base,null); //loading the object
+				curIrCommand = new IrCommandLoadField(t, base, name, offset); //loading the field from the object
+				Ir.getInstance().AddIrCommand(loadObjectCommand); 
+			}
+            Ir.getInstance().AddIrCommand(curIrCommand); 
+        }
+		
     	t.dependencySet.add(var);
 
 		return t;
@@ -77,6 +91,7 @@ public class AstVarSimple extends AstVar
         
 		if(curClass!=null && classFieldOffsets.get(curClass).containsKey(name)){
 			offset = classFieldOffsets.get(curClass).get(name);
+			isFieldInMethod = true;
 		}
 		else{
 			offset = offsets.get(var);

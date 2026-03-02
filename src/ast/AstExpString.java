@@ -40,7 +40,13 @@ public class AstExpString extends AstExp {
     public Temp irMe()
     {
         Temp t = TempFactory.getInstance().getFreshTemp();
-        Ir.getInstance().AddIrCommand(new IrCommandConstString(t,value));
+        IrCommand curIrCommand = new IrCommandConstString(t,value);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(curIrCommand); 
+        }
         return t;
     }
 }

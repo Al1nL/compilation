@@ -92,17 +92,28 @@ public class AstDecVar extends AstDec {
 
     public Temp irMe() {
         analysis.Dbg.p("AstDecVar.irMe name=" + var.name);
-        Ir.getInstance().AddIrCommand(new IrCommandAllocate(var));
+        if(Ir.curClass!=null){
+            if (exp != null) {
+                Ir.curField = offset;
+                Ir.fieldInitIrCommands.get(Ir.curClass).put(Ir.curField, new ArrayList<>());
+                List<IrCommand> commandListofField = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField);
+                commandListofField.add(new IrCommandAllocate(var));
+                commandListofField.add(new IrCommandStore(var, exp.irMe()));
+            }
+        }
+        else{
+            Ir.getInstance().AddIrCommand(new IrCommandAllocate(var));
 
-        if (exp != null) {
-            Ir.getInstance().AddIrCommand(new IrCommandStore(var, exp.irMe()));
+            if (exp != null) {
+                Ir.getInstance().AddIrCommand(new IrCommandStore(var, exp.irMe()));
+            }
         }
         return null;
     }
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
 		
-        if(curClass!=null){
+        if(curClass!=null&&offsets==null){
             classFieldOffsets.get(curClass).put(name, curIdx);
             var.offset = curIdx;
             offset = curIdx;

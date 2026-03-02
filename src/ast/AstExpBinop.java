@@ -143,6 +143,7 @@ public class AstExpBinop extends AstExp {
         Temp t1 = null;
         Temp t2 = null;
         Temp dst = TempFactory.getInstance().getFreshTemp();
+        IrCommand binOpIrCommand = null;
 
 
         if (left != null) {
@@ -161,33 +162,40 @@ public class AstExpBinop extends AstExp {
 
         if (op == 0) // PLUS
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopAddIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopAddIntegers(dst, t1, t2);
         }
         if (op == 1) // MINUS
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopSubIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopSubIntegers(dst, t1, t2);
         }
         if (op == 2) // TIMES
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopMulIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopMulIntegers(dst, t1, t2);
         }
         if (op == 3) // DIVIDE
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopDivIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopDivIntegers(dst, t1, t2);
         }
         if (op == 4) // LT
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopLtIntegers(dst, t1, t2);
         }
         if (op == 5) // GT
         {
             // a > b is equivalent to b < a
-            Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst, t2, t1));
+            binOpIrCommand = new IrCommandBinopLtIntegers(dst, t2, t1);
         }
         if (op == 6) // EQ
         {
-            Ir.getInstance().AddIrCommand(new IrCommandBinopEqIntegers(dst, t1, t2));
+            binOpIrCommand = new IrCommandBinopEqIntegers(dst, t1, t2);
         }
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(binOpIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(binOpIrCommand);
+        }
+        
         return dst;
     }
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){

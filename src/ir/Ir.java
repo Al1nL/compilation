@@ -19,7 +19,9 @@ public class Ir
 
 private List<IrCommand> globalInit = new ArrayList<>();
     private List<IrCommand> mainCommands = new ArrayList<>();
-
+	public static String curClass;
+	public static int curField = -1; //field offset
+	public static Map<String, Map<Integer, List<IrCommand>>> fieldInitIrCommands = new HashMap<>();
     private boolean buildingGlobals = true;
 
     public void switchToMain() {

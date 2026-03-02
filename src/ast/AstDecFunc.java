@@ -139,12 +139,19 @@ public class AstDecFunc extends AstDec {
     }
 
     public Temp irMe() {
+        String curClass = null;
+        if(Ir.curClass != null){
+            curClass = Ir.curClass;
+            Ir.curClass = null;
+        }
+        
         String name = this.label!=null? this.label : this.name;
         Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
         if (params != null) params.irMe();                           // must come first
         AstStmtReturn.currentFunctionName = name;
         if (body != null) body.irMe();
         Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
+        Ir.curClass = curClass;
         return null;
 }
 

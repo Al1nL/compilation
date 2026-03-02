@@ -161,6 +161,18 @@ public class AstDecClass extends AstDec {
         /**************************************/
         /* [1] Begin class IR generation      */
         /**************************************/
+        Map<Integer, List<IrCommand>> newFields;
+        Ir.curClass = name;
+
+        if(parentName!=null){
+            newFields = new HashMap<Integer, List<IrCommand>>(Ir.fieldInitIrCommands.get(parentName));
+        }
+        else{
+            newFields = new HashMap<Integer, List<IrCommand>>();
+        }
+        Ir.fieldInitIrCommands.put(Ir.curClass, newFields);
+
+
         Ir.
             getInstance().
             AddIrCommand(new IrCommandDeclareClass(
@@ -171,7 +183,11 @@ public class AstDecClass extends AstDec {
                 _FieldCount,
                 _MethodLabels
             ));
-        fields.irMe();
+        if(fields!=null){
+            fields.irMe();
+        }
+        Ir.curClass = null;
+        
         return null;
     }
 

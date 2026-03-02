@@ -43,13 +43,21 @@ public class IrCommandLoad extends IrCommand
 	/***************/
 	public void mipsMe()
 	{
-		if (var.isGlobal){
+		if (var!=null&&var.isGlobal){
 			MipsGenerator.getInstance().loadGlobal(dst, var.name);
 		}
+		
 		else{
-			int offset = var.offset < 0
-                    ? -4 * var.offset + 4       // arguments: above $fp (positive offsets) - unchanged
-                    : -(4 * var.offset + 44);   // locals: skip 40 bytes of saved $t registers
+			int offset;
+			if(var==null){
+				offset=8; //only happens when loading the object for the method; 8 since the object in offset -1
+			}
+			else{
+				offset = var.offset < 0
+						? -4 * var.offset + 4       // arguments: above $fp (positive offsets) - unchanged
+						: -(4 * var.offset + 44);   // locals: skip 40 bytes of saved $t registers
+			}
+			
 			MipsGenerator.getInstance().loadLocal(dst, offset);
 		}
 		

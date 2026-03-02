@@ -35,9 +35,13 @@ public class AstExpNil extends AstExp {
         /******************************/
         /* [2] dst = 0 (nil)         */
         /******************************/
-        Ir.
-            getInstance().
-            AddIrCommand(new IrCommandConstInt(dst, 0));
+        IrCommand curIrCommand = new IrCommandConstInt(dst, 0);
+        if(Ir.curClass!=null){
+            Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
+        }
+        else{
+            Ir.getInstance().AddIrCommand(curIrCommand); 
+        }
 
         /*******************/
         /* [3] return dst */

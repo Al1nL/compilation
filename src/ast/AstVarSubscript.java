@@ -102,10 +102,19 @@ public Temp irMe() {
     Temp idx = subscript.irMe();
 
     Temp addr = TempFactory.getInstance().getFreshTemp();
-    Ir.getInstance().AddIrCommand(new IrCommandAddOffset(addr, arr, idx));
+    IrCommand addOffsetIrCommand = new IrCommandAddOffset(addr, arr, idx);
 
     Temp dst = TempFactory.getInstance().getFreshTemp();
-    Ir.getInstance().AddIrCommand(new IrCommandLoadMemory(dst, addr, variable.var));
+    IrCommand loadMemoryIrCommand = new IrCommandLoadMemory(dst, addr, variable.var);
+
+    if(Ir.curClass!=null){
+        Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(addOffsetIrCommand);
+        Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(loadMemoryIrCommand);
+    }
+    else{
+        Ir.getInstance().AddIrCommand(addOffsetIrCommand);
+        Ir.getInstance().AddIrCommand(loadMemoryIrCommand);  
+    }    
 
     if (arr.dependencySet != null) dst.dependencySet.addAll(arr.dependencySet);
     if (idx.dependencySet != null) dst.dependencySet.addAll(idx.dependencySet);
