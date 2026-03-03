@@ -6,13 +6,13 @@ import java.util.*;
 import mips.MipsGenerator;
 import temp.*;
 
-public class IrCommandAddOffset extends IrCommand {
+public class IrCommandAddArrayOffset extends IrCommand {
 
     public Temp dst;   // destination Temp
     public Temp t1;    // first operand
     public Temp t2;    // second operand
 
-    public IrCommandAddOffset(Temp dst, Temp t1, Temp t2) {
+    public IrCommandAddArrayOffset(Temp dst, Temp t1, Temp t2) {
         this.dst = dst;
         this.t1 = t1;
         this.t2 = t2;
@@ -53,7 +53,7 @@ public class IrCommandAddOffset extends IrCommand {
 		if (t2 != null)
 		{
 			// pointer arithmetic: dst = t1 + t2 (base + index, scaled by word size)
-			MipsGenerator.getInstance().addOffset(dst, t1, t2);
+			MipsGenerator.getInstance().addArrayOffset(dst, t1, t2);
 		}
 		else
 		{

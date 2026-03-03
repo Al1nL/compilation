@@ -102,7 +102,7 @@ public Temp irMe() {
     Temp idx = subscript.irMe();
 
     Temp addr = TempFactory.getInstance().getFreshTemp();
-    IrCommand addOffsetIrCommand = new IrCommandAddOffset(addr, arr, idx);
+    IrCommand addOffsetIrCommand = new IrCommandAddArrayOffset(addr, arr, idx);
 
     Temp dst = TempFactory.getInstance().getFreshTemp();
     IrCommand loadMemoryIrCommand = new IrCommandLoadMemory(dst, addr, variable.var);
@@ -128,7 +128,7 @@ public Temp irMe() {
         Temp idx = subscript.irMe();
 
         Temp addr = TempFactory.getInstance().getFreshTemp();
-        Ir.getInstance().AddIrCommand(new IrCommandAddOffset(addr, arr, idx));
+        Ir.getInstance().AddIrCommand(new IrCommandAddArrayOffset(addr, arr, idx));
 
         return addr;
     }    
