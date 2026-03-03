@@ -13,7 +13,7 @@ public class AstExpBinop extends AstExp {
     public AstExp right;
     public boolean isInteger = false;
     public boolean isString  = false;  
-
+    public boolean isObject  = false; 
 
     /* CONSTRUCTOR(S) */
     public AstExpBinop(AstExp left, AstExp right, int op) {
@@ -98,10 +98,13 @@ public class AstExpBinop extends AstExp {
 
         if (op == 6) {
             if (t1.canAssignTo(t2) || t2.canAssignTo(t1)) {
-                 // mark whether we are comparing strings (content equality via strcmp)
+                 // mark whether we are comparing strings
                 if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
                     isString = true;
-                    return TypeString.getInstance();
+                }
+                // mark whether we are comparing objects (objects\arrays)
+                if (t1.isClass() && t2.isClass()) {
+                    isObject = true;
                 }
                 return TypeInt.getInstance();
             } else {
@@ -194,11 +197,11 @@ public class AstExpBinop extends AstExp {
             // a > b is equivalent to b < a
             binOpIrCommand = new IrCommandBinopLtIntegers(dst, t2, t1);
         }
-        if (op == 6) // EQ
-        {
-            binOpIrCommand = isString ? new IrCommandBinopEqStrings(dst, t1, t2)
-                    : new IrCommandBinopEqIntegers(dst, t1, t2);
-        }
+        if (op == 6){ // EQ
+            binOpIrCommand = isString  ? new IrCommandBinopEqStrings(dst, t1, t2)
+                   : isObject  ? new IrCommandBinopEqObjects(dst, t1, t2)
+                   :             new IrCommandBinopEqIntegers(dst, t1, t2);
+}
         if(Ir.curClass!=null){
             Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(binOpIrCommand);
         }
