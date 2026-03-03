@@ -48,8 +48,6 @@ public class AstDecClass extends AstDec {
 
     public Type semantMe() {
 
-        System.err.println("\n====== CLASS " + this.name + " START ======");
-
         // Check duplicate class
         if (SymbolTable.getInstance().find(this.name) != null) {
             report();
@@ -78,9 +76,9 @@ public class AstDecClass extends AstDec {
         // PROCESS FIELDS
         this.processFields(parentTypeClass , t);
 
-        System.err.println("====== CLASS " + this.name + " END ======\n");
         t.isinitilized = true;
-        /* End Scope */
+
+        // End Scope
         SymbolTable.getInstance().endScope();
 
         return t;
@@ -184,6 +182,17 @@ public class AstDecClass extends AstDec {
                 _MethodLabels
             ));
         if(fields!=null){
+            // Build flat list of AstDecVar nodes including inherited ones
+            List<AstDecVar> varDecls = new ArrayList<>();
+            if (parentName != null && Ir.classFieldDecls.containsKey(parentName)) {
+                varDecls.addAll(Ir.classFieldDecls.get(parentName));
+            }
+            for (AstDecList it = fields; it != null; it = it.tail) {
+                if (it.head instanceof AstDecVar) {
+                    varDecls.add((AstDecVar) it.head);
+                }
+            }
+            Ir.classFieldDecls.put(name, varDecls);
             fields.irMe();
         }
         Ir.curClass = null;

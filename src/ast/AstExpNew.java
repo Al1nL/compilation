@@ -79,40 +79,56 @@ public class AstExpNew extends AstExp {
         {
             curIrCommand = new IrCommandAllocateObject(dst, type);
             IrCommandAllocateObject alocObjCommand = (IrCommandAllocateObject) curIrCommand;
-            Map<Integer, List<IrCommand>> initObjectCommands = Ir.fieldInitIrCommands.get(type);
 
-            if(Ir.curClass!=null){
-                List<IrCommand> commandList = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField); 
+            // Save outer class/field context
+            String savedClass = Ir.curClass;
+            int savedField = Ir.curField;
+
+            // Re-run field irMe() with fresh temps for this specific new-expression.
+            // We cannot reuse the prototype commands stored in fieldInitIrCommands because
+            // they share Temp objects - reusing them causes register allocation collisions.
+            Map<Integer, List<IrCommand>> freshFields = new java.util.HashMap<>();
+            Map<Integer, List<IrCommand>> savedFieldInit = Ir.fieldInitIrCommands.get(type);
+            Ir.fieldInitIrCommands.put(type, freshFields); // redirect to fresh map
+            Ir.curClass = type;
+            List<AstDecVar> fieldDecls = Ir.classFieldDecls.get(type);
+            if (fieldDecls != null) {
+                for (AstDecVar varDec : fieldDecls) {
+                    varDec.irMe();
+                }
+            }
+            Ir.fieldInitIrCommands.put(type, savedFieldInit); // restore prototype
+            Ir.curClass = savedClass;
+            Ir.curField = savedField;
+
+            if(savedClass!=null){
+                List<IrCommand> commandList = Ir.fieldInitIrCommands.get(savedClass).get(savedField);
                 commandList.add(alocObjCommand);
-                if(!initObjectCommands.isEmpty()){
-                    List<Integer> sortedKeys = new ArrayList<>(initObjectCommands.keySet());
+                if(!freshFields.isEmpty()){
+                    List<Integer> sortedKeys = new ArrayList<>(freshFields.keySet());
                     Collections.sort(sortedKeys);
                     for (Integer key : sortedKeys) {
-                        List<IrCommand> fieldsCommands = initObjectCommands.get(key);
+                        List<IrCommand> fieldsCommands = freshFields.get(key);
                         for(IrCommand cmnd: fieldsCommands){
                             cmnd.allocatedObject = alocObjCommand;
                             commandList.add(cmnd);
                         }
-                        
                     }
-    
                 }
             }
             else{
                 Ir.getInstance().AddIrCommand(alocObjCommand);
-                if(!initObjectCommands.isEmpty()){
-                    List<Integer> sortedKeys = new ArrayList<>(initObjectCommands.keySet());
+                if(!freshFields.isEmpty()){
+                    List<Integer> sortedKeys = new ArrayList<>(freshFields.keySet());
                     Collections.sort(sortedKeys);
                     for (Integer key : sortedKeys) {
-                        List<IrCommand> fieldsCommands = initObjectCommands.get(key);
+                        List<IrCommand> fieldsCommands = freshFields.get(key);
                         for(IrCommand cmnd: fieldsCommands){
                             cmnd.allocatedObject = alocObjCommand;
                             Ir.getInstance().AddIrCommand(cmnd);
                         }
-                        
                     }
-    
-                } 
+                }
             }
             
     
