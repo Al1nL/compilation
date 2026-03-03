@@ -146,6 +146,7 @@ public class AstDecFunc extends AstDec {
         }
         
         String name = this.label!=null? this.label : this.name;
+        if (name.equals("main")) name = "user_main"; 
         Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
         if (params != null) params.irMe();                           // must come first
         AstStmtReturn.currentFunctionName = name;
