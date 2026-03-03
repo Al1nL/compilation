@@ -29,6 +29,7 @@ public class IrCommandPrologue extends IrCommand {
     /***************/
     @Override
     public void mipsMe() {
+        MipsGenerator.getInstance().startFunction();
         MipsGenerator.getInstance().emitPrologue(functionName, localVarCount);
     }
 }
