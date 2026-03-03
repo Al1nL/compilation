@@ -162,8 +162,8 @@ test-all:
 		fi; \
 	done; \
 	echo "================================================"; \
-	echo "Results: $$pass passed, $$fail failed, $$skip skipped."; \
-	echo "Passed tests: $$passed_nums"; \
+	total=$$((pass+fail+skip)); \
+	echo "Results: passed $$pass/$$total tests!";  \
 	echo "Failed tests: $$failed_nums"; \
 	echo "================================================"
 
