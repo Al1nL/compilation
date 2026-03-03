@@ -4,10 +4,7 @@ import analysis.Dbg;
 import ir.IrCommand;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import temp.*;
 
 public class MipsGenerator {
@@ -15,51 +12,68 @@ public class MipsGenerator {
     private static final int WORD_SIZE = 4;
     private PrintWriter fileWriter;
 
-    // Separate buffers for .data and .text sections
+    // ---- OUTPUT BUFFERS ----
     private StringWriter dataBuffer = new StringWriter();
     private StringWriter textBuffer = new StringWriter();
-    //private StringWriter vtBuffer = new StringWriter();
-    private PrintWriter  dataSec    = new PrintWriter(dataBuffer);
-    private PrintWriter  textSec    = new PrintWriter(textBuffer);
-    //private PrintWriter  vtSec    = new PrintWriter(vtBuffer);
+    private StringWriter globalInitBuffer = new StringWriter();
 
-    // Track number of fields and vtable per class
+    private PrintWriter dataSec = new PrintWriter(dataBuffer);
+    private PrintWriter textSec = new PrintWriter(textBuffer);
+    private PrintWriter globalInitSec = new PrintWriter(globalInitBuffer);
+
+    // Used to detect if we are inside a function
+    private boolean insideFunction = false;
+
+    // Called by IR builder before emitting a function prologue
+    public void startFunction() {
+        insideFunction = true;
+    }
+    public void endFunction() {
+        insideFunction = false;
+    }
+
+    // Class bookkeeping
     private Map<String, Integer> classFieldCount = new HashMap<>();
     private Map<String, List<String>> classMethods = new HashMap<>();
+    private Set<String> emittedStringLabels = new HashSet<>();
 
-    /**
-     * Flushes the accumulated .data and .text buffers to the output file,
-     * emits the exit syscall, and closes the file.
-     * Must be called once after all IR commands are done.
-     */
+    /* ===== FILE FINALIZATION ===== */
+
     public void finalizeFile() {
-        // 1. Write .data section
+        // 1. .data
         fileWriter.print(".data\n");
         dataSec.flush();
         fileWriter.print(dataBuffer.toString());
 
-        // 2. Write entire .text section
+        // 2. .text
         fileWriter.print(".text\n");
+
+        // Emit runtime helpers (already in textSec)
         textSec.flush();
         fileWriter.print(textBuffer.toString());
 
-        // 3. Exit syscall
+        // 3. Emit global initializer function BEFORE main()
+        fileWriter.print("_globals_init:\n");
+        globalInitSec.flush();
+        fileWriter.print(globalInitBuffer.toString());
+        fileWriter.print("\tjr $ra\n\n");
+
+        // 4. Emit main trampoline
+        fileWriter.print("main:\n");
+        fileWriter.print("\tjal _globals_init\n");
+        fileWriter.print("\tjal user_main\n");
         fileWriter.print("\tli $v0,10\n");
         fileWriter.print("\tsyscall\n");
-/*
-        // 4. Write vt .data section
-        fileWriter.print(".data\n");
-        vtSec.flush();
-        fileWriter.print(vtBuffer.toString());
-*/
+
         fileWriter.close();
     }
+
+    /* ===== PRINTING ===== */
 
     public void printInt(Temp t) {
         textSec.format("\tmove $a0,%s\n", t);
         textSec.format("\tli $v0,1\n");
         textSec.format("\tsyscall\n");
-        // Print space character (ASCII 32) after each number
         textSec.format("\tli $a0,32\n");
         textSec.format("\tli $v0,11\n");
         textSec.format("\tsyscall\n");
@@ -71,21 +85,26 @@ public class MipsGenerator {
         textSec.format("\tsyscall\n");
     }
 
-    /* Global variable: emit .data label initialized to 0 */
+    /* ===== GLOBALS ===== */
+
     public void allocate(String varName) {
         dataSec.format("global_%s: .word 0\n", varName);
     }
 
     public void loadGlobal(Temp dst, String varName) {
-        textSec.format("\tlw %s,global_%s\n", dst, varName);
-    }
-
-    public void loadLocal(Temp dst, int offset) {
-        textSec.format("\tlw %s, %d($fp)\n", dst, offset);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tlw %s,global_%s\n", dst, varName);
     }
 
     public void storeGlobal(String varName, Temp src) {
-        textSec.format("\tsw %s,global_%s\n", src, varName);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tsw %s,global_%s\n", src, varName);
+    }
+
+    /* ===== LOCALS ===== */
+
+    public void loadLocal(Temp dst, int offset) {
+        textSec.format("\tlw %s, %d($fp)\n", dst, offset);
     }
 
     public void storeLocal(int offset, Temp src) {
@@ -93,17 +112,76 @@ public class MipsGenerator {
     }
 
     public void li(Temp t, int value) {
-        textSec.format("\tli %s,%d\n", t, value);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tli %s,%d\n", t, value);
+    }
+
+    /* ===== FIELD / ARRAY / POINTER ===== */
+
+    public void addFieldOffset(Temp dst, Temp base, int fieldOffset) {
+        textSec.format("\tli $s0,%d\n", (fieldOffset + 1) * 4);
+        textSec.format("\tadd %s,%s,$s0\n", dst, base);
     }
 
     /**
      * Pointer arithmetic for array element address = skip size word + index*wordSize
+     * Also performs: null check on base, bounds check on idx vs array length.
      */
-    public void addOffset(Temp dst, Temp base, Temp idx) {
-    textSec.format("\tsll $s0,%s,2\n", idx);  // index * 4
-    textSec.format("\taddi $s0,$s0,4\n");     // + 4 bytes to skip length word
-    textSec.format("\tadd %s,%s,$s0\n", dst, base);
-}
+    public void addArrayOffset(Temp dst, Temp base, Temp idx) {
+        String okNull   = IrCommand.getFreshLabel("array_null_ok");
+        String okLow    = IrCommand.getFreshLabel("array_low_ok");
+        String okHigh   = IrCommand.getFreshLabel("array_high_ok");
+
+        // 1. Null check on array pointer
+        textSec.format("\tbne %s,$zero,%s\n", base, okNull);
+        textSec.format("\tla $a0,string_access_violation\n");
+        textSec.format("\tli $v0,4\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tli $v0,10\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("%s:\n", okNull);
+
+        // 2. Lower-bound check: idx >= 0
+        textSec.format("\tbge %s,$zero,%s\n", idx, okLow);
+        textSec.format("\tla $a0,string_access_violation\n");
+        textSec.format("\tli $v0,4\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tli $v0,10\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("%s:\n", okLow);
+
+        // 3. Upper-bound check: idx < length (stored at base[0])
+        textSec.format("\tlw $s0,0(%s)\n", base);       // $s0 = array length
+        textSec.format("\tblt %s,$s0,%s\n", idx, okHigh);
+        textSec.format("\tla $a0,string_access_violation\n");
+        textSec.format("\tli $v0,4\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tli $v0,10\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("%s:\n", okHigh);
+
+        // 4. Compute element address: base + (idx+1)*4
+        textSec.format("\tsll $s0,%s,2\n", idx);
+        textSec.format("\taddi $s0,$s0,4\n");
+        textSec.format("\tadd %s,%s,$s0\n", dst, base);
+    }
+
+    /**
+     * Emits an inline null-pointer check on ptr.
+     * If ptr == 0: print "Invalid Pointer Dereference" and exit.
+     * Use this when you need to check the original object pointer
+     * BEFORE doing pointer arithmetic (where the computed address would no longer be 0).
+     */
+    public void checkNullPtr(Temp ptr) {
+        String okLabel = IrCommand.getFreshLabel("null_check_ok");
+        textSec.format("\tbne %s,$zero,%s\n", ptr, okLabel);
+        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
+        textSec.format("\tli $v0,4\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tli $v0,10\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("%s:\n", okLabel);
+    }
 
     /* Dereferences a pointer: dst = Memory[ptr] */
     public void loadFromPointer(Temp dst, Temp ptr, int offset) {
@@ -130,42 +208,63 @@ public class MipsGenerator {
         textSec.format("%s:\n", okLabel);
         textSec.format("\tsw %s,%d(%s)\n", src, offset, ptr);
     }
+
+    /* Object/pointer equality: dst = (t1 == t2) ? 1 : 0 */
+    public void eqPointers(Temp dst, Temp t1, Temp t2) {
+        String eqLabel   = IrCommand.getFreshLabel("ptr_eq_yes");
+        String doneLabel = IrCommand.getFreshLabel("ptr_eq_done");
+        textSec.format("\tbeq %s,%s,%s\n", t1, t2, eqLabel);
+        textSec.format("\tli %s,0\n", dst);
+        textSec.format("\tj %s\n", doneLabel);
+        textSec.format("%s:\n", eqLabel);
+        textSec.format("\tli %s,1\n", dst);
+        textSec.format("%s:\n", doneLabel);
+    }
+    
+    /* ===== ARITHMETIC ===== */
+
     /**
      * Clamps dst to the range [-32768, 32767]. Uses $s0 as scratch.
      * Called after every arithmetic op.
      */
     private void saturate(Temp dst) {
+        // saturate is only called from add/sub/mul/div which are already guarded,
+        // so we resolve the output section via the same insideFunction flag.
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         String clampMin = IrCommand.getFreshLabel("sat_clampMin");
         String clampMax = IrCommand.getFreshLabel("sat_clampMax");
         String satDone  = IrCommand.getFreshLabel("sat_done");
-        textSec.format("\tli $s0,32767\n");
-        textSec.format("\tbgt %s,$s0,%s\n", dst, clampMax);
-        textSec.format("\tli $s0,-32768\n");
-        textSec.format("\tblt %s,$s0,%s\n", dst, clampMin);
-        textSec.format("\tj %s\n", satDone);
-        textSec.format("%s:\n", clampMax);
-        textSec.format("\tli %s,32767\n", dst);
-        textSec.format("\tj %s\n", satDone);
-        textSec.format("%s:\n", clampMin);
-        textSec.format("\tli %s,-32768\n", dst);
-        textSec.format("%s:\n", satDone);
+        out.format("\tli $s0,32767\n");
+        out.format("\tbgt %s,$s0,%s\n", dst, clampMax);
+        out.format("\tli $s0,-32768\n");
+        out.format("\tblt %s,$s0,%s\n", dst, clampMin);
+        out.format("\tj %s\n", satDone);
+        out.format("%s:\n", clampMax);
+        out.format("\tli %s,32767\n", dst);
+        out.format("\tj %s\n", satDone);
+        out.format("%s:\n", clampMin);
+        out.format("\tli %s,-32768\n", dst);
+        out.format("%s:\n", satDone);
     }
 
     /* Integer add with saturation clamping */
     public void add(Temp dst, Temp oprnd1, Temp oprnd2) {
-        textSec.format("\tadd %s,%s,%s\n", dst, oprnd1, oprnd2);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tadd %s,%s,%s\n", dst, oprnd1, oprnd2);
         saturate(dst);
     }
 
     /* Integer subtract with saturation clamping */
     public void sub(Temp dst, Temp oprnd1, Temp oprnd2) {
-        textSec.format("\tsub %s,%s,%s\n", dst, oprnd1, oprnd2);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tsub %s,%s,%s\n", dst, oprnd1, oprnd2);
         saturate(dst);
     }
 
     /* Integer multiply with saturation clamping */
     public void mul(Temp dst, Temp oprnd1, Temp oprnd2) {
-        textSec.format("\tmul %s,%s,%s\n", dst, oprnd1, oprnd2);
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tmul %s,%s,%s\n", dst, oprnd1, oprnd2);
         saturate(dst);
     }
 
@@ -174,26 +273,91 @@ public class MipsGenerator {
      * Checks for division by zero.
      */
     public void div(Temp dst, Temp oprnd1, Temp oprnd2) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         String okLabel = IrCommand.getFreshLabel("div_ok");
-        textSec.format("\tbne %s,$zero,%s\n", oprnd2, okLabel);
-        textSec.format("\tla $a0,string_illegal_div_by_0\n");
-        textSec.format("\tli $v0,4\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tli $v0,10\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("%s:\n", okLabel);
-        textSec.format("\tdiv %s,%s\n", oprnd1, oprnd2);
-        textSec.format("\tmflo %s\n", dst);
+        out.format("\tbne %s,$zero,%s\n", oprnd2, okLabel);
+        out.format("\tla $a0,string_illegal_div_by_0\n");
+        out.format("\tli $v0,4\n");
+        out.format("\tsyscall\n");
+        out.format("\tli $v0,10\n");
+        out.format("\tsyscall\n");
+        out.format("%s:\n", okLabel);
+        out.format("\tdiv %s,%s\n", oprnd1, oprnd2);
+        out.format("\tmflo %s\n", dst);
         saturate(dst);
     }
 
+    /* ===== STRINGS ===== */
+
     public void constString(Temp t, String value) {
         String strLabel = String.format("str_%s", t).replace("$", "");
-        // string literal goes into .data buffer
-        dataSec.format("%s: .asciiz \"%s\"\n", strLabel, value);
-        // load-address instruction goes into .text buffer
+        // only emit .data entry once per label - re-running field irMe() for fresh
+        // temps can produce the same physical register name, causing duplicate labels
+        if (emittedStringLabels.add(strLabel)) {
+            dataSec.format("%s: .asciiz %s\n", strLabel, value);
+        }
         textSec.format("\tla %s,%s\n", t, strLabel);
     }
+
+    public void addStrings(Temp dst, Temp t1, Temp t2) {
+        textSec.format("\tsubu $sp,$sp,4\n");
+        textSec.format("\tsw $ra,0($sp)\n");
+
+        textSec.format("\tmove $a0,%s\n", t1);
+        textSec.format("\tjal __strlen\n");
+        textSec.format("\tmove $s0,$v0\n");
+
+        textSec.format("\tmove $a0,%s\n", t2);
+        textSec.format("\tjal __strlen\n");
+        textSec.format("\tmove $s1,$v0\n");
+
+        textSec.format("\tadd $a0,$s0,$s1\n");
+        textSec.format("\taddi $a0,$a0,1\n");
+        textSec.format("\tli $v0,9\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tmove %s,$v0\n", dst);
+
+        textSec.format("\tmove $a0,%s\n", t1);
+        textSec.format("\tmove $a1,%s\n", dst);
+        textSec.format("\tjal __strcpy\n");
+
+        textSec.format("\tmove $a0,%s\n", t2);
+        textSec.format("\tmove $a1,$v0\n");
+        textSec.format("\tjal __strcpy\n");
+
+        textSec.format("\tlw $ra,0($sp)\n");
+        textSec.format("\taddu $sp,$sp,4\n");
+    }
+
+    /**
+     * String content equality: dst = (strcmp(t1,t2)==0) ? 1 : 0
+     * Uses __strcmp helper. Saves/restores $ra around the call.
+     */
+    public void eqStrings(Temp dst, Temp t1, Temp t2) {
+        // save $ra
+        textSec.format("\tsubu $sp,$sp,4\n");
+        textSec.format("\tsw $ra,0($sp)\n");
+
+        textSec.format("\tmove $a0,%s\n", t1);
+        textSec.format("\tmove $a1,%s\n", t2);
+        textSec.format("\tjal __strcmp\n");   // $v0 = 0 if equal
+
+        // restore $ra
+        textSec.format("\tlw $ra,0($sp)\n");
+        textSec.format("\taddu $sp,$sp,4\n");
+
+        // dst = ($v0 == 0) ? 1 : 0
+        String eqLabel   = IrCommand.getFreshLabel("str_eq_yes");
+        String doneLabel = IrCommand.getFreshLabel("str_eq_done");
+        textSec.format("\tbeq $v0,$zero,%s\n", eqLabel);
+        textSec.format("\tli %s,0\n", dst);
+        textSec.format("\tj %s\n", doneLabel);
+        textSec.format("%s:\n", eqLabel);
+        textSec.format("\tli %s,1\n", dst);
+        textSec.format("%s:\n", doneLabel);
+    }
+
+    /* ===== HEAP ALLOCATION ===== */
 
     // array layout: [length][elem0][elem1]...
     public void allocateArray(Temp dst, Temp size) {
@@ -205,6 +369,48 @@ public class MipsGenerator {
         textSec.format("\tmove %s,$v0\n", dst);
         textSec.format("\tsw $s1,0(%s)\n", dst);   // store saved size, not dst
     }
+
+    /**
+     * Allocates heap memory for a class instance.
+     */
+    public void allocateObject(Temp dst, String type) {
+        int numFields = classFieldCount.getOrDefault(type, 0);
+        int size = (1 + numFields) * WORD_SIZE;
+        textSec.format("\tli $a0,%d\n", size);
+        textSec.format("\tli $v0,9\n");
+        textSec.format("\tsyscall\n");
+        textSec.format("\tmove %s,$v0\n", dst);
+        if (!classMethods.getOrDefault(type, new java.util.ArrayList<String>()).isEmpty()) {
+            textSec.format("\tla $s0,%s_vtable\n", type);
+            textSec.format("\tsw $s0,0(%s)\n", dst);
+        }
+    }
+
+    /* ===== CLASSES & VTABLES ===== */
+
+    /**
+     * Emits the vtable for a class into the .data section.
+     * Layout: className_vtable: .word method0 method1 ...
+     */
+    public void declareClass(String className, Map<String, Integer> methodOffsets, int fieldCount, Map<String,String> methodLabels) {
+        String[] ordered = new String[methodOffsets.size()];
+        for (Map.Entry<String, Integer> e : methodOffsets.entrySet()) {
+            ordered[e.getValue()] = e.getKey();
+        }
+
+        classMethods.put(className, Arrays.asList(ordered));
+        classFieldCount.put(className, fieldCount);
+        Dbg.p("Declared class " + className + " with fields=" + fieldCount + " methods=" + methodOffsets);
+        if (ordered.length > 0) {
+            dataSec.format("%s_vtable:", className);
+            for (String m : ordered) {
+                dataSec.format(" .word %s\n", methodLabels.get(m));
+            }
+            dataSec.format("\n");
+        }
+    }
+
+    /* ===== FUNCTION CALLS ===== */
 
     // call method of object
     public void callMethod(Temp dst, Temp object, int offset, List<Temp> args) {
@@ -252,77 +458,54 @@ public class MipsGenerator {
     }
 
     public void returnToCaller(Temp t, String functionName) {
-        textSec.format("\tmove $v0, %s\n", t);
+        if (t != null) {
+            textSec.format("\tmove $v0, %s\n", t);
+        }
         textSec.format("\tj %s_epilogue\n", functionName);
     }
 
-    /**
-     * Emits the vtable for a class into the .data section.
-     * Layout: className_vtable: .word method0 method1 ...
-     */
-    public void declareClass(String className, Map<String, Integer> methodOffsets, int fieldCount, Map<String,String> methodLabels) {
-        String[] ordered = new String[methodOffsets.size()];
-        for (Map.Entry<String, Integer> e : methodOffsets.entrySet()) {
-            ordered[e.getValue()] = e.getKey();
-        }
+    /* ===== FUNCTION PROLOGUE / EPILOGUE ===== */
 
-        classMethods.put(className, Arrays.asList(ordered));
-        classFieldCount.put(className, fieldCount);
-        Dbg.p("Declared class " + className + " with fields=" + fieldCount + " methods=" + methodOffsets);
-        if (ordered.length > 0) {
-            dataSec.format("%s_vtable:", className);
-            for (String m : ordered) {
-                dataSec.format(" .word %s\n", methodLabels.get(m));
-            }
-            dataSec.format("\n");
+    public void emitPrologue(String functionName, int localVarCount) {
+        textSec.format("%s:\n", functionName);
+        textSec.println("# prologue");
+
+        textSec.println("\tsubu $sp, $sp, 8");
+        textSec.println("\tsw $ra, 4($sp)");
+        textSec.println("\tsw $fp, 0($sp)");
+        textSec.println("\tmove $fp, $sp");
+
+        // DYNAMIC STACK ALLOCATION
+        int stackSpace = 40 + (localVarCount * 4);
+        textSec.format("\tsubu $sp, $sp, %d\n", stackSpace);
+
+        for (int i = 0; i <= 9; i++) {
+            textSec.format("\tsw $t%d, %d($fp)\n", i, -((i + 1) * 4));
         }
+        textSec.println("");
     }
 
-    /**
-     * Allocates heap memory for a class instance.
-     */
-    public void allocateObject(Temp dst, String type) {
-        int numFields = classFieldCount.getOrDefault(type, 0);
-        int size = (1 + numFields) * WORD_SIZE;
-        textSec.format("\tli $a0,%d\n", size);
-        textSec.format("\tli $v0,9\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tmove %s,$v0\n", dst);
-        if (!classMethods.getOrDefault(type, new java.util.ArrayList<String>()).isEmpty()) {
-            textSec.format("\tla $s0,%s_vtable\n", type);
-            textSec.format("\tsw $s0,0(%s)\n", dst);
+    public void emitEpilogue(String functionName) {
+        textSec.format("%s_epilogue:\n", functionName);
+
+        // 1. Restore T0-T9 relative to the FP
+        for (int i = 0; i <= 9; i++) {
+            textSec.format("\tlw $t%d, %d($fp)\n", i, -((i + 1) * 4));
         }
+
+        // 2. Snap the stack pointer back to the frame pointer
+        textSec.println("\tmove $sp, $fp");
+
+        // 3. Restore RA and FP from the 8-byte header
+        textSec.println("\tlw $ra, 4($sp)");
+        textSec.println("\tlw $fp, 0($sp)");
+
+        // 4. Pop the 8-byte header and return
+        textSec.println("\taddi $sp, $sp, 8");
+        textSec.println("\tjr $ra");
     }
 
-    public void addStrings(Temp dst, Temp t1, Temp t2) {
-        textSec.format("\tsubu $sp,$sp,4\n");
-        textSec.format("\tsw $ra,0($sp)\n");
-
-        textSec.format("\tmove $a0,%s\n", t1);
-        textSec.format("\tjal __strlen\n");
-        textSec.format("\tmove $s0,$v0\n");
-
-        textSec.format("\tmove $a0,%s\n", t2);
-        textSec.format("\tjal __strlen\n");
-        textSec.format("\tmove $s1,$v0\n");
-
-        textSec.format("\tadd $a0,$s0,$s1\n");
-        textSec.format("\taddi $a0,$a0,1\n");
-        textSec.format("\tli $v0,9\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tmove %s,$v0\n", dst);
-
-        textSec.format("\tmove $a0,%s\n", t1);
-        textSec.format("\tmove $a1,%s\n", dst);
-        textSec.format("\tjal __strcpy\n");
-
-        textSec.format("\tmove $a0,%s\n", t2);
-        textSec.format("\tmove $a1,$v0\n");
-        textSec.format("\tjal __strcpy\n");
-
-        textSec.format("\tlw $ra,0($sp)\n");
-        textSec.format("\taddu $sp,$sp,4\n");
-    }
+    /* ===== LABELS & BRANCHES ===== */
 
     public void label(String inlabel) {
         if (inlabel.equals("main")) {
@@ -358,49 +541,9 @@ public class MipsGenerator {
     public void beqz(Temp oprnd1, String label) {
         textSec.format("\tbeq %s,$zero,%s\n", oprnd1, label);
     }
- 
-public void emitPrologue(String functionName, int localVarCount) {
-    textSec.format("%s:\n", functionName);
-    textSec.println("# prologue");
 
-    textSec.println("\tsubu $sp, $sp, 8");
-    textSec.println("\tsw $ra, 4($sp)");
-    textSec.println("\tsw $fp, 0($sp)");
-    textSec.println("\tmove $fp, $sp");
+    /* ===== SINGLETON ===== */
 
-    // DYNAMIC STACK ALLOCATION
-    int stackSpace = 40 + (localVarCount * 4);
-    textSec.format("\tsubu $sp, $sp, %d\n", stackSpace);
-
-    for (int i = 0; i <= 9; i++) {
-        textSec.format("\tsw $t%d, %d($fp)\n", i, -((i + 1) * 4));
-    }
-    textSec.println("");
-}
-
-public void emitEpilogue(String functionName) {
-    textSec.format("%s_epilogue:\n", functionName);
-
-    // 1. Restore T0-T9 relative to the FP
-    // Since we saved them right after setting FP, they are at -4, -8, etc.
-    for (int i = 0; i <= 9; i++) {
-        textSec.format("\tlw $t%d, %d($fp)\n", i, -((i + 1) * 4));
-    }
-
-    // 2. SNAP the stack pointer back to the frame pointer
-    // This wipes away all saved T-regs and any local variables (like those at -44)
-    textSec.println("\tmove $sp, $fp");
-
-    // 3. Restore RA and FP from the 8-byte header we saved at the start
-    textSec.println("\tlw $ra, 4($sp)");
-    textSec.println("\tlw $fp, 0($sp)");
-
-    // 4. Pop the 8-byte header and return
-    textSec.println("\taddi $sp, $sp, 8");
-    textSec.println("\tjr $ra");
-}
-
-    /* USUAL SINGLETON IMPLEMENTATION */
     private static MipsGenerator instance = null;
 
     protected MipsGenerator() {
@@ -421,6 +564,8 @@ public void emitEpilogue(String functionName) {
     public static MipsGenerator getInstance() {
         return instance;
     }
+
+    /* ===== RUNTIME PREAMBLE ===== */
 
     private void writePreamble() {
         // Error strings go into .data buffer
@@ -452,7 +597,23 @@ public void emitEpilogue(String functionName) {
         textSec.print("\tsb $zero,0($a1)\n");
         textSec.print("\tmove $v0,$a1\n");
         textSec.print("\tjr $ra\n");
-    }
 
-    
+        // __strcmp: compare null-terminated strings in $a0 and $a1
+        // returns 0 in $v0 if equal, non-zero otherwise
+        textSec.print("__strcmp:\n");
+        textSec.print("__strcmp_loop:\n");
+        textSec.print("\tlb $s0,0($a0)\n");
+        textSec.print("\tlb $s1,0($a1)\n");
+        textSec.print("\tbne $s0,$s1,__strcmp_ne\n");
+        textSec.print("\tbeq $s0,$zero,__strcmp_eq\n");  // both are '\0' → equal
+        textSec.print("\taddi $a0,$a0,1\n");
+        textSec.print("\taddi $a1,$a1,1\n");
+        textSec.print("\tj __strcmp_loop\n");
+        textSec.print("__strcmp_eq:\n");
+        textSec.print("\tli $v0,0\n");
+        textSec.print("\tjr $ra\n");
+        textSec.print("__strcmp_ne:\n");
+        textSec.print("\tli $v0,1\n");
+        textSec.print("\tjr $ra\n");
+    }
 }
