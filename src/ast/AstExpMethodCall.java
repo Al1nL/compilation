@@ -85,39 +85,29 @@ public class AstExpMethodCall extends AstExp {
     }
 
     public Temp irMe() {
-        String nullErrLabel = IrCommand.getFreshLabel("null_deref_error");
-        String afterCallLabel = IrCommand.getFreshLabel("after_method_call");
-
-        // If null → error
+        // Evaluate object
         Temp objTemp = object.irMe();
-        Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(objTemp, nullErrLabel));
 
-        // eval args + call
+        // eval args first (left-to-right per spec)
         ArrayList<Temp> argTemps = new ArrayList<>();
         for (AstExp exp : args) {
             argTemps.add(exp.irMe());
         }
+
         Temp dst = TempFactory.getInstance().getFreshTemp();
-        IrCommand vcCommand1, vcCommand2, vcCommand3, vcCommand4;
-        vcCommand1 = new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps);
-        vcCommand2 = new  IrCommandJumpLabel(afterCallLabel); // Jump past error handler
-        vcCommand3 = new IrCommandLabel(nullErrLabel); // Error handler
-        vcCommand4 = new IrCommandLabel(afterCallLabel); // IrCommandRuntimeError("null pointer dereference") — print + exit
+
+        // IrCommandVirtualCall already checks for null inside callMethod in MipsGenerator
+        // (it emits bne obj,$zero,ok; print error; exit; ok:).
+        IrCommand vcCommand = new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps);
+
         if(Ir.curClass!=null){
             List<IrCommand> commandList = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField);
-
-            commandList.add(vcCommand1);
-            commandList.add(vcCommand2);
-            commandList.add(vcCommand3);
-            commandList.add(vcCommand4);
+            commandList.add(vcCommand);
         }
         else{
-            Ir.getInstance().AddIrCommand(vcCommand1);
-            Ir.getInstance().AddIrCommand(vcCommand2);
-            Ir.getInstance().AddIrCommand(vcCommand3);
-            Ir.getInstance().AddIrCommand(vcCommand4);
+            Ir.getInstance().AddIrCommand(vcCommand);
         }
-        
+
         return dst;
     }
 
