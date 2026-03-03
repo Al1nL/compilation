@@ -54,18 +54,14 @@ compile:
 	clear
 	@echo "*******************************"
 	@echo "*                             *"
-	@echo "*                             *"
 	@echo "* [0] Remove COMPILER program *"
-	@echo "*                             *"
 	@echo "*                             *"
 	@echo "*******************************"
 	rm -rf COMPILER
 	@echo "\n"
 	@echo "************************************************************"
 	@echo "*                                                          *"
-	@echo "*                                                          *"
 	@echo "* [1] Remove *.class files and JFlex-CUP generated files:  *"
-	@echo "*                                                          *"
 	@echo "*     Lexer.java                                           *"
 	@echo "*     Parser.java                                          *"
 	@echo "*     TokenNames.java                                      *"
@@ -75,27 +71,21 @@ compile:
 	@echo "\n"
 	@echo "************************************************************"
 	@echo "*                                                          *"
-	@echo "*                                                          *"
 	@echo "* [2] Use JFlex to synthesize Lexer.java from LEX_FILE.lex *"
-	@echo "*                                                          *"
 	@echo "*                                                          *"
 	@echo "************************************************************"
 	$(JFlex_PROGRAM) ${JFlex_FLAGS} -d ${JFlex_DEST_DIR} ${JFlex_FILE}
 	@echo "\n"
 	@echo "*******************************************************************************"
 	@echo "*                                                                             *"
-	@echo "*                                                                             *"
 	@echo "* [3] Use CUP to synthesize Parser.java and TokenNames.java from CUP_FILE.cup *"
-	@echo "*                                                                             *"
 	@echo "*                                                                             *"
 	@echo "*******************************************************************************"
 	$(CUP_PROGRAM) ${CUP_FLAGS} -destdir ${SRC_DIR} ${CUP_FILE}
 	@echo "\n"
 	@echo "********************************************************"
 	@echo "*                                                      *"
-	@echo "*                                                      *"
 	@echo "* [4] Create *.class files from *.java files + CUP JAR *"
-	@echo "*                                                      *"
 	@echo "*                                                      *"
 	@echo "********************************************************"
 	mkdir -p ${BIN_DIR}
@@ -103,21 +93,19 @@ compile:
 	@echo "\n"
 	@echo "***********************************************************"
 	@echo "*                                                         *"
-	@echo "*                                                         *"
 	@echo "* [5] Create a JAR file from from *.class files + CUP JAR *"
-	@echo "*                                                         *"
 	@echo "*                                                         *"
 	@echo "***********************************************************"
 	jar cfm COMPILER ${MANIFEST_FILE} -C ${BIN_DIR} .
 	@echo "\n"
 	@echo "*****************************"
 	@echo "*                           *"
-	@echo "*                           *"
 	@echo "* [6] Run resulting program *"
-	@echo "*                           *"
 	@echo "*                           *"
 	@echo "*****************************"
 	java -jar COMPILER ${INPUT} ${OUTPUT}
+
+	@echo "****************remove before submission:****************"
 	@# Check if the output file contains the specific failure strings
 	@if grep -qE "ERROR|Register Allocation Failed" ${OUTPUT}; then \
 		echo "\n------------------------------------------------\n"; \
@@ -136,21 +124,46 @@ compile:
 ############
 test-all:
 	@echo "Running tests on all files in ${INPUT_DIR}..."
-	@for file in $(wildcard ${INPUT_DIR}/*.txt); do \
+	@mkdir -p ${OUTPUT_DIR}
+	@pass=0; fail=0; skip=0; passed_nums=""; \
+	for file in ${INPUT_DIR}/TEST_*.txt; do \
 		filename=$$(basename $$file .txt); \
 		echo "------------------------------------------------"; \
 		echo "Testing: $$filename"; \
-		java -jar ${COMPILER_NAME} $$file ${OUTPUT_DIR}/$$filename.s; \
-		if grep -qE "ERROR|Register Allocation Failed" ${OUTPUT_DIR}/$$filename.s; then \
+		java -jar ${COMPILER_NAME} $$file ${OUTPUT_DIR}/$$filename.s 2>/dev/null; \
+		if grep -qE "^ERROR|^Register Allocation Failed" ${OUTPUT_DIR}/$$filename.s 2>/dev/null; then \
 			echo "COMPILER reported an error for $$filename. Skipping SPIM."; \
+			actual=$$(cat ${OUTPUT_DIR}/$$filename.s); \
 		else \
 			echo "Running SPIM for $$filename..."; \
-			spim -file ${OUTPUT_DIR}/$$filename.s > ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt; \
-			echo "Output saved to ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt"; \
+			spim -file ${OUTPUT_DIR}/$$filename.s > ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt 2>&1; \
+			actual=$$(cat ${OUTPUT_DIR}/MIPS_OUTPUT_$$filename.txt); \
 		fi; \
-	done
-	@echo "------------------------------------------------"
-	@echo "All tests complete."
+		expected_file=${BASEDIR}/expected_output/$${filename}_Expected_Output.txt; \
+		if [ ! -f "$$expected_file" ]; then \
+			echo "  [SKIP] No expected output file for $$filename"; \
+			skip=$$((skip+1)); \
+		else \
+			expected=$$(cat "$$expected_file" | tr -d '\r'); \
+			actual=$$(echo "$$actual" | tr -d '\r'); \
+			if [ "$$actual" = "$$expected" ]; then \
+				echo "  [PASS] $$filename"; \
+				pass=$$((pass+1)); \
+				num=$$(echo "$$filename" | grep -oP '(?<=TEST_)\d+' | sed 's/^0*//'); \
+				if [ -z "$$passed_nums" ]; then passed_nums="$$num"; else passed_nums="$$passed_nums, $$num"; fi; \
+			else \
+				echo "  [FAIL] $$filename"; \
+				echo "  Expected: $$expected"; \
+				echo "  Actual:   $$actual"; \
+				fail=$$((fail+1)); \
+			fi; \
+		fi; \
+	done; \
+	echo "================================================"; \
+	echo "Results: $$pass passed, $$fail failed, $$skip skipped."; \
+	echo "Passed tests: $$passed_nums"; \
+	echo "================================================"
+
 ##############
 # CLEAN      #
 ##############
