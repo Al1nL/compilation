@@ -100,13 +100,18 @@ public class AstVarField extends AstVar {
         // 1. Get the base address of the object (the heap pointer)
         Temp base = variable.irMe(); 
 
-        // 2. Put the constant fieldOffset into a Temp
+        // 2. Null-check the object before doing any pointer arithmetic.
+        //    storeToPointer checks the *computed* address, not the original pointer,
+        //    so we must check base directly here.
+        Ir.getInstance().AddIrCommand(new IrCommandNullCheck(base));
+
+        // 3. Put the constant fieldOffset into a Temp
         Temp offsetTemp = TempFactory.getInstance().getFreshTemp();
         Ir.getInstance().AddIrCommand(new IrCommandConstInt(offsetTemp, this.fieldOffset));
 
-        // 3. Add the base address and the offset to get the exact memory location
+        // 4. Add the base address and the offset to get the exact memory location
         Temp addr = TempFactory.getInstance().getFreshTemp();
-        Ir.getInstance().AddIrCommand(new IrCommandAddOffset(addr, base, offsetTemp));
+        Ir.getInstance().AddIrCommand(new IrCommandAddFieldOffset(addr, base, this.fieldOffset));
 
         return addr;
     }
