@@ -1,7 +1,6 @@
 package ast;
 import java.util.*;
 import temp.*;
-import ir.*;
 import types.*;
 import variable.*;
 
@@ -16,7 +15,7 @@ public class AstExpVar extends AstExp {
         serialNumber = AstNodeSerialNumber.getFresh();
 
         /* PRINT CORRESPONDING DERIVATION RULE */
-        System.out.print("====================== exp -> var\n");
+        //System.out.print("====================== exp -> var\n");
 
         /* COPY INPUT DATA MEMBERS ... */
         this.var = var;
@@ -43,7 +42,7 @@ public class AstExpVar extends AstExp {
     }
 
     public Type semantMe() {
-        System.out.println("====>" + var.getClass().getName());
+        //System.out.println("====>" + var.getClass().getName());
         return var.semantMe();
     }
 

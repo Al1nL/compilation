@@ -41,9 +41,9 @@ public class Main {
 
                 ast.semantMe();
                 /* [8] IR the AST ... */
-                System.out.println("finished semantics, moving to offseting");
+                //System.out.println("finished semantics, moving to offseting");
                 ast.offsetMe(null, 0, null, new HashMap<>(), new HashMap<>(), new HashMap<>());
-                System.out.println("finished offsetting");
+               // System.out.println("finished offsetting");
 
                 ast.irMe();
 
@@ -56,20 +56,20 @@ public class Main {
                 CFGBuilder builder = new CFGBuilder();
                 List<IrCommand> ir = Ir.getInstance().getCommands();
                 List<CFGNode> cfg = builder.build(ir);
-                System.out.println("finished ir");
+                //System.out.println("finished ir");
 
                 /* ---------------------------------
                 * Run data-flow analysis
                 * --------------------------------- */
                 List<CFGNode> annotatedCfg = Analyzer.analyze(cfg, builder.getAllVariables());
-                System.out.println("finished data flow analysis");
+                //System.out.println("finished data flow analysis");
 
                 /* ---------------------------------
                 * Build Interference Graph 
                 * --------------------------------- */
                 InterferenceGraph ig = regalloc.InterferenceGraphBuilder.build(annotatedCfg);
                 Dbg.p(ig.toString()); // print the graph for debugging
-                System.out.println("finished building interference graph");
+                //System.out.println("finished building interference graph");
 
                 /* ---------------------------------
                 * Register Allocation
@@ -77,13 +77,13 @@ public class Main {
                 try {
                     Map<Temp, String> allocation = regalloc.RegisterAllocator.allocateRegisters(ig);
                     regalloc.RegisterAllocator.printAllocation(allocation);
-                    System.out.println("finished register allocation process");
+                    //System.out.println("finished register allocation process");
 
                     /* ---------------------------------
                     * Substitute temps with allocated registers
                     * --------------------------------- */
                     regalloc.RegisterSubstitution.apply(annotatedCfg, allocation);
-                    System.out.println("finished register substitution");
+                    //System.out.println("finished register substitution");
                 } 
                 catch (RuntimeException re) {
                     fileWriter.print(re.getMessage());
