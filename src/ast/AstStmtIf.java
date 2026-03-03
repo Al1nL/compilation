@@ -1,10 +1,10 @@
 package ast;
 
+import ir.*;
 import java.util.*;
 import symboltable.*;
-import types.*;
 import temp.*;
-import ir.*;
+import types.*;
 import variable.*;
 
 public class AstStmtIf extends AstStmt {
@@ -74,66 +74,33 @@ public class AstStmtIf extends AstStmt {
 
     public Temp irMe()
     {
-        /*******************************/
-        /* [1] Allocate fresh labels */
-        /*******************************/
-    
+        /* Allocate fresh labels */    
         String labelElse = IrCommand.getFreshLabel("else");
         String labelEnd = IrCommand.getFreshLabel("end");
 
-        /*********************************/
-        /* [2] entry label for the while */
-        /*********************************/
-        // Ir.
-        //         getInstance().
-        //         AddIrCommand(new IrCommandLabel(labelStart));
-
-        /********************/
-        /* [3] cond.IRme(); */
-        /********************/
+        /* cond.IRme(); */
         Temp condTemp = cond.irMe();
 
-        /******************************************/
-        /* [4] Jump conditionally to the loop end */
-        /******************************************/
+        /* Jump conditionally to the loop end */
         if(else_body != null){
-            Ir.
-                getInstance().
-                AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelElse));
+            Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelElse));
         }else{
-            Ir.
-                getInstance().
-                AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelEnd));
+            Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelEnd));
         }
         
-
-        /*******************/
-        /* [5] body.IRme() */
-        /*******************/
+        /* body.IRme() */
         body.irMe();
 
-        /******************************/
-        /* [6] Jump to the else entry */
-        /******************************/
+        /* Jump to the else entry */
         if(else_body != null){
-            Ir.
-                    getInstance().
-                    AddIrCommand(new IrCommandLabel(labelElse));
-                
+            Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(labelEnd));  // skip else
+            Ir.getInstance().AddIrCommand(new IrCommandLabel(labelElse));
             else_body.irMe();
         }
         
+        /* add end label */
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(labelEnd));
 
-        /**********************/
-        /* [7] Loop end label */
-        /**********************/
-        Ir.
-                getInstance().
-                AddIrCommand(new IrCommandLabel(labelEnd));
-
-        /*******************/
-        /* [8] return null */
-        /*******************/
         return null;
     }
 
