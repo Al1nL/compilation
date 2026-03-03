@@ -125,7 +125,7 @@ compile:
 test-all:
 	@echo "Running tests on all files in ${INPUT_DIR}..."
 	@mkdir -p ${OUTPUT_DIR}
-	@pass=0; fail=0; skip=0; passed_nums=""; \
+	@pass=0; fail=0; skip=0; passed_nums=""; failed_nums=""; \
 	for file in ${INPUT_DIR}/TEST_*.txt; do \
 		filename=$$(basename $$file .txt); \
 		echo "------------------------------------------------"; \
@@ -156,12 +156,15 @@ test-all:
 				echo "  Expected: $$expected"; \
 				echo "  Actual:   $$actual"; \
 				fail=$$((fail+1)); \
+				num=$$(echo "$$filename" | grep -oP '(?<=TEST_)\d+' | sed 's/^0*//'); \
+				if [ -z "$$failed_nums" ]; then failed_nums="$$num"; else failed_nums="$$failed_nums, $$num"; fi; \
 			fi; \
 		fi; \
 	done; \
 	echo "================================================"; \
 	echo "Results: $$pass passed, $$fail failed, $$skip skipped."; \
 	echo "Passed tests: $$passed_nums"; \
+	echo "Failed tests: $$failed_nums"; \
 	echo "================================================"
 
 ##############
