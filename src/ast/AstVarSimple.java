@@ -57,7 +57,7 @@ public class AstVarSimple extends AstVar
 	}
 	Type t = e.type;
 	this.var = Variable.get(name, e.scopeLevel, AstDecFunc.currentFunctionName);
-	System.out.println("varname: " + name + " "+ lineNumber);
+	//System.out.println("varname: " + name + " "+ lineNumber);
     return t;	
 	}
 
@@ -96,8 +96,10 @@ public class AstVarSimple extends AstVar
 		else{
 			offset = offsets.get(var);
 		}
-		var.offset = offset;
-        
+		
+		if (offset != null) {
+			var.offset = offset;
+		}
 		return curIdx;
 		
 	}

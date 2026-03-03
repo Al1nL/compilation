@@ -126,13 +126,16 @@ public class AstDecVar extends AstDec {
                 var.offset = curIdx;
                 curIdx++;
                 offset = var.offset;
-                //TODO: figure out where to save the index in here?
-                //in its own field or vairble
-            }
+                }
             else{
                 offset = offsets.get(var);
             }
             
+        }
+
+        else {
+            // Global variable (curClass==null, offsets==null): offset not used for globals,set to avoid NPE
+            offset = 0;
         }
 
         if (exp != null) {
