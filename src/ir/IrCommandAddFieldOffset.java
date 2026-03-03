@@ -5,16 +5,7 @@ import java.util.Set;
 import mips.MipsGenerator;
 import temp.*;
 
-/**
- * Computes the address of an object field: addr = base + (fieldOffset+1)*4
- *
- * This is distinct from IrCommandAddOffset (which is for ARRAYS and performs
- * null + bounds checking). Object fields are accessed by fixed, statically-known
- * offsets — no runtime bounds check is needed or correct here.
- *
- * The null check on base must be emitted separately (IrCommandNullCheck)
- * before this command.
- */
+/* Computes the address of an object field: addr = base + (fieldOffset+1)*4 */
 public class IrCommandAddFieldOffset extends IrCommand {
 
     public final Temp dst;
