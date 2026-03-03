@@ -4,7 +4,6 @@ import ir.*;
 import java.util.*;
 import temp.*;
 import types.*;
-import symboltable.*;
 import variable.*;
 
 public class AstExpBinop extends AstExp {
@@ -13,6 +12,8 @@ public class AstExpBinop extends AstExp {
     public AstExp left;
     public AstExp right;
     public boolean isInteger = false;
+    public boolean isString  = false;  
+
 
     /* CONSTRUCTOR(S) */
     public AstExpBinop(AstExp left, AstExp right, int op) {
@@ -97,6 +98,11 @@ public class AstExpBinop extends AstExp {
 
         if (op == 6) {
             if (t1.canAssignTo(t2) || t2.canAssignTo(t1)) {
+                 // mark whether we are comparing strings (content equality via strcmp)
+                if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
+                    isString = true;
+                    return TypeString.getInstance();
+                }
                 return TypeInt.getInstance();
             } else {
                 System.out.format(">> ERROR: binop expression %s and %s are not comparable\n", t1.toString(), t2.toString());
@@ -110,6 +116,7 @@ public class AstExpBinop extends AstExp {
                 return TypeInt.getInstance();
             }
             if (t1.isSameType(TypeString.getInstance()) && t2.isSameType(TypeString.getInstance())) {
+                isString = true;
                 return TypeString.getInstance();
             } else {
                 System.out.format(">> ERROR: binop expression cannot add %s and %s\n", t1.toString(), t2.toString());
@@ -162,8 +169,10 @@ public class AstExpBinop extends AstExp {
 
         if (op == 0) // PLUS
         {
-            binOpIrCommand = new IrCommandBinopAddIntegers(dst, t1, t2);
-        }
+            binOpIrCommand = isInteger
+                    ? new IrCommandBinopAddIntegers(dst, t1, t2)
+                    : new IrCommandBinopAddStrings(dst, t1, t2);  
+      }
         if (op == 1) // MINUS
         {
             binOpIrCommand = new IrCommandBinopSubIntegers(dst, t1, t2);
@@ -187,7 +196,8 @@ public class AstExpBinop extends AstExp {
         }
         if (op == 6) // EQ
         {
-            binOpIrCommand = new IrCommandBinopEqIntegers(dst, t1, t2);
+            binOpIrCommand = isString ? new IrCommandBinopEqStrings(dst, t1, t2)
+                    : new IrCommandBinopEqIntegers(dst, t1, t2);
         }
         if(Ir.curClass!=null){
             Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(binOpIrCommand);
