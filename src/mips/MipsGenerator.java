@@ -309,48 +309,44 @@ public class MipsGenerator {
     }
 
     public void addStrings(Temp dst, Temp t1, Temp t2) {
-        // Save $ra AND the original string pointers on the stack
-        // This prevents 'dst' from overwriting t1/t2 if they share a register!
-        textSec.format("\tsubu $sp,$sp,12\n");
-        textSec.format("\tsw $ra,8($sp)\n");
+        textSec.format("\tsubu $sp,$sp,16\n");
+        textSec.format("\tsw $ra,12($sp)\n");
+        // $sp+8 is reserved for len(t1), filled below
         textSec.format("\tsw %s,4($sp)\n", t1);
         textSec.format("\tsw %s,0($sp)\n", t2);
 
-        // Get length of first string
+        // strlen(t1) → $v0; spill result onto stack immediately
         textSec.format("\tlw $a0,4($sp)\n");
         textSec.format("\tjal __strlen\n");
-        textSec.format("\tmove $s0,$v0\n");
+        textSec.format("\tsw $v0,8($sp)\n");        // len(t1) safely on stack
 
-        // Get length of second string
+        // strlen(t2) → $v0
         textSec.format("\tlw $a0,0($sp)\n");
         textSec.format("\tjal __strlen\n");
-        textSec.format("\tmove $s1,$v0\n");
 
-        // Allocate memory: (length1 + length2 + 1)
-        textSec.format("\tadd $a0,$s0,$s1\n");
-        textSec.format("\taddi $a0,$a0,1\n");
+        // sbrk(len(t1) + len(t2) + 1) — reload len(t1) from stack
+        textSec.format("\tlw $a0,8($sp)\n");        // len(t1)
+        textSec.format("\tadd $a0,$a0,$v0\n");      // + len(t2)
+        textSec.format("\taddi $a0,$a0,1\n");       // + null terminator
         textSec.format("\tli $v0,9\n");
         textSec.format("\tsyscall\n");
 
-        // $v0 has the new pointer. Save it in $s2 safely
-        textSec.format("\tmove $s2,$v0\n");
+        // Store new buffer address into dst NOW, before any further jal clobbers $v0
+        textSec.format("\tmove %s,$v0\n", dst);
 
-        // Copy first string
-        textSec.format("\tlw $a0,4($sp)\n");    // Load t1 from stack
-        textSec.format("\tmove $a1,$s2\n");     // Destination is start of new string
-        textSec.format("\tjal __strcpy\n");     // Returns pointer to null terminator in $v0
-
-        // Copy second string
-        textSec.format("\tlw $a0,0($sp)\n");    // Load t2 from stack
-        textSec.format("\tmove $a1,$v0\n");     // Destination is the end of first string
+        // strcpy(t1 → dst): fills buffer, $v0 = pointer past null byte
+        textSec.format("\tlw $a0,4($sp)\n");
+        textSec.format("\tmove $a1,%s\n", dst);
         textSec.format("\tjal __strcpy\n");
 
-        // FINALLY, assign the new string pointer to the destination temp
-        textSec.format("\tmove %s,$s2\n", dst);
+        // strcpy(t2 → $v0): appends second string right after first
+        textSec.format("\tlw $a0,0($sp)\n");
+        textSec.format("\tmove $a1,$v0\n");
+        textSec.format("\tjal __strcpy\n");
 
-        // Restore stack
-        textSec.format("\tlw $ra,8($sp)\n");
-        textSec.format("\taddu $sp,$sp,12\n");
+        // Restore frame — dst already holds the concatenated string pointer
+        textSec.format("\tlw $ra,12($sp)\n");
+        textSec.format("\taddu $sp,$sp,16\n");
     }
 
     /**
@@ -593,11 +589,10 @@ public class MipsGenerator {
 
     private void writePreamble() {
         // Error strings go into .data buffer
-        dataSec.print("string_access_violation: .asciiz \"Access Violation\"\n");
+         dataSec.print("string_access_violation: .asciiz \"Access Violation\"\n");
         dataSec.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
         dataSec.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
 
-        // Runtime helpers go into .text buffer
         textSec.print("__strlen:\n");
         textSec.print("\tmove $s0,$a0\n");
         textSec.print("__strlen_loop:\n");
@@ -622,14 +617,12 @@ public class MipsGenerator {
         textSec.print("\tmove $v0,$a1\n");
         textSec.print("\tjr $ra\n");
 
-        // __strcmp: compare null-terminated strings in $a0 and $a1
-        // returns 0 in $v0 if equal, non-zero otherwise
         textSec.print("__strcmp:\n");
         textSec.print("__strcmp_loop:\n");
         textSec.print("\tlb $s0,0($a0)\n");
         textSec.print("\tlb $s1,0($a1)\n");
         textSec.print("\tbne $s0,$s1,__strcmp_ne\n");
-        textSec.print("\tbeq $s0,$zero,__strcmp_eq\n");  // both are '\0' → equal
+        textSec.print("\tbeq $s0,$zero,__strcmp_eq\n");
         textSec.print("\taddi $a0,$a0,1\n");
         textSec.print("\taddi $a1,$a1,1\n");
         textSec.print("\tj __strcmp_loop\n");
