@@ -35,7 +35,8 @@ public class MipsGenerator {
     // Class bookkeeping
     private Map<String, Integer> classFieldCount = new HashMap<>();
     private Map<String, List<String>> classMethods = new HashMap<>();
-    private Set<String> emittedStringLabels = new HashSet<>();
+    private Map<String, String> stringPool = new HashMap<>();
+    private int stringCounter = 0;
 
     /* ===== FILE FINALIZATION ===== */
 
@@ -290,43 +291,66 @@ public class MipsGenerator {
     /* ===== STRINGS ===== */
 
     public void constString(Temp t, String value) {
-        String strLabel = String.format("str_%s", t).replace("$", "");
-        // only emit .data entry once per label - re-running field irMe() for fresh
-        // temps can produce the same physical register name, causing duplicate labels
-        if (emittedStringLabels.add(strLabel)) {
+        String strLabel;
+        
+        // Deduplicate strings so we don't fill .data with copies of the same word
+        if (stringPool.containsKey(value)) {
+            strLabel = stringPool.get(value);
+        } else {
+            strLabel = "str_" + (stringCounter++);
+            stringPool.put(value, strLabel);
             dataSec.format("%s: .asciiz %s\n", strLabel, value);
         }
-        textSec.format("\tla %s,%s\n", t, strLabel);
+        
+        // CRITICAL FIX: If we are not inside a function (e.g., globals init), 
+        // the instruction MUST go to the globalInitSec, not textSec!
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tla %s,%s\n", t, strLabel);
     }
 
     public void addStrings(Temp dst, Temp t1, Temp t2) {
-        textSec.format("\tsubu $sp,$sp,4\n");
-        textSec.format("\tsw $ra,0($sp)\n");
+        // Save $ra AND the original string pointers on the stack
+        // This prevents 'dst' from overwriting t1/t2 if they share a register!
+        textSec.format("\tsubu $sp,$sp,12\n");
+        textSec.format("\tsw $ra,8($sp)\n");
+        textSec.format("\tsw %s,4($sp)\n", t1);
+        textSec.format("\tsw %s,0($sp)\n", t2);
 
-        textSec.format("\tmove $a0,%s\n", t1);
+        // Get length of first string
+        textSec.format("\tlw $a0,4($sp)\n");
         textSec.format("\tjal __strlen\n");
         textSec.format("\tmove $s0,$v0\n");
 
-        textSec.format("\tmove $a0,%s\n", t2);
+        // Get length of second string
+        textSec.format("\tlw $a0,0($sp)\n");
         textSec.format("\tjal __strlen\n");
         textSec.format("\tmove $s1,$v0\n");
 
+        // Allocate memory: (length1 + length2 + 1)
         textSec.format("\tadd $a0,$s0,$s1\n");
         textSec.format("\taddi $a0,$a0,1\n");
         textSec.format("\tli $v0,9\n");
         textSec.format("\tsyscall\n");
-        textSec.format("\tmove %s,$v0\n", dst);
 
-        textSec.format("\tmove $a0,%s\n", t1);
-        textSec.format("\tmove $a1,%s\n", dst);
+        // $v0 has the new pointer. Save it in $s2 safely
+        textSec.format("\tmove $s2,$v0\n");
+
+        // Copy first string
+        textSec.format("\tlw $a0,4($sp)\n");    // Load t1 from stack
+        textSec.format("\tmove $a1,$s2\n");     // Destination is start of new string
+        textSec.format("\tjal __strcpy\n");     // Returns pointer to null terminator in $v0
+
+        // Copy second string
+        textSec.format("\tlw $a0,0($sp)\n");    // Load t2 from stack
+        textSec.format("\tmove $a1,$v0\n");     // Destination is the end of first string
         textSec.format("\tjal __strcpy\n");
 
-        textSec.format("\tmove $a0,%s\n", t2);
-        textSec.format("\tmove $a1,$v0\n");
-        textSec.format("\tjal __strcpy\n");
+        // FINALLY, assign the new string pointer to the destination temp
+        textSec.format("\tmove %s,$s2\n", dst);
 
-        textSec.format("\tlw $ra,0($sp)\n");
-        textSec.format("\taddu $sp,$sp,4\n");
+        // Restore stack
+        textSec.format("\tlw $ra,8($sp)\n");
+        textSec.format("\taddu $sp,$sp,12\n");
     }
 
     /**
