@@ -291,7 +291,16 @@ public class MipsGenerator {
         out.format("\tsyscall\n");
         out.format("%s:\n", okLabel);
         out.format("\tdiv %s,%s\n", oprnd1, oprnd2);
-        out.format("\tmflo %s\n", dst);
+        // XOR BEFORE mflo: dst may alias oprnd1/oprnd2, so read signs while they are still valid
+        out.format("\txor $s0,%s,%s\n", oprnd1, oprnd2); // $s0 MSB set iff signs differ
+        out.format("\tmflo %s\n", dst);                   // truncated quotient into dst
+        out.format("\tmfhi $s1\n");                        // remainder into $s1 
+        // Floor correction: if remainder != 0 AND signs differ, floor = trunc - 1
+        String floorDone = IrCommand.getFreshLabel("floor_done");
+        out.format("\tbeq $s1,$zero,%s\n", floorDone);   // remainder==0: exact, skip
+        out.format("\tbge $s0,$zero,%s\n", floorDone);   // same sign: truncation==floor, skip
+        out.format("\taddiu %s,%s,-1\n", dst, dst);      // different signs: floor = trunc - 1
+        out.format("%s:\n", floorDone);
         saturate(dst);
     }
 
