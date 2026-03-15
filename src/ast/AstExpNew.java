@@ -143,7 +143,7 @@ public class AstExpNew extends AstExp {
         /********************************************/
         Temp sizeTemp = sizeExp.irMe();
         curIrCommand = new IrCommandAllocateArray(dst, type, sizeTemp);
-        if(Ir.curClass!=null){
+        if(Ir.curClass != null && Ir.curField >= 0){
             Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
         }
         else{

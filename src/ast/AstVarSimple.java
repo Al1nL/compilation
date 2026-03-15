@@ -69,7 +69,7 @@ public class AstVarSimple extends AstVar
 	{
 		Temp t = TempFactory.getInstance().getFreshTemp();
 		IrCommand curIrCommand = new IrCommandLoad(t,var);
-        if(Ir.curClass!=null){
+        if(Ir.curClass != null && Ir.curField >= 0){
             Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(curIrCommand);
         }
         else{
@@ -93,9 +93,10 @@ public class AstVarSimple extends AstVar
 			offset = classFieldOffsets.get(curClass).get(name);
 			isFieldInMethod = true;
 		}
-		else{
+		else if (offsets != null) {
 			offset = offsets.get(var);
 		}
+		// else: global scope (offsets==null, curClass==null) - no offset needed
 		
 		if (offset != null) {
 			var.offset = offset;

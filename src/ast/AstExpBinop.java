@@ -202,7 +202,7 @@ public class AstExpBinop extends AstExp {
                    : isObject  ? new IrCommandBinopEqObjects(dst, t1, t2)
                    :             new IrCommandBinopEqIntegers(dst, t1, t2);
 }
-        if(Ir.curClass!=null){
+        if(Ir.curClass != null && Ir.curField >= 0){
             Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(binOpIrCommand);
         }
         else{

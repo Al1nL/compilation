@@ -107,7 +107,7 @@ public Temp irMe() {
     Temp dst = TempFactory.getInstance().getFreshTemp();
     IrCommand loadMemoryIrCommand = new IrCommandLoadMemory(dst, addr, variable.var);
 
-    if(Ir.curClass!=null){
+    if(Ir.curClass != null && Ir.curField >= 0){
         Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(addOffsetIrCommand);
         Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField).add(loadMemoryIrCommand);
     }

@@ -100,7 +100,7 @@ public class AstExpMethodCall extends AstExp {
         // (it emits bne obj,$zero,ok; print error; exit; ok:).
         IrCommand vcCommand = new IrCommandVirtualCall(dst, objTemp, method, offset, argTemps);
 
-        if(Ir.curClass!=null){
+    if (Ir.curClass != null && Ir.curField >= 0) {
             List<IrCommand> commandList = Ir.fieldInitIrCommands.get(Ir.curClass).get(Ir.curField);
             commandList.add(vcCommand);
         }
