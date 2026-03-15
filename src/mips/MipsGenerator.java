@@ -55,8 +55,12 @@ public class MipsGenerator {
 
         // 3. Emit global initializer function BEFORE main()
         fileWriter.print("_globals_init:\n");
+        fileWriter.print("\tsubu $sp, $sp, 4\n");
+        fileWriter.print("\tsw $ra, 0($sp)\n");
         globalInitSec.flush();
         fileWriter.print(globalInitBuffer.toString());
+        fileWriter.print("\tlw $ra, 0($sp)\n");
+        fileWriter.print("\taddu $sp, $sp, 4\n");
         fileWriter.print("\tjr $ra\n\n");
 
         // 4. Emit main trampoline
@@ -174,40 +178,43 @@ public class MipsGenerator {
      * BEFORE doing pointer arithmetic (where the computed address would no longer be 0).
      */
     public void checkNullPtr(Temp ptr) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         String okLabel = IrCommand.getFreshLabel("null_check_ok");
-        textSec.format("\tbne %s,$zero,%s\n", ptr, okLabel);
-        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
-        textSec.format("\tli $v0,4\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tli $v0,10\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("%s:\n", okLabel);
+        out.format("\tbne %s,$zero,%s\n", ptr, okLabel);
+        out.format("\tla $a0,string_invalid_ptr_dref\n");
+        out.format("\tli $v0,4\n");
+        out.format("\tsyscall\n");
+        out.format("\tli $v0,10\n");
+        out.format("\tsyscall\n");
+        out.format("%s:\n", okLabel);
     }
 
     /* Dereferences a pointer: dst = Memory[ptr] */
     public void loadFromPointer(Temp dst, Temp ptr, int offset) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         String okLabel = IrCommand.getFreshLabel("reference_ok");
-        textSec.format("\tbne %s,$zero,%s\n", ptr, okLabel);
-        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
-        textSec.format("\tli $v0,4\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tli $v0,10\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("%s:\n", okLabel);
-        textSec.format("\tlw %s,%d(%s)\n", dst, offset, ptr);
+        out.format("\tbne %s,$zero,%s\n", ptr, okLabel);
+        out.format("\tla $a0,string_invalid_ptr_dref\n");
+        out.format("\tli $v0,4\n");
+        out.format("\tsyscall\n");
+        out.format("\tli $v0,10\n");
+        out.format("\tsyscall\n");
+        out.format("%s:\n", okLabel);
+        out.format("\tlw %s,%d(%s)\n", dst, offset, ptr);
     }
 
     /* Stores a value through a pointer: Memory[ptr] = src */
     public void storeToPointer(Temp src, Temp ptr, int offset) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         String okLabel = IrCommand.getFreshLabel("reference_ok");
-        textSec.format("\tbne %s,$zero,%s\n", ptr, okLabel);
-        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
-        textSec.format("\tli $v0,4\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tli $v0,10\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("%s:\n", okLabel);
-        textSec.format("\tsw %s,%d(%s)\n", src, offset, ptr);
+        out.format("\tbne %s,$zero,%s\n", ptr, okLabel);
+        out.format("\tla $a0,string_invalid_ptr_dref\n");
+        out.format("\tli $v0,4\n");
+        out.format("\tsyscall\n");
+        out.format("\tli $v0,10\n");
+        out.format("\tsyscall\n");
+        out.format("%s:\n", okLabel);
+        out.format("\tsw %s,%d(%s)\n", src, offset, ptr);
     }
 
     /* Object/pointer equality: dst = (t1 == t2) ? 1 : 0 */
@@ -394,15 +401,16 @@ public class MipsGenerator {
      * Allocates heap memory for a class instance.
      */
     public void allocateObject(Temp dst, String type) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         int numFields = classFieldCount.getOrDefault(type, 0);
         int size = (1 + numFields) * WORD_SIZE;
-        textSec.format("\tli $a0,%d\n", size);
-        textSec.format("\tli $v0,9\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tmove %s,$v0\n", dst);
+        out.format("\tli $a0,%d\n", size);
+        out.format("\tli $v0,9\n");
+        out.format("\tsyscall\n");
+        out.format("\tmove %s,$v0\n", dst);
         if (!classMethods.getOrDefault(type, new java.util.ArrayList<String>()).isEmpty()) {
-            textSec.format("\tla $s0,%s_vtable\n", type);
-            textSec.format("\tsw $s0,0(%s)\n", dst);
+            out.format("\tla $s0,%s_vtable\n", type);
+            out.format("\tsw $s0,0(%s)\n", dst);
         }
     }
 
@@ -434,8 +442,6 @@ public class MipsGenerator {
 
     // call method of object
     public void callMethod(Temp dst, Temp object, int offset, List<Temp> args) {
-        int argsNumber = 1;
-
         String okLabel = IrCommand.getFreshLabel("reference_ok");
         textSec.format("\tbne %s,$zero,%s\n", object, okLabel);
         textSec.format("\tla $a0,string_invalid_ptr_dref\n");
@@ -445,36 +451,40 @@ public class MipsGenerator {
         textSec.format("\tsyscall\n");
         textSec.format("%s:\n", okLabel);
 
+        // Load the vtable entry into $s0 BEFORE touching the stack
         textSec.format("\tlw $s0, 0(%s)\n", object);
-        textSec.format("\tlw $s0, %d($s0)\n", offset*4);
+        textSec.format("\tlw $s0, %d($s0)\n", offset * 4);
 
-        textSec.print("\tsubu $sp, $sp, 4\n");
-        textSec.format("\tsw %s, 0($sp)\n", object);
-
+        // Push args RIGHT-TO-LEFT first (last arg at lowest address)
         for (int i = args.size() - 1; i >= 0; i--) {
-            argsNumber++;
             textSec.print("\tsubu $sp, $sp, 4\n");
             textSec.format("\tsw %s, 0($sp)\n", args.get(i));
         }
+        // Push 'this' (object) LAST so it sits at $fp+8 inside the callee
+        textSec.print("\tsubu $sp, $sp, 4\n");
+        textSec.format("\tsw %s, 0($sp)\n", object);
+
         textSec.print("\tjalr $s0\n");
-        textSec.format("\taddu $sp, $sp, %d\n", argsNumber * 4);
+        // Pop all pushed words: object + all args
+        textSec.format("\taddu $sp, $sp, %d\n", (args.size() + 1) * 4);
         textSec.format("\tmove %s, $v0\n", dst);
     }
 
     // call function with label
     public void callFunc(Temp dst, String label, List<Temp> args) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
         int argsNumber = 0;
 
         for (int i = args.size() - 1; i >= 0; i--) {
             argsNumber++;
-            textSec.print("\tsubu $sp, $sp, 4\n");
-            textSec.format("\tsw %s, 0($sp)\n", args.get(i));
+            out.print("\tsubu $sp, $sp, 4\n");
+            out.format("\tsw %s, 0($sp)\n", args.get(i));
         }
-        textSec.format("\tjal %s\n", label);
+        out.format("\tjal %s\n", label);
         if (argsNumber > 0) {
-            textSec.format("\taddu $sp, $sp, %d\n", argsNumber * 4);
+            out.format("\taddu $sp, $sp, %d\n", argsNumber * 4);
         }
-        textSec.format("\tmove %s, $v0\n", dst);
+        out.format("\tmove %s, $v0\n", dst);
     }
 
     public void returnToCaller(Temp t, String functionName) {
