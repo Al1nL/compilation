@@ -144,7 +144,9 @@ public class AstDecFunc extends AstDec {
             curClass = Ir.curClass;
             Ir.curClass = null;
         }
-        
+        // Track which class this method belongs to so AstExpCall can resolve sibling calls
+        Ir.currentMethodClass = curClass;
+
         String name = this.label!=null? this.label : this.name;
         if (name.equals("main")) name = "user_main"; 
         Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
@@ -153,6 +155,7 @@ public class AstDecFunc extends AstDec {
         if (body != null) body.irMe();
         Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
         Ir.curClass = curClass;
+        Ir.currentMethodClass = null;  // clear after method body
         return null;
 }
 

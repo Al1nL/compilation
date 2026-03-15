@@ -9,6 +9,8 @@ public class Ir
 	private List<IrCommand> globalInit = new ArrayList<>();
     private List<IrCommand> mainCommands = new ArrayList<>();
 	public static String curClass;
+	public static String currentMethodClass = null; // Tracks which class we are currently generating a method body for (null for free functions)
+	public static Map<String, Map<String, String>> methodLabelsMap = new HashMap<>(); 	// Maps className -> methodName -> mangled MIPS label, populated during AstDecClass.irMe
 	public static int curField = -1; //field offset
 	public static Map<String, Map<Integer, List<IrCommand>>> fieldInitIrCommands = new HashMap<>();
 	public static Map<String, List<AstDecVar>> classFieldDecls = new HashMap<>(); // flat list of all AstDecVar nodes (including inherited) per class

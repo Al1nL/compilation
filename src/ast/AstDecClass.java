@@ -72,8 +72,19 @@ public class AstDecClass extends AstDec {
 
         // BEGIN SCOPE
         SymbolTable.getInstance().beginScope();
+        
+        // PROCESS INHERITED FIELDS
+        if (parentTypeClass != null) {
+            TypeClassVarDecList inherited = parentTypeClass.dataMembers;
+            while (inherited != null) {
+                if (inherited.head != null) {
+                    SymbolTable.getInstance().enter(inherited.head.name, inherited.head.t);
+                }
+                inherited = inherited.tail;
+            }
+        }
 
-        // PROCESS FIELDS
+        // PROCESS CLASS FIELDS
         this.processFields(parentTypeClass , t);
 
         t.isinitilized = true;
@@ -181,6 +192,10 @@ public class AstDecClass extends AstDec {
                 _FieldCount,
                 _MethodLabels
             ));
+        // Store method labels so AstExpCall.irMe() can resolve intra-class calls
+        if (_MethodLabels != null) {
+            Ir.methodLabelsMap.put(name, new HashMap<>(_MethodLabels));
+        }
         if(fields!=null){
             // Build flat list of AstDecVar nodes including inherited ones
             List<AstDecVar> varDecls = new ArrayList<>();
