@@ -1,0 +1,23 @@
+int x := 100;
+
+int getX()
+{
+    return x;
+}
+
+void modify()
+{
+    int x := 999;
+    x := x + 1;
+}
+
+void main()
+{
+    PrintInt(x);
+    PrintInt(getX());
+    modify();
+    PrintInt(x);
+    int x := 42;
+    PrintInt(x);
+    PrintInt(getX());
+}

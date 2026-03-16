@@ -1,0 +1,48 @@
+class Shape
+{
+    int sides := 0;
+    int area() { return 0; }
+}
+class Rect extends Shape
+{
+    int w := 0;
+    int h := 0;
+    int area() { return w * h; }
+}
+class Tri extends Shape
+{
+    int base := 0;
+    int height := 0;
+    int area() { return base * height / 2; }
+}
+array ShapeArr = Shape[];
+void main()
+{
+    ShapeArr arr := new Shape[4];
+    Rect r1 := new Rect;
+    Rect r2 := new Rect;
+    Tri t1 := new Tri;
+    Tri t2 := new Tri;
+    r1.w := 3; r1.h := 4;
+    r2.w := 5; r2.h := 6;
+    t1.base := 6; t1.height := 4;
+    t2.base := 10; t2.height := 3;
+    arr[0] := r1;
+    arr[1] := r2;
+    arr[2] := t1;
+    arr[3] := t2;
+    int i := 0;
+    int total := 0;
+    while (i < 4)
+    {
+        int a := arr[i].area();
+        PrintInt(a);
+        total := total + a;
+        i := i + 1;
+    }
+    PrintInt(total);
+    int eq01 := arr[0] = arr[1];
+    int eq00 := arr[0] = r1;
+    PrintInt(eq01);
+    PrintInt(eq00);
+}

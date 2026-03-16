@@ -1,0 +1,38 @@
+int clamp(int v, int lo, int hi)
+{
+    if (v < lo) { return lo; }
+    if (v > hi) { return hi; }
+    return v;
+}
+int firstNeg(int a, int b, int c)
+{
+    if (a < 0) { return a; }
+    if (b < 0) { return b; }
+    if (c < 0) { return c; }
+    return 0;
+}
+int classify(int n)
+{
+    if (n < 0 - 100) { return 0 - 3; }
+    if (n < 0)       { return 0 - 1; }
+    if (n = 0)       { return 0; }
+    if (n < 100)     { return 1; }
+    return 3;
+}
+void main()
+{
+    PrintInt(clamp(5, 0, 10));
+    PrintInt(clamp(0 - 5, 0, 10));
+    PrintInt(clamp(15, 0, 10));
+    PrintInt(clamp(0, 0, 10));
+    PrintInt(clamp(10, 0, 10));
+    PrintInt(firstNeg(1, 2, 3));
+    PrintInt(firstNeg(0 - 1, 2, 3));
+    PrintInt(firstNeg(1, 0 - 2, 3));
+    PrintInt(firstNeg(1, 2, 0 - 3));
+    PrintInt(classify(0 - 200));
+    PrintInt(classify(0 - 50));
+    PrintInt(classify(0));
+    PrintInt(classify(50));
+    PrintInt(classify(200));
+}

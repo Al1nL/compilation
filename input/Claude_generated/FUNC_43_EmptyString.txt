@@ -1,0 +1,11 @@
+void main()
+{
+    string empty := "";
+    string hello := "hello";
+    PrintString(empty + hello);
+    PrintString(hello + empty);
+    int r1 := empty = "";
+    int r2 := empty = hello;
+    PrintInt(r1);
+    PrintInt(r2);
+}

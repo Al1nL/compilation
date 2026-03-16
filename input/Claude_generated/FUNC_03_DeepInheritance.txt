@@ -1,0 +1,74 @@
+class Animal
+{
+    int energy := 100;
+    int getEnergy()
+    {
+        return energy;
+    }
+    int makeSound()
+    {
+        return 1;
+    }
+    int move()
+    {
+        energy := energy - 5;
+        return energy;
+    }
+}
+class Mammal extends Animal
+{
+    int furColor := 1;
+    int makeSound()
+    {
+        return 2;
+    }
+    int breathe()
+    {
+        return furColor;
+    }
+}
+class Dog extends Mammal
+{
+    int barkCount := 0;
+    int makeSound()
+    {
+        barkCount := barkCount + 1;
+        return 3;
+    }
+    int fetch()
+    {
+        int result := move();
+        return result + barkCount;
+    }
+}
+class Puppy extends Dog
+{
+    int cuteness := 100;
+    int makeSound()
+    {
+        barkCount := barkCount + 1;
+        cuteness := cuteness + 1;
+        return 4;
+    }
+    int getCuteness()
+    {
+        return cuteness;
+    }
+}
+void main()
+{
+    Puppy p := new Puppy;
+    PrintInt(p.makeSound());
+    PrintInt(p.getCuteness());
+    PrintInt(p.breathe());
+    PrintInt(p.getEnergy());
+    PrintInt(p.fetch());
+    PrintInt(p.getEnergy());
+    p.energy := 200;
+    PrintInt(p.getEnergy());
+    p.furColor := 5;
+    PrintInt(p.breathe());
+    PrintInt(p.makeSound());
+    PrintInt(p.makeSound());
+    PrintInt(p.getCuteness());
+}

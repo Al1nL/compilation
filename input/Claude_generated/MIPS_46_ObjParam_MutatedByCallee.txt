@@ -1,0 +1,30 @@
+class Acc
+{
+    int val := 0;
+    int count := 0;
+}
+void addTo(Acc a, int v)
+{
+    a.val := a.val + v;
+    a.count := a.count + 1;
+}
+int readVal(Acc a) { return a.val; }
+int readCount(Acc a) { return a.count; }
+
+void main()
+{
+    Acc a := new Acc;
+    Acc b := new Acc;
+    addTo(a, 10);
+    addTo(a, 20);
+    addTo(b, 5);
+    PrintInt(readVal(a));
+    PrintInt(readCount(a));
+    PrintInt(readVal(b));
+    PrintInt(readCount(b));
+    addTo(a, readVal(b));
+    PrintInt(readVal(a));
+    PrintInt(readCount(a));
+    int same := a = b;
+    PrintInt(same);
+}

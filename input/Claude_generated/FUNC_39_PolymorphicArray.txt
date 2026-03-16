@@ -1,0 +1,58 @@
+class Shape
+{
+    int area()
+    {
+        return 0;
+    }
+}
+
+class Rect extends Shape
+{
+    int w := 0;
+    int h := 0;
+    int area()
+    {
+        return w * h;
+    }
+}
+
+class Circle extends Shape
+{
+    int r := 0;
+    int area()
+    {
+        return 3 * r * r;
+    }
+}
+
+array ShapeArray = Shape[];
+
+int totalArea(ShapeArray shapes, int n)
+{
+    int total := 0;
+    int i := 0;
+    while (i < n)
+    {
+        total := total + shapes[i].area();
+        i := i + 1;
+    }
+    return total;
+}
+
+void main()
+{
+    ShapeArray shapes := new Shape[3];
+    Rect rect := new Rect;
+    rect.w := 4;
+    rect.h := 5;
+    Circle circ := new Circle;
+    circ.r := 3;
+    Shape empty := new Shape;
+    shapes[0] := rect;
+    shapes[1] := circ;
+    shapes[2] := empty;
+    PrintInt(shapes[0].area());
+    PrintInt(shapes[1].area());
+    PrintInt(shapes[2].area());
+    PrintInt(totalArea(shapes, 3));
+}

@@ -1,0 +1,26 @@
+array IntArray = int[];
+class Cursor
+{
+    int pos := 0;
+    int step := 1;
+    int advance() { pos := pos + step; return pos; }
+}
+void main()
+{
+    IntArray arr := new int[10];
+    int i := 0;
+    while (i < 10)
+    {
+        arr[i] := i * 10;
+        i := i + 1;
+    }
+    Cursor c := new Cursor;
+    c.pos := 0;
+    c.step := 2;
+    PrintInt(arr[c.pos]);
+    PrintInt(arr[c.advance()]);
+    PrintInt(arr[c.advance()]);
+    PrintInt(c.pos);
+    PrintInt(arr[c.pos + 1]);
+    PrintInt(arr[c.pos - 1]);
+}

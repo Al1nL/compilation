@@ -1,0 +1,90 @@
+class Shape
+{
+    int sides := 0;
+    int getSides()
+    {
+        return sides;
+    }
+    int area()
+    {
+        return 0;
+    }
+    int perimeter()
+    {
+        return 0;
+    }
+}
+class Rectangle extends Shape
+{
+    int width := 0;
+    int height := 0;
+    int area()
+    {
+        return width * height;
+    }
+    int perimeter()
+    {
+        return 2 * (width + height);
+    }
+    int getSides()
+    {
+        return 4;
+    }
+}
+class Square extends Rectangle
+{
+    int setSize(int s)
+    {
+        width := s;
+        height := s;
+        return s;
+    }
+    int area()
+    {
+        return width * width;
+    }
+}
+class Circle extends Shape
+{
+    int radius := 0;
+    int area()
+    {
+        return 3 * radius * radius;
+    }
+    int perimeter()
+    {
+        return 6 * radius;
+    }
+    int getSides()
+    {
+        return 0;
+    }
+}
+void printShapeInfo(Shape s)
+{
+    PrintInt(s.getSides());
+    PrintInt(s.area());
+    PrintInt(s.perimeter());
+}
+void main()
+{
+    Rectangle r := new Rectangle;
+    r.width := 10;
+    r.height := 5;
+    PrintInt(r.area());
+    PrintInt(r.perimeter());
+    PrintInt(r.getSides());
+    Square sq := new Square;
+    sq.setSize(7);
+    PrintInt(sq.area());
+    PrintInt(sq.perimeter());
+    PrintInt(sq.getSides());
+    Circle c := new Circle;
+    c.radius := 5;
+    PrintInt(c.area());
+    PrintInt(c.perimeter());
+    PrintInt(c.getSides());
+    Shape shape1 := r;
+    PrintInt(shape1.area());
+    PrintInt(shape1.getSides());
+}

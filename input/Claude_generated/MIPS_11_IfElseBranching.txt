@@ -1,0 +1,34 @@
+int mySign(int x)
+{
+    if (x > 0) { return 1; }
+    if (x < 0) { return 0 - 1; }
+    return 0;
+}
+
+void main()
+{
+    PrintInt(mySign(10));
+    PrintInt(mySign(0 - 5));
+    PrintInt(mySign(0));
+    int x := 0;
+    if (x) { PrintInt(1); }
+    if (x > 0) { PrintInt(2); }
+    if ((x > 0) = 0) { PrintInt(3); }
+    int y := 7;
+    if (y) { PrintInt(4); }
+    if (y > 0) { PrintInt(5); }
+    int neg := 0 - 3;
+    if (neg) { PrintInt(6); }
+    if (neg < 0) { PrintInt(7); }
+    if ((neg > 0) = 0)
+    {
+        if (neg < 0)
+        {
+            PrintInt(8);
+        }
+        else
+        {
+            PrintInt(9);
+        }
+    }
+}

@@ -1,0 +1,15 @@
+array IntArray = int[];
+int makeSize() { return 4; }
+void main()
+{
+    int sz := makeSize();
+    IntArray arr := new int[sz];
+    int i := 0;
+    while (i < sz)
+    {
+        arr[i] := i + 1;
+        i := i + 1;
+    }
+    PrintInt(arr[sz - 1]);
+    PrintInt(arr[sz]);
+}

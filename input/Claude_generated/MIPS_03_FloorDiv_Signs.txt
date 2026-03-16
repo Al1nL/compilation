@@ -1,0 +1,19 @@
+void main()
+{
+    int p := 7;
+    int q := 2;
+    int n := 0 - 7;
+    int m := 0 - 2;
+    PrintInt(p / q);
+    PrintInt(n / q);
+    PrintInt(p / m);
+    PrintInt(n / m);
+    PrintInt(1 / 2);
+    PrintInt((0 - 1) / 2);
+    PrintInt(1 / (0 - 2));
+    PrintInt((0 - 1) / (0 - 2));
+    PrintInt(6 / 2);
+    PrintInt((0 - 6) / 2);
+    PrintInt(6 / (0 - 2));
+    PrintInt((0 - 6) / (0 - 2));
+}

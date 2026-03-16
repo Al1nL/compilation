@@ -1,0 +1,41 @@
+array IntRow = int[];
+array IntMatrix = IntRow[];
+
+void fillRow(IntRow r, int base, int len)
+{
+    int j := 0;
+    while (j < len)
+    {
+        r[j] := base + j;
+        j := j + 1;
+    }
+}
+
+int rowSum(IntRow r, int len)
+{
+    int s := 0;
+    int j := 0;
+    while (j < len)
+    {
+        s := s + r[j];
+        j := j + 1;
+    }
+    return s;
+}
+
+void main()
+{
+    IntMatrix mat := new IntRow[3];
+    mat[0] := new int[4];
+    mat[1] := new int[4];
+    mat[2] := new int[4];
+    fillRow(mat[0], 0, 4);
+    fillRow(mat[1], 10, 4);
+    fillRow(mat[2], 20, 4);
+    PrintInt(mat[0][0]);
+    PrintInt(mat[1][2]);
+    PrintInt(mat[2][3]);
+    PrintInt(rowSum(mat[0], 4));
+    PrintInt(rowSum(mat[1], 4));
+    PrintInt(rowSum(mat[2], 4));
+}

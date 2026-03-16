@@ -1,0 +1,33 @@
+class Person
+{
+    string firstName := "John";
+    string lastName := "Doe";
+    int age := 0;
+    string getFirst() { return firstName; }
+    string getLast()  { return lastName;  }
+    string getFullName() { return firstName + lastName; }
+}
+class Employee extends Person
+{
+    string department := "Engineering";
+    string getInfo() { return firstName + department; }
+}
+void main()
+{
+    Person p := new Person;
+    PrintString(p.getFirst());
+    PrintString(p.getLast());
+    PrintString(p.getFullName());
+    p.firstName := "Alice";
+    p.lastName := "Smith";
+    PrintString(p.getFullName());
+    int eq1 := p.getFirst() = "Alice";
+    int eq2 := p.getLast() = "Doe";
+    PrintInt(eq1);
+    PrintInt(eq2);
+    Employee e := new Employee;
+    e.firstName := "Bob";
+    PrintString(e.getInfo());
+    int eq3 := e.getFirst() = "Bob";
+    PrintInt(eq3);
+}

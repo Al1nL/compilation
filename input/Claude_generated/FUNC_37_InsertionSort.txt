@@ -1,0 +1,47 @@
+array IntArray = int[];
+
+void insertionSort(IntArray a, int n)
+{
+    int i := 1;
+    while (i < n)
+    {
+        int key := a[i];
+        int pos := i;
+        int j := i - 1;
+        while (j > 0 - 1)
+        {
+            if (a[j] > key)
+            {
+                pos := j;
+            }
+            j := j - 1;
+        }
+        j := i;
+        while (j > pos)
+        {
+            a[j] := a[j - 1];
+            j := j - 1;
+        }
+        a[pos] := key;
+        i := i + 1;
+    }
+}
+
+void main()
+{
+    IntArray arr := new int[7];
+    arr[0] := 5;
+    arr[1] := 3;
+    arr[2] := 8;
+    arr[3] := 1;
+    arr[4] := 9;
+    arr[5] := 2;
+    arr[6] := 7;
+    insertionSort(arr, 7);
+    int i := 0;
+    while (i < 7)
+    {
+        PrintInt(arr[i]);
+        i := i + 1;
+    }
+}

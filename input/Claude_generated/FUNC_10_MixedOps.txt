@@ -1,0 +1,67 @@
+class Calculator
+{
+    int lastResult := 0;
+    int add(int a, int b)
+    {
+        lastResult := a + b;
+        return lastResult;
+    }
+    int multiply(int a, int b)
+    {
+        lastResult := a * b;
+        return lastResult;
+    }
+    int chain(int a, int b, int c)
+    {
+        int temp := add(a, b);
+        return multiply(temp, c);
+    }
+}
+array IntArray = int[];
+int compute(int x, int y, int z)
+{
+    return (x + y) * z - (x * y) / (z + 1);
+}
+void main()
+{
+    Calculator calc := new Calculator;
+    int result1 := compute(5, 10, 3);
+    PrintInt(result1);
+    int result2 := calc.chain(2, 3, 4);
+    PrintInt(result2);
+    PrintInt(calc.lastResult);
+    IntArray arr := new int[10];
+    int i := 0;
+    while (i < 10)
+    {
+        arr[i] := i * i;
+        i := i + 1;
+    }
+    int idx := 3 + 2;
+    PrintInt(arr[idx]);
+    int complex := ((arr[0] + arr[1]) * arr[2]) / (arr[3] + 1);
+    PrintInt(complex);
+    int prec1 := 2 + 3 * 4;
+    PrintInt(prec1);
+    int prec2 := (2 + 3) * 4;
+    PrintInt(prec2);
+    int prec3 := 10 - 5 - 2;
+    PrintInt(prec3);
+    int prec4 := 20 / 4 / 2;
+    PrintInt(prec4);
+    int a := 5;
+    int b := 10;
+    int c := 5;
+    if ((a < b) = 1)
+    {
+        PrintInt(1);
+    }
+    if ((a = c) = 1)
+    {
+        PrintInt(2);
+    }
+    string s1 := "Value";
+    string s2 := "Result";
+    string combined := s1 + s2;
+    PrintString(combined);
+}

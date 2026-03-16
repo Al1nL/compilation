@@ -1,0 +1,44 @@
+array IntArray = int[];
+IntArray ga := nil;
+
+void initArr(int n)
+{
+    ga := new int[n];
+    int i := 0;
+    while (i < n)
+    {
+        ga[i] := i + 1;
+        i := i + 1;
+    }
+}
+void doubleArr(int n)
+{
+    int i := 0;
+    while (i < n)
+    {
+        ga[i] := ga[i] * 2;
+        i := i + 1;
+    }
+}
+int sumArr(int n)
+{
+    int s := 0;
+    int i := 0;
+    while (i < n)
+    {
+        s := s + ga[i];
+        i := i + 1;
+    }
+    return s;
+}
+void main()
+{
+    initArr(5);
+    PrintInt(ga[0]);
+    PrintInt(ga[4]);
+    PrintInt(sumArr(5));
+    doubleArr(5);
+    PrintInt(ga[0]);
+    PrintInt(ga[4]);
+    PrintInt(sumArr(5));
+}

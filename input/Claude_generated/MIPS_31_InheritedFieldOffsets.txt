@@ -1,0 +1,37 @@
+class A
+{
+    int x := 10;
+    int y := 20;
+    int sumA() { return x + y; }
+}
+class B extends A
+{
+    int z := 30;
+    int w := 40;
+    int sumB() { return x + y + z + w; }
+}
+class C extends B
+{
+    int v := 50;
+    int sumC() { return x + y + z + w + v; }
+}
+void main()
+{
+    C obj := new C;
+    PrintInt(obj.x);
+    PrintInt(obj.y);
+    PrintInt(obj.z);
+    PrintInt(obj.w);
+    PrintInt(obj.v);
+    PrintInt(obj.sumA());
+    PrintInt(obj.sumB());
+    PrintInt(obj.sumC());
+    obj.x := 1;
+    obj.y := 2;
+    obj.z := 3;
+    obj.w := 4;
+    obj.v := 5;
+    PrintInt(obj.sumA());
+    PrintInt(obj.sumB());
+    PrintInt(obj.sumC());
+}

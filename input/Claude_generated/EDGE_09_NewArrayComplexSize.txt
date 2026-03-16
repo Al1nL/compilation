@@ -1,0 +1,33 @@
+array IntArray = int[];
+
+class Sizer
+{
+    int val := 4;
+    int getSize() { return val + val; }
+}
+
+int baseSize := 3;
+Sizer globalSizer := new Sizer;
+
+void main()
+{
+    int sz1 := baseSize + 2;
+    IntArray a := new int[sz1];
+    int i := 0;
+    while (i < sz1) { a[i] := i * i; i := i + 1; }
+    PrintInt(a[0]);
+    PrintInt(a[sz1 - 1]);
+    int sz2 := globalSizer.getSize();
+    PrintInt(sz2);
+    IntArray b := new int[sz2];
+    i := 0;
+    while (i < sz2) { b[i] := i + 1; i := i + 1; }
+    PrintInt(b[sz2 - 1]);
+    int sz3 := sz1 * sz2 / 3;
+    IntArray c := new int[sz3];
+    c[0] := 42;
+    c[sz3 - 1] := 99;
+    PrintInt(c[0]);
+    PrintInt(c[sz3 - 1]);
+    PrintInt(sz3);
+}

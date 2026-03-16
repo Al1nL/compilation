@@ -1,0 +1,23 @@
+class Box { int v := 0; }
+int doMath(int x, int y) { return x * y + x - y; }
+void main()
+{
+    Box a := new Box;
+    Box b := new Box;
+    a.v := 10;
+    b.v := 20;
+    int r1 := doMath(3, 4);
+    PrintInt(a.v);
+    PrintInt(b.v);
+    PrintInt(r1);
+    int r2 := doMath(a.v, b.v);
+    PrintInt(r2);
+    PrintInt(a.v);
+    PrintInt(b.v);
+    int eq := a = b;
+    PrintInt(eq);
+    int r3 := doMath(5, 6);
+    int eq2 := a = b;
+    PrintInt(r3);
+    PrintInt(eq2);
+}

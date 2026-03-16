@@ -1,0 +1,10 @@
+int countdown(int n)
+{
+    PrintInt(n);
+    return 10 / n + countdown(n - 1);
+}
+void main()
+{
+    int r := countdown(3);
+    PrintInt(r);
+}

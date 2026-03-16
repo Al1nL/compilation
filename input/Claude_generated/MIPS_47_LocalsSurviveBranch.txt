@@ -1,0 +1,38 @@
+void main()
+{
+    int a := 10;
+    int b := 20;
+    int c := 30;
+    int d := 40;
+    int e := 50;
+    if (a < b)
+    {
+        int tmp := 999;
+        PrintInt(tmp);
+    }
+    else
+    {
+        int tmp := 888;
+        PrintInt(tmp);
+    }
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    PrintInt(e);
+    if (b < a)
+    {
+        int x := 111;
+        PrintInt(x);
+    }
+    else
+    {
+        int x := 222;
+        PrintInt(x);
+    }
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    PrintInt(e);
+}

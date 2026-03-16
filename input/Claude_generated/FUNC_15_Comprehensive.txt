@@ -1,0 +1,111 @@
+array IntArray = int[];
+class Statistics
+{
+    IntArray data := nil;
+    int count := 0;
+    void setData(IntArray arr, int size)
+    {
+        data := arr;
+        count := size;
+    }
+    int sum()
+    {
+        int total := 0;
+        int i := 0;
+        while (i < count)
+        {
+            total := total + data[i];
+            i := i + 1;
+        }
+        return total;
+    }
+    int average()
+    {
+        if (count = 0)
+        {
+            return 0;
+        }
+        return sum() / count;
+    }
+    int max()
+    {
+        if (count = 0)
+        {
+            return 0;
+        }
+        int maxVal := data[0];
+        int i := 1;
+        while (i < count)
+        {
+            if (data[i] > maxVal)
+            {
+                maxVal := data[i];
+            }
+            i := i + 1;
+        }
+        return maxVal;
+    }
+    int min()
+    {
+        if (count = 0)
+        {
+            return 0;
+        }
+        int minVal := data[0];
+        int i := 1;
+        while (i < count)
+        {
+            if (data[i] < minVal)
+            {
+                minVal := data[i];
+            }
+            i := i + 1;
+        }
+        return minVal;
+    }
+}
+int fibonacci(int n)
+{
+    if (n < 2)
+    {
+        return n;
+    }
+    return fibonacci(n-1) + fibonacci(n-2);
+}
+void fillFibonacci(IntArray arr, int size)
+{
+    int i := 0;
+    while (i < size)
+    {
+        arr[i] := fibonacci(i);
+        i := i + 1;
+    }
+}
+void main()
+{
+    IntArray numbers := new int[10];
+    fillFibonacci(numbers, 10);
+    int i := 0;
+    while (i < 10)
+    {
+        PrintInt(numbers[i]);
+        i := i + 1;
+    }
+    Statistics stats := new Statistics;
+    stats.setData(numbers, 10);
+    PrintInt(stats.sum());
+    PrintInt(stats.average());
+    PrintInt(stats.max());
+    PrintInt(stats.min());
+    string prefix := "Fib";
+    string suffix := "onacci";
+    string name := prefix + suffix;
+    PrintString(name);
+    int large := 32000 + 1000;
+    PrintInt(large);
+    IntArray arr2 := numbers;
+    if (arr2 = numbers)
+    {
+        PrintInt(999);
+    }
+}

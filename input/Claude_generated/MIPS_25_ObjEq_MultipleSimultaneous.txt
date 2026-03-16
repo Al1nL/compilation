@@ -1,0 +1,24 @@
+class Box { int v := 0; }
+void main()
+{
+    Box a := new Box;
+    Box b := new Box;
+    Box c := new Box;
+    Box d := a;
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := b = c;
+    int r4 := a = d;
+    int r5 := b = d;
+    int r6 := c = d;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    PrintInt(r4);
+    PrintInt(r5);
+    PrintInt(r6);
+    int r7 := a = nil;
+    int r8 := d = nil;
+    PrintInt(r7);
+    PrintInt(r8);
+}

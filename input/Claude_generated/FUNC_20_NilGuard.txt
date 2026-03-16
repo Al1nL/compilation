@@ -1,0 +1,35 @@
+class Box
+{
+    int value := 42;
+}
+
+int safeGet(Box b)
+{
+    if (b = nil)
+    {
+        return 0-1;
+    }
+    return b.value;
+}
+
+int safeSet(Box b, int v)
+{
+    if (b = nil)
+    {
+        return 0;
+    }
+    b.value := v;
+    return 1;
+}
+
+void main()
+{
+    Box b := new Box;
+    PrintInt(safeGet(b));
+    PrintInt(safeGet(nil));
+    safeSet(b, 100);
+    PrintInt(safeGet(b));
+    PrintInt(safeSet(nil, 999));
+    Box c := nil;
+    PrintInt(safeGet(c));
+}

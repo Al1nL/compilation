@@ -1,0 +1,47 @@
+void main()
+{
+    int r1 := 2 + 3 * 4;
+    PrintInt(r1);
+    int r2 := 3 * 4 + 2;
+    PrintInt(r2);
+    int r3 := 20 - 10 / 2;
+    PrintInt(r3);
+    int r4 := 10 / 2 - 3;
+    PrintInt(r4);
+    int r5 := 20 / 4 * 2;
+    PrintInt(r5);
+    int r6 := 20 * 2 / 4;
+    PrintInt(r6);
+    int r7 := 10 - 3 + 2;
+    PrintInt(r7);
+    int r8 := 10 + 3 - 2;
+    PrintInt(r8);
+    int r9 := (2 + 3) * 4;
+    PrintInt(r9);
+    int r10 := 2 * (3 + 4);
+    PrintInt(r10);
+    int r11 := 2 + 3 * 4 - 5;
+    PrintInt(r11);
+    int r12 := (2 + 3) * (4 - 1);
+    PrintInt(r12);
+    int r13 := 100 / (2 + 3);
+    PrintInt(r13);
+    int c1 := 5 < 10;
+    PrintInt(c1);
+    int c2 := 10 < 5;
+    PrintInt(c2);
+    int c3 := 3 + 2 < 10;
+    PrintInt(c3);
+    int c4 := 3 * 4 > 10;
+    PrintInt(c4);
+    int e1 := 5 = 5;
+    PrintInt(e1);
+    int e2 := 5 = 10;
+    PrintInt(e2);
+    int e3 := 2 + 3 = 5;
+    PrintInt(e3);
+    int e4 := 2 * 3 = 5;
+    PrintInt(e4);
+    int complex := ((10 + 5) * 2 - 3) / (2 + 1);
+    PrintInt(complex);
+}

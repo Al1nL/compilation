@@ -1,0 +1,22 @@
+void main()
+{
+    PrintInt(2 + 3 * 4);
+    PrintInt((2 + 3) * 4);
+    PrintInt(10 - 3 - 2);
+    PrintInt(10 - (3 - 2));
+    PrintInt(2 * 3 + 4 * 5);
+    PrintInt(100 / 5 / 4);
+    PrintInt(1 + 2 * 3 - 4 / 2);
+    int a := 3;
+    int b := 4;
+    int c := 5;
+    PrintInt(a + b * c - a * b + c);
+    int r1 := 5 > 3;
+    int r2 := 2 + 3 > 4;
+    int r3 := 1 < 2 + 1;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    int r4 := (5 > 3) = 1;
+    PrintInt(r4);
+}

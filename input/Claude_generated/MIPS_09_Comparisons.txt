@@ -1,0 +1,25 @@
+void main()
+{
+    int a := 5;
+    int b := 3;
+    int c := 5;
+    int neg := 0 - 3;
+    PrintInt(a > b);
+    PrintInt(b > a);
+    PrintInt(a > c);
+    PrintInt(a < b);
+    PrintInt(b < a);
+    PrintInt(a < c);
+    PrintInt(a = b);
+    PrintInt(a = c);
+    PrintInt(b = neg);
+    PrintInt(neg > a);
+    PrintInt(neg < a);
+    PrintInt(neg > b);
+    PrintInt(neg < b);
+    PrintInt(neg = neg);
+    int x := 0;
+    PrintInt(x > neg);
+    PrintInt(x < neg);
+    PrintInt(x = neg);
+}

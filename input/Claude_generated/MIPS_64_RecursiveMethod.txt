@@ -1,0 +1,49 @@
+class Tree
+{
+    int val := 0;
+    Tree left := nil;
+    Tree right := nil;
+    int mySum()
+    {
+        int s := val;
+        int hasLeft := 1;
+        if (left = nil) { hasLeft := 0; }
+        if (hasLeft > 0) { s := s + left.mySum(); }
+        int hasRight := 1;
+        if (right = nil) { hasRight := 0; }
+        if (hasRight > 0) { s := s + right.mySum(); }
+        return s;
+    }
+    int depth()
+    {
+        int ld := 0;
+        int rd := 0;
+        int hasLeft := 1;
+        if (left = nil) { hasLeft := 0; }
+        if (hasLeft > 0) { ld := left.depth(); }
+        int hasRight := 1;
+        if (right = nil) { hasRight := 0; }
+        if (hasRight > 0) { rd := right.depth(); }
+        if (ld > rd) { return ld + 1; }
+        return rd + 1;
+    }
+}
+void main()
+{
+    Tree root := new Tree;
+    Tree l := new Tree;
+    Tree r := new Tree;
+    Tree ll := new Tree;
+    Tree lr := new Tree;
+    root.val := 1;
+    l.val := 2; r.val := 3;
+    ll.val := 4; lr.val := 5;
+    root.left := l; root.right := r;
+    l.left := ll; l.right := lr;
+    PrintInt(root.mySum());
+    PrintInt(root.depth());
+    PrintInt(l.mySum());
+    PrintInt(l.depth());
+    PrintInt(r.mySum());
+    PrintInt(r.depth());
+}

@@ -1,0 +1,38 @@
+class Inner
+{
+    int x := 0;
+    int y := 0;
+    int mySum() { return x + y; }
+}
+class Outer
+{
+    Inner a := nil;
+    Inner b := nil;
+    int crossSum() { return a.x + b.y; }
+}
+void main()
+{
+    Inner i1 := new Inner;
+    Inner i2 := new Inner;
+    i1.x := 3; i1.y := 4;
+    i2.x := 5; i2.y := 6;
+    Outer o := new Outer;
+    o.a := i1;
+    o.b := i2;
+    PrintInt(o.a.x);
+    PrintInt(o.a.y);
+    PrintInt(o.b.x);
+    PrintInt(o.b.y);
+    PrintInt(o.a.mySum());
+    PrintInt(o.b.mySum());
+    PrintInt(o.crossSum());
+    o.a.x := 10;
+    o.b.y := 20;
+    PrintInt(i1.x);
+    PrintInt(i2.y);
+    PrintInt(o.crossSum());
+    int eq1 := o.a = i1;
+    int eq2 := o.a = i2;
+    PrintInt(eq1);
+    PrintInt(eq2);
+}

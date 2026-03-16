@@ -1,0 +1,45 @@
+array IntArray = int[];
+
+int binarySearch(IntArray arr, int len, int target)
+{
+    int lo := 0;
+    int hi := len - 1;
+    while (lo < hi + 1)
+    {
+        int mid := (lo + hi) / 2;
+        if (arr[mid] = target)
+        {
+            return mid;
+        }
+        if (arr[mid] < target)
+        {
+            lo := mid + 1;
+        }
+        if ((arr[mid] < target) = 0)
+        {
+            if ((arr[mid] = target) = 0)
+            {
+                hi := mid - 1;
+            }
+        }
+    }
+    return 0 - 1;
+}
+
+void main()
+{
+    IntArray a := new int[8];
+    a[0] := 2;
+    a[1] := 5;
+    a[2] := 8;
+    a[3] := 12;
+    a[4] := 16;
+    a[5] := 23;
+    a[6] := 38;
+    a[7] := 56;
+    PrintInt(binarySearch(a, 8, 2));
+    PrintInt(binarySearch(a, 8, 23));
+    PrintInt(binarySearch(a, 8, 56));
+    PrintInt(binarySearch(a, 8, 7));
+    PrintInt(binarySearch(a, 8, 100));
+}

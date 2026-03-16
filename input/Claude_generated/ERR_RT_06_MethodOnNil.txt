@@ -1,0 +1,22 @@
+class Inner
+{
+    int value := 10;
+    int getValue()
+    {
+        return value;
+    }
+}
+class Outer
+{
+    Inner inner := nil;
+    Inner getInner()
+    {
+        return inner;
+    }
+}
+void main()
+{
+    Outer outer := new Outer;
+    int val := outer.inner.getValue();
+    PrintInt(val);
+}

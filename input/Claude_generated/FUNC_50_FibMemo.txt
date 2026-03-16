@@ -1,0 +1,33 @@
+array IntArray = int[];
+IntArray memo := nil;
+
+int fib(int n)
+{
+    if (n < 2)
+    {
+        return n;
+    }
+    if (memo[n] > 0)
+    {
+        return memo[n];
+    }
+    int result := fib(n - 1) + fib(n - 2);
+    memo[n] := result;
+    return result;
+}
+
+void main()
+{
+    memo := new int[20];
+    int i := 0;
+    while (i < 20)
+    {
+        memo[i] := 0;
+        i := i + 1;
+    }
+    PrintInt(fib(0));
+    PrintInt(fib(1));
+    PrintInt(fib(5));
+    PrintInt(fib(10));
+    PrintInt(fib(15));
+}

@@ -1,0 +1,27 @@
+class Box { int v := 0; }
+void main()
+{
+    Box a := new Box;
+    Box b := new Box;
+    a.v := 7;
+    b.v := 3;
+    int q := (0 - 7) / 2;
+    PrintInt(a.v);
+    PrintInt(b.v);
+    PrintInt(q);
+    int eq := a = b;
+    PrintInt(eq);
+    int q2 := a.v / b.v;
+    int q3 := (0 - a.v) / b.v;
+    PrintInt(q2);
+    PrintInt(q3);
+    int eq2 := a = b;
+    PrintInt(eq2);
+    Box c := a;
+    int q4 := (0 - 13) / b.v;
+    int eq3 := a = c;
+    int eq4 := b = c;
+    PrintInt(q4);
+    PrintInt(eq3);
+    PrintInt(eq4);
+}

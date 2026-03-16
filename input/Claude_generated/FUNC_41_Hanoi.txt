@@ -1,0 +1,21 @@
+int hanoi(int n)
+{
+    if (n = 0)
+    {
+        return 0;
+    }
+    if (n = 1)
+    {
+        return 1;
+    }
+    return hanoi(n - 1) + 1 + hanoi(n - 1);
+}
+
+void main()
+{
+    PrintInt(hanoi(1));
+    PrintInt(hanoi(2));
+    PrintInt(hanoi(3));
+    PrintInt(hanoi(4));
+    PrintInt(hanoi(5));
+}

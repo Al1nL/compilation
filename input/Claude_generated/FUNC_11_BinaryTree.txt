@@ -1,0 +1,74 @@
+class TreeNode
+{
+    int value := 0;
+    TreeNode left := nil;
+    TreeNode right := nil;
+    int getValue()
+    {
+        return value;
+    }
+}
+class BinaryTree
+{
+    TreeNode root := nil;
+    TreeNode insertHelper(TreeNode node, int val)
+    {
+        if (node = nil)
+        {
+            TreeNode newNode := new TreeNode;
+            newNode.value := val;
+            return newNode;
+        }
+        if (val < node.value)
+        {
+            node.left := insertHelper(node.left, val);
+        }
+        if (val > node.value)
+        {
+            node.right := insertHelper(node.right, val);
+        }
+        return node;
+    }
+    void insert(int val)
+    {
+        root := insertHelper(root, val);
+    }
+    void inorderHelper(TreeNode node)
+    {
+        if ((node = nil) = 0)
+        {
+            inorderHelper(node.left);
+            PrintInt(node.value);
+            inorderHelper(node.right);
+        }
+    }
+    void inorder()
+    {
+        inorderHelper(root);
+    }
+    int countHelper(TreeNode node)
+    {
+        if (node = nil)
+        {
+            return 0;
+        }
+        return 1 + countHelper(node.left) + countHelper(node.right);
+    }
+    int count()
+    {
+        return countHelper(root);
+    }
+}
+void main()
+{
+    BinaryTree tree := new BinaryTree;
+    tree.insert(50);
+    tree.insert(30);
+    tree.insert(70);
+    tree.insert(20);
+    tree.insert(40);
+    tree.insert(60);
+    tree.insert(80);
+    PrintInt(tree.count());
+    tree.inorder();
+}

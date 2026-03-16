@@ -1,0 +1,49 @@
+int grade(int score)
+{
+    if (score > 89)
+    {
+        return 4;
+    }
+    if (score > 79)
+    {
+        return 3;
+    }
+    if (score > 69)
+    {
+        return 2;
+    }
+    if (score > 59)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int myAbs(int x)
+{
+    if (x > 0)
+    {
+        return x;
+    }
+    return 0 - x;
+}
+
+void main()
+{
+    PrintInt(grade(95));
+    PrintInt(grade(85));
+    PrintInt(grade(75));
+    PrintInt(grade(65));
+    PrintInt(grade(55));
+    PrintInt(myAbs(7));
+    PrintInt(myAbs(0 - 7));
+    PrintInt(myAbs(0));
+    int x := 5;
+    int y := 3;
+    int max := x;
+    if (y > x)
+    {
+        max := y;
+    }
+    PrintInt(max);
+}

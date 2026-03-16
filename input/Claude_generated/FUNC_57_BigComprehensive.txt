@@ -1,0 +1,71 @@
+class Matrix
+{
+    int a00 := 0;
+    int a01 := 0;
+    int a10 := 0;
+    int a11 := 0;
+}
+
+Matrix multiply(Matrix m1, Matrix m2)
+{
+    Matrix r := new Matrix;
+    r.a00 := m1.a00 * m2.a00 + m1.a01 * m2.a10;
+    r.a01 := m1.a00 * m2.a01 + m1.a01 * m2.a11;
+    r.a10 := m1.a10 * m2.a00 + m1.a11 * m2.a10;
+    r.a11 := m1.a10 * m2.a01 + m1.a11 * m2.a11;
+    return r;
+}
+
+int trace(Matrix m)
+{
+    return m.a00 + m.a11;
+}
+
+int det(Matrix m)
+{
+    return m.a00 * m.a11 - m.a01 * m.a10;
+}
+
+string describeSign(int n)
+{
+    if (n > 0)
+    {
+        return "pos";
+    }
+    if (n < 0)
+    {
+        return "neg";
+    }
+    return "zero";
+}
+
+void main()
+{
+    Matrix identity := new Matrix;
+    identity.a00 := 1;
+    identity.a11 := 1;
+    Matrix m := new Matrix;
+    m.a00 := 2;
+    m.a01 := 3;
+    m.a10 := 1;
+    m.a11 := 4;
+    PrintInt(det(m));
+    PrintInt(trace(m));
+    Matrix m2 := multiply(m, identity);
+    PrintInt(m2.a00);
+    PrintInt(m2.a01);
+    PrintInt(m2.a10);
+    PrintInt(m2.a11);
+    Matrix m3 := new Matrix;
+    m3.a00 := 1;
+    m3.a01 := 2;
+    m3.a10 := 3;
+    m3.a11 := 4;
+    Matrix prod := multiply(m, m3);
+    PrintInt(prod.a00);
+    PrintInt(prod.a01);
+    PrintInt(prod.a11);
+    PrintString(describeSign(det(m)));
+    PrintString(describeSign(0 - 1));
+    PrintString(describeSign(0));
+}

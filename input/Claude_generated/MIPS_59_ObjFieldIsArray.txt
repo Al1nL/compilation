@@ -1,0 +1,37 @@
+array IntArray = int[];
+class Vec
+{
+    IntArray data := nil;
+    int len := 0;
+    int get(int i) { return data[i]; }
+    int set(int i, int v) { data[i] := v; return v; }
+    int mySum()
+    {
+        int s := 0;
+        int i := 0;
+        while (i < len)
+        {
+            s := s + data[i];
+            i := i + 1;
+        }
+        return s;
+    }
+}
+void main()
+{
+    Vec v := new Vec;
+    v.data := new int[5];
+    v.len := 5;
+    v.set(0, 10);
+    v.set(1, 20);
+    v.set(2, 30);
+    v.set(3, 40);
+    v.set(4, 50);
+    PrintInt(v.get(0));
+    PrintInt(v.get(2));
+    PrintInt(v.get(4));
+    PrintInt(v.mySum());
+    v.set(2, v.get(0) + v.get(4));
+    PrintInt(v.get(2));
+    PrintInt(v.mySum());
+}

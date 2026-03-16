@@ -1,0 +1,19 @@
+void main()
+{
+    int big := 32767;
+    int small := (0 - 32767) - 1;
+    PrintInt(big + 1);
+    PrintInt(big + 32767);
+    PrintInt(small - 1);
+    PrintInt(small - 32767);
+    int a := 200;
+    int b := 200;
+    PrintInt(a * b);
+    int neg := 0 - 200;
+    PrintInt(a * neg);
+    PrintInt(neg * neg);
+    int x := 32767;
+    int y := 0 - 1;
+    PrintInt(x * y);
+    PrintInt(small / y);
+}

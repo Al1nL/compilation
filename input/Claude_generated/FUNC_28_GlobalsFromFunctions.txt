@@ -1,0 +1,20 @@
+int base := 7;
+int doubled := base * 2;
+int squared := base * base;
+
+int sumGlobals()
+{
+    return base + doubled + squared;
+}
+
+void main()
+{
+    PrintInt(base);
+    PrintInt(doubled);
+    PrintInt(squared);
+    PrintInt(sumGlobals());
+    base := 3;
+    PrintInt(sumGlobals());
+    doubled := doubled + 1;
+    PrintInt(sumGlobals());
+}

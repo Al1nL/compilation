@@ -1,0 +1,30 @@
+class MathHelper
+{
+    int n := 100;
+    int half() { return n / 2; }
+    int negHalf() { return (0 - n) / 2; }
+    int bigProduct() { return n * 1000; }
+    int combined() { return half() + negHalf() + bigProduct(); }
+    int floorTest() { return (0 - 7) / 3; }
+    int allTogether()
+    {
+        int h := half();
+        int nh := negHalf();
+        int bp := bigProduct();
+        int ft := floorTest();
+        return h + nh + bp + ft;
+    }
+}
+void main()
+{
+    MathHelper m := new MathHelper;
+    PrintInt(m.half());
+    PrintInt(m.negHalf());
+    PrintInt(m.bigProduct());
+    PrintInt(m.floorTest());
+    PrintInt(m.combined());
+    PrintInt(m.allTogether());
+    m.n := (0 - 7);
+    PrintInt(m.half());
+    PrintInt(m.negHalf());
+}

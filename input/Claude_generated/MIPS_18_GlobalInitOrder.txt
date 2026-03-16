@@ -1,0 +1,22 @@
+int g1 := 5;
+int g2 := g1 * 2;
+int g3 := g2 + g1;
+int g4 := g3 * g2;
+int g5 := g4 - g3;
+
+int readG3() { return g3; }
+
+void main()
+{
+    PrintInt(g1);
+    PrintInt(g2);
+    PrintInt(g3);
+    PrintInt(g4);
+    PrintInt(g5);
+    PrintInt(readG3());
+    g1 := 99;
+    PrintInt(g1);
+    PrintInt(g2);
+    PrintInt(g3);
+    PrintInt(readG3());
+}

@@ -1,0 +1,46 @@
+class Worker
+{
+    int rate := 0;
+    int hours := 0;
+    int pay() { return rate * hours; }
+    int overtime() { return rate * (hours - 40) / 2; }
+    int totalPay()
+    {
+        if (hours < 41) { return pay(); }
+        return pay() + overtime();
+    }
+}
+
+array WorkerArr = Worker[];
+
+int teamTotal(WorkerArr team, int n)
+{
+    int total := 0;
+    int i := 0;
+    while (i < n)
+    {
+        total := total + team[i].totalPay();
+        i := i + 1;
+    }
+    return total;
+}
+
+void main()
+{
+    WorkerArr team := new Worker[3];
+    team[0] := new Worker;
+    team[1] := new Worker;
+    team[2] := new Worker;
+    team[0].rate := 10; team[0].hours := 40;
+    team[1].rate := 20; team[1].hours := 45;
+    team[2].rate := 15; team[2].hours := 38;
+    PrintInt(team[0].totalPay());
+    PrintInt(team[1].totalPay());
+    PrintInt(team[2].totalPay());
+    PrintInt(teamTotal(team, 3));
+    int eq := team[0] = team[1];
+    PrintInt(eq);
+    team[2] := team[0];
+    int eq2 := team[0] = team[2];
+    PrintInt(eq2);
+}

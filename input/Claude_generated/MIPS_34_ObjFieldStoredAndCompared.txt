@@ -1,0 +1,26 @@
+class Inner { int val := 0; }
+class Outer
+{
+    Inner child := nil;
+    int getChildVal() { return child.val; }
+}
+void main()
+{
+    Inner i1 := new Inner;
+    Inner i2 := new Inner;
+    i1.val := 100;
+    i2.val := 200;
+    Outer o := new Outer;
+    o.child := i1;
+    PrintInt(o.getChildVal());
+    int same1 := o.child = i1;
+    int same2 := o.child = i2;
+    PrintInt(same1);
+    PrintInt(same2);
+    o.child := i2;
+    PrintInt(o.getChildVal());
+    int same3 := o.child = i1;
+    int same4 := o.child = i2;
+    PrintInt(same3);
+    PrintInt(same4);
+}

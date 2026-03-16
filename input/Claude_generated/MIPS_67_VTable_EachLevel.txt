@@ -1,0 +1,42 @@
+class L0
+{
+    int tag := 0;
+    int id() { return 0; }
+    int compute(int x) { return x; }
+}
+class L1 extends L0
+{
+    int id() { return 1; }
+    int compute(int x) { return x + 10; }
+}
+class L2 extends L1
+{
+    int id() { return 2; }
+    int compute(int x) { return x + 20; }
+}
+class L3 extends L2
+{
+    int id() { return 3; }
+    int compute(int x) { return x + 30; }
+}
+int runId(L0 obj) { return obj.id(); }
+int runCompute(L0 obj, int x) { return obj.compute(x); }
+
+void main()
+{
+    L0 o0 := new L0;
+    L0 o1 := new L1;
+    L0 o2 := new L2;
+    L0 o3 := new L3;
+    o0.tag := 100; o1.tag := 101; o2.tag := 102; o3.tag := 103;
+    PrintInt(runId(o0));
+    PrintInt(runId(o1));
+    PrintInt(runId(o2));
+    PrintInt(runId(o3));
+    PrintInt(runCompute(o0, 5));
+    PrintInt(runCompute(o1, 5));
+    PrintInt(runCompute(o2, 5));
+    PrintInt(runCompute(o3, 5));
+    PrintInt(o0.tag);
+    PrintInt(o3.tag);
+}

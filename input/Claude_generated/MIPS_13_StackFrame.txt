@@ -1,0 +1,26 @@
+int sumTo(int n)
+{
+    if (n < 1) { return 0; }
+    int rest := sumTo(n - 1);
+    return n + rest;
+}
+
+int ackermann(int m, int n)
+{
+    if (m = 0) { return n + 1; }
+    if (n = 0) { return ackermann(m - 1, 1); }
+    return ackermann(m - 1, ackermann(m, n - 1));
+}
+
+void main()
+{
+    PrintInt(sumTo(0));
+    PrintInt(sumTo(1));
+    PrintInt(sumTo(5));
+    PrintInt(sumTo(10));
+    PrintInt(sumTo(20));
+    PrintInt(ackermann(0, 0));
+    PrintInt(ackermann(1, 1));
+    PrintInt(ackermann(2, 2));
+    PrintInt(ackermann(3, 3));
+}

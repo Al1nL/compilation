@@ -1,0 +1,23 @@
+class P { int v := 0; }
+void main()
+{
+    P a := new P;
+    P b := new P;
+    P c := new P;
+    P d := new P;
+    P e := a;
+    a.v := 1; b.v := 2; c.v := 3; d.v := 4;
+    int ab := a = b;
+    int ac := a = c;
+    int ad := a = d;
+    int ae := a = e;
+    int bc := b = c;
+    int bd := b = d;
+    int be := b = e;
+    int cd := c = d;
+    int ce := c = e;
+    int de := d = e;
+    PrintInt(ab + ac + ad + ae + bc + bd + be + cd + ce + de);
+    PrintInt(ae);
+    PrintInt(be);
+}

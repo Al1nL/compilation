@@ -1,0 +1,35 @@
+array IntArray = int[];
+
+class SizeProvider
+{
+    int base := 3;
+    int getSize() { return base * 2; }
+    int getLarger(int x) { return base + x; }
+}
+
+int mySum(IntArray a, int n)
+{
+    int s := 0;
+    int i := 0;
+    while (i < n) { s := s + a[i]; i := i + 1; }
+    return s;
+}
+
+void main()
+{
+    SizeProvider sp := new SizeProvider;
+    int sz := sp.getSize();
+    PrintInt(sz);
+    IntArray a := new int[sz];
+    int i := 0;
+    while (i < sz) { a[i] := i + 1; i := i + 1; }
+    PrintInt(mySum(a, sz));
+    int sz2 := sp.getLarger(4);
+    PrintInt(sz2);
+    IntArray b := new int[sz2];
+    i := 0;
+    while (i < sz2) { b[i] := i * 2; i := i + 1; }
+    PrintInt(b[0]);
+    PrintInt(b[sz2 - 1]);
+    PrintInt(mySum(b, sz2));
+}

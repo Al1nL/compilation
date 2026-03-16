@@ -1,0 +1,33 @@
+class Pair
+{
+    int first := 0;
+    int second := 0;
+    int mySum() { return first + second; }
+}
+void main()
+{
+    int a := 3;
+    int b := 4;
+    Pair p := new Pair;
+    p.first := a * b;
+    p.second := a + b;
+    int c := p.mySum();
+    int d := p.first - p.second;
+    PrintInt(p.first);
+    PrintInt(p.second);
+    PrintInt(c);
+    PrintInt(d);
+    Pair q := new Pair;
+    q.first := c + d;
+    q.second := c - d;
+    int e := q.mySum();
+    int eq := p = q;
+    PrintInt(q.first);
+    PrintInt(q.second);
+    PrintInt(e);
+    PrintInt(eq);
+    int f := p.mySum() + q.mySum();
+    int eq2 := p = q;
+    PrintInt(f);
+    PrintInt(eq2);
+}

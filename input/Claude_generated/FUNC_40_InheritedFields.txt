@@ -1,0 +1,46 @@
+class Vehicle
+{
+    int speed := 0;
+    int fuel := 100;
+    int accelerate(int delta)
+    {
+        speed := speed + delta;
+        fuel := fuel - delta;
+        return speed;
+    }
+}
+
+class Car extends Vehicle
+{
+    int doors := 4;
+    int honk()
+    {
+        return speed + doors;
+    }
+}
+
+class SportsCar extends Car
+{
+    int turbo := 1;
+    int accelerate(int delta)
+    {
+        int base := speed;
+        speed := speed + delta * 2;
+        fuel := fuel - delta;
+        return speed;
+    }
+}
+
+void main()
+{
+    Car c := new Car;
+    c.accelerate(20);
+    PrintInt(c.speed);
+    PrintInt(c.fuel);
+    PrintInt(c.honk());
+    SportsCar sc := new SportsCar;
+    sc.accelerate(15);
+    PrintInt(sc.speed);
+    PrintInt(sc.fuel);
+    PrintInt(sc.doors);
+}

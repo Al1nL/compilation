@@ -1,0 +1,26 @@
+void main()
+{
+    int x := 10;
+    if (x > 5)
+    {
+        int y := x * 2;
+        int z := y + 1;
+        PrintInt(y);
+        PrintInt(z);
+    }
+    if (x < 5)
+    {
+        int y := x * 3;
+        int z := y - 1;
+        PrintInt(y);
+        PrintInt(z);
+    }
+    int i := 0;
+    while (i < 3)
+    {
+        int local := i * i + 1;
+        PrintInt(local);
+        i := i + 1;
+    }
+    PrintInt(x);
+}

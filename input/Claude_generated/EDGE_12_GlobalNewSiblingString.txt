@@ -1,0 +1,27 @@
+class Logger
+{
+    string prefix := "LOG";
+    int count := 0;
+    string formatMsg(string msg) { return prefix + msg; }
+    int logAndCount(string msg) { count := count + 1; return count; }
+    int getCount() { return count; }
+}
+
+Logger logger := new Logger;
+
+void doLog(string msg)
+{
+    logger.logAndCount(msg);
+}
+
+void main()
+{
+    PrintString(logger.formatMsg("start"));
+    doLog("a");
+    doLog("b");
+    doLog("c");
+    PrintInt(logger.getCount());
+    logger.prefix := "INFO";
+    PrintString(logger.formatMsg("done"));
+    PrintInt(logger.getCount());
+}

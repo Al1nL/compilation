@@ -1,0 +1,25 @@
+int counter := 0;
+int limit := 5;
+
+int sideEffect()
+{
+    counter := counter + 1;
+    return counter;
+}
+
+void main()
+{
+    int i := 0;
+    while (i < limit)
+    {
+        PrintInt(i);
+        i := i + 1;
+    }
+    PrintInt(i);
+    counter := 0;
+    while (sideEffect() < 4)
+    {
+        PrintInt(counter);
+    }
+    PrintInt(counter);
+}

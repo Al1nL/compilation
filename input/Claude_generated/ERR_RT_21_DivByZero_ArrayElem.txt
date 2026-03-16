@@ -1,0 +1,11 @@
+array IntArray = int[];
+void main()
+{
+    IntArray arr := new int[3];
+    arr[0] := 4;
+    arr[1] := 2;
+    arr[2] := 0;
+    PrintInt(8 / arr[0]);
+    PrintInt(8 / arr[1]);
+    PrintInt(8 / arr[2]);
+}

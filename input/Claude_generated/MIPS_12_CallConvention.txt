@@ -1,0 +1,38 @@
+int myTriple(int x)
+{
+    return x * 3;
+}
+
+int addThree(int a, int b, int c)
+{
+    return a + b + c;
+}
+
+int nested(int x)
+{
+    return myTriple(myTriple(x));
+}
+
+int withLocal(int x)
+{
+    int a := x + 1;
+    int b := a * 2;
+    int c := b - x;
+    return c;
+}
+
+void main()
+{
+    PrintInt(myTriple(4));
+    PrintInt(myTriple(0 - 3));
+    PrintInt(addThree(1, 2, 3));
+    PrintInt(addThree(10, 20, 30));
+    PrintInt(nested(2));
+    PrintInt(nested(0 - 1));
+    PrintInt(withLocal(5));
+    PrintInt(withLocal(0));
+    int x := 10;
+    int r := myTriple(x);
+    PrintInt(r);
+    PrintInt(x);
+}

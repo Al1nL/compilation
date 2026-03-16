@@ -1,0 +1,15 @@
+class Animal
+{
+    int energy := 100;
+    int getEnergy() { return energy; }
+}
+class Dog extends Animal
+{
+    int bones := 0;
+}
+void main()
+{
+    Dog d := nil;
+    int e := d.getEnergy();
+    PrintInt(e);
+}

@@ -1,0 +1,29 @@
+array IntArray = int[];
+class Idx { int pos := 0; }
+void main()
+{
+    IntArray arr := new int[8];
+    int i := 0;
+    while (i < 8)
+    {
+        arr[i] := i + 1;
+        i := i + 1;
+    }
+    Idx src := new Idx;
+    Idx dst := new Idx;
+    src.pos := 2;
+    dst.pos := 5;
+    arr[dst.pos] := arr[src.pos];
+    PrintInt(arr[2]);
+    PrintInt(arr[5]);
+    src.pos := 1;
+    dst.pos := 6;
+    arr[dst.pos] := arr[src.pos] * 10;
+    PrintInt(arr[6]);
+    i := 0;
+    while (i < 8)
+    {
+        PrintInt(arr[i]);
+        i := i + 1;
+    }
+}

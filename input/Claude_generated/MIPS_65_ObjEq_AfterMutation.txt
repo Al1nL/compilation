@@ -1,0 +1,27 @@
+class Box { int v := 0; }
+int readAndAdd(Box b, int delta) { return b.v + delta; }
+void main()
+{
+    Box a := new Box;
+    Box b := a;
+    a.v := 100;
+    int eq1 := a = b;
+    PrintInt(eq1);
+    PrintInt(a.v);
+    PrintInt(b.v);
+    b.v := 200;
+    int eq2 := a = b;
+    PrintInt(eq2);
+    PrintInt(a.v);
+    PrintInt(b.v);
+    int r := readAndAdd(a, 50);
+    PrintInt(r);
+    int eq3 := a = b;
+    PrintInt(eq3);
+    Box c := new Box;
+    c.v := 200;
+    int eq4 := a = c;
+    int eq5 := b = c;
+    PrintInt(eq4);
+    PrintInt(eq5);
+}

@@ -1,0 +1,17 @@
+int compute(int a, int b, int c, int d, int e)
+{
+    int r1 := a + b;
+    int r2 := c + d;
+    int r3 := r1 + r2;
+    int r4 := r3 + e;
+    int r5 := r4 * 2;
+    int r6 := r5 - r1;
+    int r7 := r6 - r2;
+    return r7;
+}
+
+void main()
+{
+    PrintInt(compute(1, 2, 3, 4, 5));
+    PrintInt(compute(10, 20, 30, 40, 50));
+}

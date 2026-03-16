@@ -1,0 +1,27 @@
+array IntArray = int[];
+int seq := 0;
+
+int next()
+{
+    seq := seq + 1;
+    return seq;
+}
+
+void main()
+{
+    IntArray a := new int[10];
+    seq := 0;
+    a[next()] := next() * 10;
+    PrintInt(seq);
+    PrintInt(a[1]);
+    PrintInt(a[2]);
+    seq := 0;
+    int i := next() + next() + next();
+    PrintInt(i);
+    PrintInt(seq);
+    seq := 0;
+    int lhs := next();
+    int rhs := next();
+    PrintInt(lhs);
+    PrintInt(rhs);
+}

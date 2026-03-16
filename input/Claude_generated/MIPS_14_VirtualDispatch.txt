@@ -1,0 +1,48 @@
+class VBase
+{
+    int id := 0;
+    int whoAmI() { return 1; }
+    int getValue() { return id; }
+}
+class VChildA extends VBase
+{
+    int whoAmI() { return 2; }
+}
+class VChildB extends VBase
+{
+    int whoAmI() { return 3; }
+    int getValue() { return id * 10; }
+}
+class VGrandChild extends VChildA
+{
+    int whoAmI() { return 4; }
+}
+
+int callWho(VBase b) { return b.whoAmI(); }
+int callVal(VBase b) { return b.getValue(); }
+
+void main()
+{
+    VBase vb := new VBase;
+    VChildA ca := new VChildA;
+    VChildB cb := new VChildB;
+    VGrandChild gc := new VGrandChild;
+    vb.id := 5;
+    ca.id := 6;
+    cb.id := 7;
+    gc.id := 8;
+    PrintInt(vb.whoAmI());
+    PrintInt(ca.whoAmI());
+    PrintInt(cb.whoAmI());
+    PrintInt(gc.whoAmI());
+    PrintInt(callWho(vb));
+    PrintInt(callWho(ca));
+    PrintInt(callWho(cb));
+    PrintInt(callWho(gc));
+    PrintInt(vb.getValue());
+    PrintInt(ca.getValue());
+    PrintInt(cb.getValue());
+    PrintInt(gc.getValue());
+    PrintInt(callVal(vb));
+    PrintInt(callVal(cb));
+}

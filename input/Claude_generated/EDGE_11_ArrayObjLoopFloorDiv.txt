@@ -1,0 +1,36 @@
+array IntArray = int[];
+
+class Bucket
+{
+    int total := 0;
+    int count := 0;
+    int myAdd(int x) { total := total + x; count := count + 1; return total; }
+    int average() { return total / count; }
+    int negAverage() { return (0 - total) / count; }
+}
+
+array BucketArr = Bucket[];
+
+void main()
+{
+    BucketArr buckets := new Bucket[3];
+    buckets[0] := new Bucket;
+    buckets[1] := new Bucket;
+    buckets[2] := new Bucket;
+    IntArray vals := new int[9];
+    vals[0] := 10; vals[1] := 20; vals[2] := 30;
+    vals[3] := 40; vals[4] := 50; vals[5] := 60;
+    vals[6] := 7;  vals[7] := 8;  vals[8] := 9;
+    int i := 0;
+    while (i < 9)
+    {
+        buckets[i / 3].myAdd(vals[i]);
+        i := i + 1;
+    }
+    PrintInt(buckets[0].average());
+    PrintInt(buckets[1].average());
+    PrintInt(buckets[2].average());
+    PrintInt(buckets[0].negAverage());
+    int neg := 0 - 1;
+    PrintInt(buckets[2].negAverage());
+}

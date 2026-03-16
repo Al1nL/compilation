@@ -1,0 +1,15 @@
+void main()
+{
+    int a := 7;
+    int b := 2;
+    PrintInt(a / b);
+    int c := 0 - 7;
+    PrintInt(c / 2);
+    PrintInt(10 / 3);
+    PrintInt(10 / 10);
+    PrintInt(1 / 2);
+    int neg := 0 - 2;
+    PrintInt(c / neg);
+    PrintInt(0 - 1 / 2);
+    PrintInt(9 / 3);
+}

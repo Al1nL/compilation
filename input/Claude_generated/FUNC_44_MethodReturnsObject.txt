@@ -1,0 +1,31 @@
+class Pair
+{
+    int first := 0;
+    int second := 0;
+}
+
+Pair makePair(int a, int b)
+{
+    Pair p := new Pair;
+    p.first := a;
+    p.second := b;
+    return p;
+}
+
+int pairSum(Pair p)
+{
+    return p.first + p.second;
+}
+
+void main()
+{
+    Pair p1 := makePair(3, 7);
+    Pair p2 := makePair(10, 20);
+    PrintInt(p1.first);
+    PrintInt(p1.second);
+    PrintInt(p2.first);
+    PrintInt(p2.second);
+    PrintInt(pairSum(p1));
+    PrintInt(pairSum(p2));
+    PrintInt(pairSum(makePair(100, 200)));
+}

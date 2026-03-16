@@ -1,0 +1,33 @@
+class Config
+{
+    int maxVal := 32767;
+    int minVal := 0;
+    string label := "config";
+}
+
+class Counter
+{
+    int count := 0;
+    int step := 1;
+    int tick() { count := count + step; return count; }
+}
+
+Config cfg := new Config;
+Counter ctr := new Counter;
+int globalResult := 0;
+
+void main()
+{
+    PrintInt(cfg.maxVal);
+    PrintInt(cfg.minVal);
+    PrintString(cfg.label);
+    PrintInt(ctr.tick());
+    PrintInt(ctr.tick());
+    PrintInt(ctr.tick());
+    cfg.maxVal := 100;
+    ctr.step := 5;
+    PrintInt(ctr.tick());
+    PrintInt(cfg.maxVal);
+    int eq := cfg = nil;
+    PrintInt(eq);
+}

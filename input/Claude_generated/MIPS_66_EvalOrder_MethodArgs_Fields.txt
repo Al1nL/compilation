@@ -1,0 +1,22 @@
+class State { int v := 0; }
+State gs := nil;
+
+int consume(int x)
+{
+    gs.v := gs.v + x;
+    return x;
+}
+int myAdd3(int a, int b, int c) { return a + b + c; }
+
+void main()
+{
+    gs := new State;
+    gs.v := 10;
+    int r := myAdd3(consume(1), consume(2), consume(3));
+    PrintInt(r);
+    PrintInt(gs.v);
+    gs.v := 0;
+    int r2 := consume(consume(consume(1)));
+    PrintInt(r2);
+    PrintInt(gs.v);
+}

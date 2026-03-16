@@ -1,0 +1,25 @@
+void main()
+{
+    int max := 32767;
+    PrintInt(max);
+    int overflow1 := 32767 + 1;
+    PrintInt(overflow1);
+    int overflow2 := 32767 + 1000;
+    PrintInt(overflow2);
+    int min := (0-32767) - 1;
+    PrintInt(min);
+    int underflow1 := min - 1;
+    PrintInt(underflow1);
+    int underflow2 := min - 1000;
+    PrintInt(underflow2);
+    int mulOverflow := 1000 * 1000;
+    PrintInt(mulOverflow);
+    int mulUnderflow := 1000 * (0-1000);
+    PrintInt(mulUnderflow);
+    int divResult := min / (0-1);
+    PrintInt(divResult);
+    int complex1 := 32767 + 10000;
+    PrintInt(complex1);
+    int complex2 := (32000 + 1000) - 500;
+    PrintInt(complex2);
+}

@@ -1,0 +1,48 @@
+class Five
+{
+    int a := 10;
+    int b := 20;
+    int c := 30;
+    int d := 40;
+    int e := 50;
+}
+
+class Parent
+{
+    int x := 1;
+    int y := 2;
+}
+class Child extends Parent
+{
+    int z := 3;
+    int w := 4;
+}
+
+void main()
+{
+    Five f := new Five;
+    PrintInt(f.a);
+    PrintInt(f.b);
+    PrintInt(f.c);
+    PrintInt(f.d);
+    PrintInt(f.e);
+    f.a := 100;
+    f.c := 300;
+    f.e := 500;
+    PrintInt(f.a);
+    PrintInt(f.b);
+    PrintInt(f.c);
+    PrintInt(f.d);
+    PrintInt(f.e);
+    Child ch := new Child;
+    PrintInt(ch.x);
+    PrintInt(ch.y);
+    PrintInt(ch.z);
+    PrintInt(ch.w);
+    ch.x := 10;
+    ch.z := 30;
+    PrintInt(ch.x);
+    PrintInt(ch.y);
+    PrintInt(ch.z);
+    PrintInt(ch.w);
+}

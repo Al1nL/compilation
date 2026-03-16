@@ -1,0 +1,22 @@
+class Calc
+{
+    int base := 10;
+    int myDouble(int x) { return x * 2; }
+    int myTriple(int x) { return x * 3; }
+    int doubleBase() { return myDouble(base); }
+    int tripleBase() { return myTriple(base); }
+    int sumAll() { return myDouble(base) + myTriple(base); }
+    int chain(int x) { return myDouble(myTriple(x)); }
+}
+void main()
+{
+    Calc c := new Calc;
+    PrintInt(c.doubleBase());
+    PrintInt(c.tripleBase());
+    PrintInt(c.sumAll());
+    PrintInt(c.chain(4));
+    c.base := 7;
+    PrintInt(c.doubleBase());
+    PrintInt(c.tripleBase());
+    PrintInt(c.sumAll());
+}

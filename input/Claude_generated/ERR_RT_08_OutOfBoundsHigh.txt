@@ -1,0 +1,14 @@
+array IntArray = int[];
+
+void main()
+{
+    IntArray a := new int[5];
+    int i := 0;
+    while (i < 5)
+    {
+        a[i] := i * 10;
+        i := i + 1;
+    }
+    PrintInt(a[4]);
+    PrintInt(a[5]);
+}

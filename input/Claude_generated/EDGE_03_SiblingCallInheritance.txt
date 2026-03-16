@@ -1,0 +1,23 @@
+class Base
+{
+    int x := 5;
+    int getValue() { return x; }
+    int doubled() { return getValue() * 2; }
+    int quadrupled() { return doubled() * 2; }
+}
+class Child extends Base
+{
+    int getValue() { return x * 10; }
+}
+void main()
+{
+    Base b := new Base;
+    Child c := new Child;
+    c.x := 3;
+    PrintInt(b.getValue());
+    PrintInt(b.doubled());
+    PrintInt(b.quadrupled());
+    PrintInt(c.getValue());
+    PrintInt(c.doubled());
+    PrintInt(c.quadrupled());
+}

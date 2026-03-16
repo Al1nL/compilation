@@ -1,0 +1,47 @@
+array IntArray = int[];
+
+int sumArray(IntArray a, int len)
+{
+    int s := 0;
+    int i := 0;
+    while (i < len)
+    {
+        s := s + a[i];
+        i := i + 1;
+    }
+    return s;
+}
+
+void reverseArray(IntArray a, int len)
+{
+    int lo := 0;
+    int hi := len - 1;
+    while (lo < hi)
+    {
+        int tmp := a[lo];
+        a[lo] := a[hi];
+        a[hi] := tmp;
+        lo := lo + 1;
+        hi := hi - 1;
+    }
+}
+
+void main()
+{
+    IntArray a := new int[6];
+    a[0] := 10;
+    a[1] := 20;
+    a[2] := 30;
+    a[3] := 40;
+    a[4] := 50;
+    a[5] := 60;
+    PrintInt(sumArray(a, 6));
+    reverseArray(a, 6);
+    int i := 0;
+    while (i < 6)
+    {
+        PrintInt(a[i]);
+        i := i + 1;
+    }
+    PrintInt(sumArray(a, 6));
+}

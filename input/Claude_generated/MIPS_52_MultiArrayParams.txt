@@ -1,0 +1,46 @@
+array IntArray = int[];
+void fillRange(IntArray a, int start, int len)
+{
+    int i := 0;
+    while (i < len)
+    {
+        a[i] := start + i;
+        i := i + 1;
+    }
+}
+int dotProd(IntArray a, IntArray b, int len)
+{
+    int s := 0;
+    int i := 0;
+    while (i < len)
+    {
+        s := s + a[i] * b[i];
+        i := i + 1;
+    }
+    return s;
+}
+void main()
+{
+    IntArray v1 := new int[4];
+    IntArray v2 := new int[4];
+    fillRange(v1, 1, 4);
+    fillRange(v2, 2, 4);
+    int i := 0;
+    while (i < 4)
+    {
+        PrintInt(v1[i]);
+        i := i + 1;
+    }
+    i := 0;
+    while (i < 4)
+    {
+        PrintInt(v2[i]);
+        i := i + 1;
+    }
+    PrintInt(dotProd(v1, v2, 4));
+    int eq := v1 = v2;
+    PrintInt(eq);
+    IntArray v3 := v1;
+    int eq2 := v1 = v3;
+    PrintInt(eq2);
+}

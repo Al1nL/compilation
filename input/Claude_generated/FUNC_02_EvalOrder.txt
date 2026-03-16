@@ -1,0 +1,34 @@
+array IntArray = int[];
+int counter := 0;
+int inc()
+{
+    counter := counter + 1;
+    return counter;
+}
+int getValue()
+{
+    return counter;
+}
+void main()
+{
+    counter := 0;
+    PrintInt(inc());
+    PrintInt(inc());
+    PrintInt(inc());
+    counter := 10;
+    int result1 := getValue() + inc();
+    PrintInt(result1);
+    counter := 20;
+    int x := 0;
+    x := inc() + inc();
+    PrintInt(x);
+    IntArray arr := new int[5];
+    counter := 0;
+    arr[inc()] := inc();
+    PrintInt(arr[1]);
+    counter := 100;
+    int nested := (inc() + inc()) * 2 - 1;
+    counter := counter + 2;
+    PrintInt(nested);
+    PrintInt(counter);
+}

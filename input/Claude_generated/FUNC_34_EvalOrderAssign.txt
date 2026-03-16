@@ -1,0 +1,23 @@
+array IntArray = int[];
+int counter := 0;
+
+int nextIdx()
+{
+    counter := counter + 1;
+    return counter;
+}
+
+int nextVal()
+{
+    counter := counter + 10;
+    return counter;
+}
+
+void main()
+{
+    IntArray arr := new int[10];
+    counter := 0;
+    arr[nextIdx()] := nextVal();
+    PrintInt(arr[1]);
+    PrintInt(counter);
+}

@@ -1,0 +1,31 @@
+array IntArray = int[];
+class Indexer
+{
+    int base := 0;
+    int getIdx() { return base; }
+}
+class ShiftedIndexer extends Indexer
+{
+    int shift := 1;
+    int getIdx() { return base + shift; }
+}
+void main()
+{
+    IntArray arr := new int[10];
+    int i := 0;
+    while (i < 10)
+    {
+        arr[i] := i * i;
+        i := i + 1;
+    }
+    Indexer plain := new Indexer;
+    Indexer shifted := new ShiftedIndexer;
+    plain.base := 3;
+    shifted.base := 3;
+    PrintInt(arr[plain.getIdx()]);
+    PrintInt(arr[shifted.getIdx()]);
+    plain.base := 7;
+    shifted.base := 6;
+    PrintInt(arr[plain.getIdx()]);
+    PrintInt(arr[shifted.getIdx()]);
+}

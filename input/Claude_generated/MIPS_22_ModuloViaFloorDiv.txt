@@ -1,0 +1,16 @@
+int myMod(int a, int b)
+{
+    return a - (a / b) * b;
+}
+
+void main()
+{
+    PrintInt(myMod(10, 3));
+    PrintInt(myMod(9, 3));
+    PrintInt(myMod(7, 2));
+    PrintInt(myMod(0 - 7, 2));
+    PrintInt(myMod(7, 0 - 2));
+    PrintInt(myMod(0 - 7, 0 - 2));
+    PrintInt(myMod(100, 7));
+    PrintInt(myMod(0 - 100, 7));
+}

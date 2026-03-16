@@ -1,0 +1,28 @@
+array IntArray = int[];
+
+int buildAndSum(int size)
+{
+    IntArray a := new int[size];
+    int i := 0;
+    while (i < size)
+    {
+        a[i] := i * i;
+        i := i + 1;
+    }
+    int s := 0;
+    i := 0;
+    while (i < size)
+    {
+        s := s + a[i];
+        i := i + 1;
+    }
+    return s;
+}
+
+void main()
+{
+    PrintInt(buildAndSum(1));
+    PrintInt(buildAndSum(3));
+    PrintInt(buildAndSum(5));
+    PrintInt(buildAndSum(10));
+}

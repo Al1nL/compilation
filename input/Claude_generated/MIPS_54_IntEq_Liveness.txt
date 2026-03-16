@@ -1,0 +1,25 @@
+void main()
+{
+    int a := 5;
+    int b := 5;
+    int c := 7;
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := b = c;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    int r4 := (a = b) + (a = c) + (b = c);
+    PrintInt(r4);
+    int neg := 0 - 5;
+    int r5 := a = neg;
+    int r6 := neg = (0 - 5);
+    PrintInt(r5);
+    PrintInt(r6);
+    int x := 32767;
+    int y := 32767;
+    int z := (0 - 32767) - 1;
+    PrintInt(x = y);
+    PrintInt(x = z);
+    PrintInt(z = z);
+}

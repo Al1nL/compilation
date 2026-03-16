@@ -1,0 +1,24 @@
+class Node
+{
+    int val := 0;
+    Node next := nil;
+}
+
+void main()
+{
+    Node n1 := new Node;
+    Node n2 := new Node;
+    Node n3 := new Node;
+    n1.val := 10;
+    n2.val := 20;
+    n3.val := 30;
+    n1.next := n2;
+    n2.next := n3;
+    PrintInt(n1.val);
+    PrintInt(n1.next.val);
+    PrintInt(n1.next.next.val);
+    n1.next.val := 99;
+    PrintInt(n2.val);
+    int sum := n1.val + n1.next.val + n1.next.next.val;
+    PrintInt(sum);
+}

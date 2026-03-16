@@ -1,0 +1,45 @@
+int complexCalculation()
+{
+    int a := 1;
+    int b := 2;
+    int c := 3;
+    int d := 4;
+    int e := 5;
+    int f := 6;
+    int g := 7;
+    int h := 8;
+    int i := 9;
+    int j := 10;
+    int k := 11;
+    int l := 12;
+    int result := a + b + c + d + e + f + g + h + i + j + k + l;
+    int m := result * 2;
+    int n := result * 3;
+    int o := result * 4;
+    int p := result * 5;
+    int sum := m + n + o + p;
+    return sum;
+}
+void main()
+{
+    int x1 := 10;
+    int x2 := 20;
+    int x3 := 30;
+    int x4 := 40;
+    int x5 := 50;
+    int x6 := 60;
+    int x7 := 70;
+    int x8 := 80;
+    int x9 := 90;
+    int x10 := 100;
+    int total := x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10;
+    PrintInt(total);
+    int result := complexCalculation();
+    PrintInt(result);
+    int product := x1 * x2;
+    int diff := x10 - x1;
+    int div := x10 / x1;
+    PrintInt(product);
+    PrintInt(diff);
+    PrintInt(div);
+}

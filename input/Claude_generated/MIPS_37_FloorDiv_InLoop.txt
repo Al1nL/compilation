@@ -1,0 +1,9 @@
+void main()
+{
+    int i := 0 - 10;
+    while (i < 11)
+    {
+        PrintInt(i / 3);
+        i := i + 5;
+    }
+}

@@ -1,0 +1,25 @@
+int leaf(int x) { return x * 2; }
+
+void main()
+{
+    int a := 10;
+    int b := 20;
+    int c := 30;
+    int d := leaf(5);
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    int e := 40;
+    int f := 50;
+    int g := leaf(7);
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    PrintInt(e);
+    PrintInt(f);
+    PrintInt(g);
+    int big := (a + b + c + d + e + f + g) / 3;
+    PrintInt(big);
+}

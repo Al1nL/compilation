@@ -1,0 +1,32 @@
+array IntArray = int[];
+void main()
+{
+    IntArray a := new int[5];
+    IntArray b := new int[5];
+    int i := 0;
+    while (i < 5)
+    {
+        a[i] := i + 1;
+        b[i] := (i + 1) * 10;
+        i := i + 1;
+    }
+    i := 0;
+    while (i < 5)
+    {
+        PrintInt(a[i]);
+        i := i + 1;
+    }
+    i := 0;
+    while (i < 5)
+    {
+        PrintInt(b[i]);
+        i := i + 1;
+    }
+    a[0] := 999;
+    a[4] := 888;
+    PrintInt(a[0]);
+    PrintInt(a[1]);
+    PrintInt(a[4]);
+    PrintInt(b[0]);
+    PrintInt(b[4]);
+}

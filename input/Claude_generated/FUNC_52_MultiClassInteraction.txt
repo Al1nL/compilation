@@ -1,0 +1,52 @@
+class Engine
+{
+    int hp := 100;
+    int rpm := 0;
+    int rev(int amount)
+    {
+        rpm := rpm + amount;
+        return rpm;
+    }
+    int getHp()
+    {
+        return hp;
+    }
+}
+
+class Car
+{
+    Engine engine := nil;
+    int gear := 1;
+    int init()
+    {
+        engine := new Engine;
+        return 0;
+    }
+    int accelerate()
+    {
+        return engine.rev(gear * 500);
+    }
+    int shiftUp()
+    {
+        if (gear < 6)
+        {
+            gear := gear + 1;
+        }
+        return gear;
+    }
+}
+
+void main()
+{
+    Car c := new Car;
+    c.init();
+    PrintInt(c.engine.rpm);
+    PrintInt(c.accelerate());
+    PrintInt(c.accelerate());
+    c.shiftUp();
+    PrintInt(c.accelerate());
+    PrintInt(c.engine.rpm);
+    PrintInt(c.engine.getHp());
+    c.engine.hp := 200;
+    PrintInt(c.engine.getHp());
+}

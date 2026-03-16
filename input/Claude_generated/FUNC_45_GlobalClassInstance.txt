@@ -1,0 +1,25 @@
+class Config
+{
+    int maxRetries := 3;
+    int timeout := 1000;
+    string label := "default";
+}
+
+Config cfg := nil;
+
+int getRetries()
+{
+    return cfg.maxRetries;
+}
+
+void main()
+{
+    cfg := new Config;
+    PrintInt(getRetries());
+    PrintInt(cfg.timeout);
+    PrintString(cfg.label);
+    cfg.maxRetries := 5;
+    cfg.timeout := 500;
+    PrintInt(getRetries());
+    PrintInt(cfg.timeout);
+}

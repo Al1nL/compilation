@@ -1,0 +1,26 @@
+int sideEffectCounter := 0;
+
+int increment(int val)
+{
+    sideEffectCounter := sideEffectCounter + 1;
+    return val;
+}
+
+void main()
+{
+    int a := increment(5);
+    PrintInt(a);
+    PrintInt(sideEffectCounter);
+    int b := increment(3) + increment(7);
+    PrintInt(b);
+    PrintInt(sideEffectCounter);
+    if (increment(1) > 0)
+    {
+        PrintInt(sideEffectCounter);
+    }
+    while (sideEffectCounter < 8)
+    {
+        increment(0);
+    }
+    PrintInt(sideEffectCounter);
+}

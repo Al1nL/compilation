@@ -1,0 +1,22 @@
+class Counter
+{
+    int n := 0;
+    int inc() { n := n + 1; return n; }
+}
+int myAdd(int a, int b) { return a + b; }
+int mySub(int a, int b) { return a - b; }
+int myMul(int a, int b) { return a * b; }
+
+void main()
+{
+    Counter c := new Counter;
+    PrintInt(myAdd(c.inc(), c.inc()));
+    c.n := 0;
+    PrintInt(mySub(c.inc(), c.inc()));
+    c.n := 0;
+    PrintInt(myMul(c.inc(), c.inc()));
+    c.n := 0;
+    int r := myAdd(myAdd(c.inc(), c.inc()), myAdd(c.inc(), c.inc()));
+    PrintInt(r);
+    PrintInt(c.n);
+}

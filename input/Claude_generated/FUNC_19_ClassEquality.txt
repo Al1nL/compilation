@@ -1,0 +1,24 @@
+class Node
+{
+    int val := 0;
+}
+
+void main()
+{
+    Node a := new Node;
+    Node b := new Node;
+    Node c := a;
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := b = c;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    int r4 := a = nil;
+    int r5 := b = nil;
+    Node d := nil;
+    int r6 := d = nil;
+    PrintInt(r4);
+    PrintInt(r5);
+    PrintInt(r6);
+}

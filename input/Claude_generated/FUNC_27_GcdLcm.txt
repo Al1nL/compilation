@@ -1,0 +1,26 @@
+int gcdIter(int a, int b)
+{
+    while (b > 0)
+    {
+        int t := b;
+        b := a - (a / b) * b;
+        a := t;
+    }
+    return a;
+}
+
+int lcm(int a, int b)
+{
+    return (a / gcdIter(a, b)) * b;
+}
+
+void main()
+{
+    PrintInt(gcdIter(48, 18));
+    PrintInt(gcdIter(100, 75));
+    PrintInt(gcdIter(7, 13));
+    PrintInt(lcm(4, 6));
+    PrintInt(lcm(12, 8));
+    PrintInt(gcdIter(1, 1));
+    PrintInt(gcdIter(17, 5));
+}

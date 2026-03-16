@@ -1,0 +1,19 @@
+array IntArray = int[];
+
+void main()
+{
+    IntArray a := new int[3];
+    IntArray b := new int[3];
+    IntArray c := a;
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := b = c;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    IntArray d := nil;
+    int r4 := d = nil;
+    PrintInt(r4);
+    int r5 := a = nil;
+    PrintInt(r5);
+}

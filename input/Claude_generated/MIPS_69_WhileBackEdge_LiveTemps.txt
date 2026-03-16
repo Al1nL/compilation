@@ -1,0 +1,23 @@
+class Acc { int total := 0; }
+
+void addSquare(Acc a, int i) { a.total := a.total + i * i; }
+void addCube(Acc a, int i)   { a.total := a.total + i * i * i; }
+
+void main()
+{
+    Acc a := new Acc;
+    Acc b := new Acc;
+    int i := 1;
+    while (i < 6)
+    {
+        addSquare(a, i);
+        addCube(b, i);
+        int eq := a = b;
+        PrintInt(eq);
+        i := i + 1;
+    }
+    PrintInt(a.total);
+    PrintInt(b.total);
+    int eqFinal := a = b;
+    PrintInt(eqFinal);
+}

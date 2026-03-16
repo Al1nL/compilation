@@ -1,0 +1,18 @@
+int f10(int a, int b, int c, int d, int e,
+        int f, int g, int h, int ii, int j)
+{
+    return a - b + c - d + e - f + g - h + ii - j;
+}
+int order10(int a, int b, int c, int d, int e,
+            int f, int g, int h, int ii, int j)
+{
+    PrintInt(a); PrintInt(b); PrintInt(c); PrintInt(d); PrintInt(e);
+    PrintInt(f); PrintInt(g); PrintInt(h); PrintInt(ii); PrintInt(j);
+    return 0;
+}
+void main()
+{
+    PrintInt(f10(1,2,3,4,5,6,7,8,9,10));
+    PrintInt(f10(10,9,8,7,6,5,4,3,2,1));
+    order10(11,22,33,44,55,66,77,88,99,10);
+}

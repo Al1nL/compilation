@@ -1,0 +1,39 @@
+class State
+{
+    int count := 0;
+    int total := 0;
+}
+State gs := nil;
+
+void addVal(int v)
+{
+    gs.total := gs.total + v;
+    gs.count := gs.count + 1;
+}
+int getAvg()
+{
+    if (gs.count = 0) { return 0; }
+    return gs.total / gs.count;
+}
+void reset()
+{
+    gs.count := 0;
+    gs.total := 0;
+}
+void main()
+{
+    gs := new State;
+    addVal(10);
+    addVal(20);
+    addVal(30);
+    PrintInt(gs.count);
+    PrintInt(gs.total);
+    PrintInt(getAvg());
+    addVal(40);
+    PrintInt(gs.count);
+    PrintInt(getAvg());
+    reset();
+    PrintInt(gs.count);
+    PrintInt(gs.total);
+    PrintInt(getAvg());
+}

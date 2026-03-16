@@ -1,0 +1,25 @@
+int modify(int x) { return x + 100; }
+
+void main()
+{
+    int a := 1;
+    int b := 2;
+    int c := 3;
+    int d := 4;
+    int e := 5;
+    int r := modify(c);
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    PrintInt(e);
+    PrintInt(r);
+    a := modify(a);
+    b := modify(b);
+    c := modify(c);
+    PrintInt(a);
+    PrintInt(b);
+    PrintInt(c);
+    PrintInt(d);
+    PrintInt(e);
+}

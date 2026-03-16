@@ -1,0 +1,17 @@
+string a := "hello";
+string b := "hello";
+string c := "world";
+
+void main()
+{
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := b = c;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    string d := a + c;
+    PrintString(d);
+    int r4 := d = "helloworld";
+    PrintInt(r4);
+}

@@ -1,0 +1,31 @@
+class Tag
+{
+    string key := "key";
+    string val := "val";
+    string getKey() { return key; }
+    string getVal() { return val; }
+    string getKV() { return key + val; }
+}
+
+int strMatch(string a, string b) { return a = b; }
+
+void main()
+{
+    Tag t1 := new Tag;
+    Tag t2 := new Tag;
+    t1.key := "name";
+    t1.val := "Alice";
+    t2.key := "name";
+    t2.val := "Bob";
+    PrintString(t1.getKV());
+    PrintString(t2.getKV());
+    PrintInt(strMatch(t1.getKey(), t2.getKey()));
+    PrintInt(strMatch(t1.getVal(), t2.getVal()));
+    PrintInt(strMatch(t1.getKey(), "name"));
+    string combined := t1.getVal() + t2.getVal();
+    PrintString(combined);
+    int eq := combined = "AliceBob";
+    PrintInt(eq);
+    t1.key := t2.key;
+    PrintInt(strMatch(t1.key, t2.key));
+}

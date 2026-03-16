@@ -1,0 +1,19 @@
+void main()
+{
+    string a := "hello";
+    string b := "world";
+    string c := "hello";
+    string d := a;
+    int r1 := a = b;
+    int r2 := a = c;
+    int r3 := a = d;
+    int r4 := b = c;
+    int r5 := c = d;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r3);
+    PrintInt(r4);
+    PrintInt(r5);
+    int both := (a = c) + (a = b);
+    PrintInt(both);
+}

@@ -1,0 +1,16 @@
+void main()
+{
+    int a := 0 - 7;
+    int b := 2;
+    int q := a / b;
+    PrintInt(q);
+    PrintInt(q * b);
+    PrintInt(a - q * b);
+    int c := 0 - 15;
+    int d := 4;
+    PrintInt(c / d);
+    PrintInt((c / d) * d + (c - (c / d) * d));
+    int x := (0 - 100) / 7;
+    PrintInt(x);
+    PrintInt(x * 7);
+}

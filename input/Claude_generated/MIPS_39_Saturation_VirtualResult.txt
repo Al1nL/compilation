@@ -1,0 +1,26 @@
+class Producer
+{
+    int base := 0;
+    int produce() { return base; }
+}
+class BigProducer extends Producer
+{
+    int produce() { return base * 1000; }
+}
+void main()
+{
+    Producer p := new Producer;
+    Producer bp := new BigProducer;
+    p.base := 100;
+    bp.base := 100;
+    int r1 := p.produce();
+    int r2 := bp.produce();
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(r1 + r2);
+    PrintInt(r2 * 2);
+    p.base := 32767;
+    PrintInt(p.produce() + 1);
+    bp.base := 33;
+    PrintInt(bp.produce() + 1);
+}

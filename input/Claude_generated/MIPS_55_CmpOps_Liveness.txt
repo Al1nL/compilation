@@ -1,0 +1,28 @@
+void main()
+{
+    int a := 3;
+    int b := 7;
+    int c := 3;
+    int lt1 := a < b;
+    int lt2 := b < a;
+    int lt3 := a < c;
+    int gt1 := a > b;
+    int gt2 := b > a;
+    int gt3 := a > c;
+    PrintInt(lt1);
+    PrintInt(lt2);
+    PrintInt(lt3);
+    PrintInt(gt1);
+    PrintInt(gt2);
+    PrintInt(gt3);
+    int sum := lt1 + lt2 + lt3 + gt1 + gt2 + gt3;
+    PrintInt(sum);
+    int mixed := (a < b) + (b > a) + (a = c);
+    PrintInt(mixed);
+    int neg := 0 - 5;
+    PrintInt(neg < a);
+    PrintInt(a < neg);
+    PrintInt(neg > a);
+    PrintInt(neg < neg);
+    PrintInt(neg = neg);
+}

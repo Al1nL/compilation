@@ -1,0 +1,46 @@
+int base := 100;
+int doubled := base * 2;
+int tripled := base * 3;
+int compute()
+{
+    return base + 50;
+}
+int computed := compute();
+int chain := computed + doubled;
+array IntArray = int[];
+class Counter
+{
+    int value := 0;
+}
+Counter globalCounter := new Counter;
+int addToCounter(int x)
+{
+    globalCounter.value := globalCounter.value + x;
+    return globalCounter.value;
+}
+int derived := addToCounter(10);
+int derived2 := addToCounter(20);
+void main()
+{
+    PrintInt(base);
+    PrintInt(doubled);
+    PrintInt(tripled);
+    PrintInt(computed);
+    PrintInt(chain);
+    PrintInt(derived);
+    PrintInt(derived2);
+    PrintInt(globalCounter.value);
+    base := 500;
+    PrintInt(base);
+    PrintInt(doubled);
+    IntArray globalArr := new int[3];
+    globalArr[0] := base;
+    globalArr[1] := doubled;
+    globalArr[2] := tripled;
+    int i := 0;
+    while (i < 3)
+    {
+        PrintInt(globalArr[i]);
+        i := i + 1;
+    }
+}

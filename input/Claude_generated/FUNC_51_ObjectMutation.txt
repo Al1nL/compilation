@@ -1,0 +1,46 @@
+class BankAccount
+{
+    int balance := 0;
+    string owner := "unknown";
+}
+
+int deposit(BankAccount acc, int amount)
+{
+    acc.balance := acc.balance + amount;
+    return acc.balance;
+}
+
+int withdraw(BankAccount acc, int amount)
+{
+    if (acc.balance < amount)
+    {
+        return 0 - 1;
+    }
+    acc.balance := acc.balance - amount;
+    return acc.balance;
+}
+
+void transfer(BankAccount from, BankAccount to, int amount)
+{
+    from.balance := from.balance - amount;
+    to.balance := to.balance + amount;
+}
+
+void main()
+{
+    BankAccount alice := new BankAccount;
+    BankAccount bob := new BankAccount;
+    alice.owner := "alice";
+    bob.owner := "bob";
+    deposit(alice, 500);
+    deposit(bob, 200);
+    PrintInt(alice.balance);
+    PrintInt(bob.balance);
+    PrintInt(withdraw(alice, 100));
+    PrintInt(alice.balance);
+    PrintInt(withdraw(alice, 1000));
+    PrintInt(alice.balance);
+    transfer(alice, bob, 50);
+    PrintInt(alice.balance);
+    PrintInt(bob.balance);
+}

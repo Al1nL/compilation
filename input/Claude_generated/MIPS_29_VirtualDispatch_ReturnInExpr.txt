@@ -1,0 +1,27 @@
+class Num
+{
+    int x := 0;
+    int get() { return x; }
+    int doubled() { return x * 2; }
+}
+class BigNum extends Num
+{
+    int get() { return x * 10; }
+    int doubled() { return x * 20; }
+}
+void main()
+{
+    Num small := new Num;
+    Num big := new BigNum;
+    small.x := 3;
+    big.x := 4;
+    PrintInt(small.get() + big.get());
+    PrintInt(small.doubled() + big.doubled());
+    PrintInt(small.get() * big.get());
+    int diff := big.get() - small.get();
+    PrintInt(diff);
+    int cmp := small.get() < big.get();
+    PrintInt(cmp);
+    int r := small.get() + small.doubled() + big.get() + big.doubled();
+    PrintInt(r);
+}

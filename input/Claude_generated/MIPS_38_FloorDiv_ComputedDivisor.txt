@@ -1,0 +1,18 @@
+void main()
+{
+    int a := 0 - 17;
+    int b := 5;
+    int c := 0 - 3;
+    PrintInt(a / b);
+    PrintInt(a / c);
+    PrintInt(17 / b);
+    PrintInt(17 / c);
+    int step := 2;
+    int val := 0 - 9;
+    int i := 0;
+    while (i < 4)
+    {
+        PrintInt(val / (step + i));
+        i := i + 1;
+    }
+}

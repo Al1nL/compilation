@@ -1,0 +1,23 @@
+class Box { int v := 0; }
+int sideEffect(int x) { return x + 1; }
+void main()
+{
+    Box a := new Box;
+    Box b := new Box;
+    Box c := a;
+    int dummy := sideEffect(42);
+    int r1 := a = b;
+    int r2 := a = c;
+    PrintInt(r1);
+    PrintInt(r2);
+    PrintInt(dummy);
+    Box d := new Box;
+    int before := sideEffect(10);
+    int eq1 := a = b;
+    int after := sideEffect(20);
+    int eq2 := a = c;
+    PrintInt(eq1);
+    PrintInt(eq2);
+    PrintInt(before);
+    PrintInt(after);
+}

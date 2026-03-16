@@ -1,0 +1,13 @@
+class Supplier
+{
+    int value := 0;
+    int get() { return value; }
+}
+void main()
+{
+    Supplier s := new Supplier;
+    s.value := 10;
+    PrintInt(100 / s.get());
+    s.value := 0;
+    PrintInt(100 / s.get());
+}

@@ -1,0 +1,28 @@
+int c := 0;
+int inc() { c := c + 1; return c; }
+
+void main()
+{
+    c := 0;
+    int r1 := inc() + inc();
+    PrintInt(r1);
+    PrintInt(c);
+    c := 0;
+    int r2 := inc() * inc();
+    PrintInt(r2);
+    c := 0;
+    int r3 := inc() - inc();
+    PrintInt(r3);
+    c := 0;
+    int r4 := inc() / inc();
+    PrintInt(r4);
+    c := 0;
+    int r5 := inc() < inc();
+    PrintInt(r5);
+    c := 0;
+    int r6 := inc() > inc();
+    PrintInt(r6);
+    c := 0;
+    int r7 := inc() = inc();
+    PrintInt(r7);
+}

@@ -1,0 +1,22 @@
+void main()
+{
+    int i := 10;
+    while (i < 5)
+    {
+        PrintInt(999);
+        i := i + 1;
+    }
+    PrintInt(i);
+    int j := 0;
+    while (j < 0)
+    {
+        PrintInt(888);
+    }
+    PrintInt(j);
+    int k := 0;
+    while (k < 1)
+    {
+        k := k + 1;
+    }
+    PrintInt(k);
+}

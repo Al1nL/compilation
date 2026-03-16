@@ -1,0 +1,21 @@
+void main()
+{
+    string a := "AB";
+    string b := "CD";
+    string c := "EF";
+    string r1 := a + b;
+    string r2 := b + c;
+    string r3 := a + c;
+    int eq1 := r1 = "ABCD";
+    int eq2 := r2 = "CDEF";
+    int eq3 := r3 = "ABEF";
+    PrintInt(eq1);
+    PrintInt(eq2);
+    PrintInt(eq3);
+    string r4 := a + b + c;
+    int eq4 := r4 = "ABCDEF";
+    PrintInt(eq4);
+    string r5 := r1 + r2;
+    int eq5 := r5 = "ABCDCDEF";
+    PrintInt(eq5);
+}

@@ -1,0 +1,17 @@
+array IntArray = int[];
+void main()
+{
+    IntArray a := new int[10];
+    int i := 0;
+    while (i < 10)
+    {
+        a[i] := i * i;
+        i := i + 1;
+    }
+    int pos := 9 / 2;
+    PrintInt(a[pos]);
+    int neg := (0 - 1) / 2;
+    PrintInt(neg);
+    PrintInt(a[0]);
+    PrintInt(a[9 / 3]);
+}

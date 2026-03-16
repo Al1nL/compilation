@@ -1,0 +1,19 @@
+array IntArray = int[];
+void main()
+{
+    IntArray a := new int[1];
+    a[0] := 42;
+    PrintInt(a[0]);
+    a[0] := a[0] + 1;
+    PrintInt(a[0]);
+    int bad := 1;
+    if (bad > 0)
+    {
+        bad := 0;
+    }
+    if (bad > 0)
+    {
+        PrintInt(a[1]);
+    }
+    PrintInt(0);
+}

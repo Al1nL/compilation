@@ -1,0 +1,24 @@
+class Node { int val := 0; }
+void main()
+{
+    Node a := new Node;
+    Node b := new Node;
+    Node c := a;
+    a.val := 10;
+    b.val := 20;
+    int same := a = c;
+    int diff := a = b;
+    PrintInt(same + diff);
+    PrintInt(same * 5);
+    PrintInt(diff * 5);
+    if (a = c) { PrintInt(1); }
+    if ((a = b) = 0) { PrintInt(2); }
+    int total := (a = c) + (b = c) + (a = b);
+    PrintInt(total);
+    Node arr0 := a;
+    Node arr1 := b;
+    int eq01 := arr0 = arr1;
+    int eq00 := arr0 = a;
+    PrintInt(eq01);
+    PrintInt(eq00);
+}

@@ -1,0 +1,20 @@
+class Box { int v := 0; }
+void main()
+{
+    Box a := new Box;
+    Box b := new Box;
+    a.v := 100;
+    b.v := 200;
+    int big := 32000 + 32000;
+    PrintInt(a.v);
+    PrintInt(b.v);
+    PrintInt(big);
+    int eq1 := a = b;
+    PrintInt(eq1);
+    a.v := 32000 * 2;
+    b.v := (0 - 32000) * 2;
+    int eq2 := a = b;
+    PrintInt(a.v);
+    PrintInt(b.v);
+    PrintInt(eq2);
+}

@@ -1,0 +1,12 @@
+class Box { int v := 0; }
+array BoxArr = Box[];
+void main()
+{
+    BoxArr arr := new Box[3];
+    Box b := new Box;
+    b.v := 42;
+    arr[0] := b;
+    PrintInt(arr[0].v);
+    int x := arr[1].v;
+    PrintInt(x);
+}

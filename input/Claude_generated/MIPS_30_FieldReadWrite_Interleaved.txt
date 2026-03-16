@@ -1,0 +1,31 @@
+class Six
+{
+    int a := 1;
+    int b := 2;
+    int c := 3;
+    int d := 4;
+    int e := 5;
+    int f := 6;
+    int mySum() { return a + b + c + d + e + f; }
+}
+void main()
+{
+    Six s := new Six;
+    PrintInt(s.mySum());
+    s.a := s.f;
+    s.f := 1;
+    PrintInt(s.a);
+    PrintInt(s.f);
+    PrintInt(s.mySum());
+    s.b := s.a + s.c;
+    s.d := s.e * 2;
+    PrintInt(s.b);
+    PrintInt(s.d);
+    PrintInt(s.mySum());
+    int tmp := s.c;
+    s.c := s.d;
+    s.d := tmp;
+    PrintInt(s.c);
+    PrintInt(s.d);
+    PrintInt(s.mySum());
+}

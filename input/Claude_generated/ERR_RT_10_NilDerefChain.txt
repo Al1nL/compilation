@@ -1,0 +1,14 @@
+class Node
+{
+    int val := 0;
+    Node next := nil;
+}
+
+void main()
+{
+    Node n := new Node;
+    n.val := 5;
+    PrintInt(n.val);
+    int x := n.next.val;
+    PrintInt(x);
+}

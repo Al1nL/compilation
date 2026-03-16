@@ -1,0 +1,20 @@
+void main()
+{
+    string s1 := "hello";
+    string s2 := "world";
+    string cat := s1 + s2;
+    int eq1 := s1 = s2;
+    int eq2 := cat = "helloworld";
+    int eq3 := s1 = cat;
+    PrintInt(eq1);
+    PrintInt(eq2);
+    PrintInt(eq3);
+    string rebuilt := s1 + s2;
+    int eq4 := cat = rebuilt;
+    PrintInt(eq4);
+    int eq5 := s1 + s2 = s1 + s2;
+    PrintInt(eq5);
+    string prefix := "hello";
+    int eq6 := prefix = s1;
+    PrintInt(eq6);
+}

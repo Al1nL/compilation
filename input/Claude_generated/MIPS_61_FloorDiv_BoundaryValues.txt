@@ -1,0 +1,19 @@
+void main()
+{
+    PrintInt(0 / 1);
+    PrintInt(0 / (0 - 1));
+    PrintInt(1 / 1);
+    PrintInt((0 - 1) / 1);
+    PrintInt(1 / (0 - 1));
+    PrintInt((0 - 1) / (0 - 1));
+    PrintInt(32767 / 1);
+    PrintInt(32767 / (0 - 1));
+    int min := (0 - 32767) - 1;
+    PrintInt(min / 1);
+    PrintInt(min / (0 - 1));
+    PrintInt(1 / 32767);
+    PrintInt((0 - 1) / 32767);
+    PrintInt(1 / min);
+    PrintInt(32766 / 32767);
+    PrintInt((0 - 32766) / 32767);
+}

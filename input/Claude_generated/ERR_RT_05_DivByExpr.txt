@@ -1,0 +1,7 @@
+void main()
+{
+    int x := 5;
+    int y := 5;
+    int result := 100 / (x - y);
+    PrintInt(result);
+}

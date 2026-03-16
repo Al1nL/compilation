@@ -1,0 +1,23 @@
+void main()
+{
+    int a := (0 - 7);
+    int b := 2;
+    int q := a / b;
+    PrintInt(q);
+    int r1 := q + 32767;
+    PrintInt(r1);
+    int r2 := q * 10000;
+    PrintInt(r2);
+    int r3 := q - 32767;
+    PrintInt(r3);
+    int c := (0 - 100) / 3;
+    PrintInt(c);
+    int r4 := c * c;
+    PrintInt(r4);
+    int r5 := (0 - 32767) / 2;
+    PrintInt(r5);
+    int r6 := r5 * 2;
+    PrintInt(r6);
+    int r7 := r5 - 32767;
+    PrintInt(r7);
+}

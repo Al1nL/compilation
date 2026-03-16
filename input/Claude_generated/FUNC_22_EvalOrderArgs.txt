@@ -1,0 +1,32 @@
+class counter { int i := 0; }
+counter c := nil;
+
+int inc()
+{
+    c.i := c.i + 1;
+    return c.i;
+}
+
+int myAdd(int x, int y)
+{
+    return x + y;
+}
+
+int mySub(int x, int y)
+{
+    return x - y;
+}
+
+void main()
+{
+    c := new counter;
+    PrintInt(myAdd(inc(), inc()));
+    c.i := 0;
+    PrintInt(mySub(inc(), inc()));
+    c.i := 0;
+    int r := inc() + inc() + inc();
+    PrintInt(r);
+    c.i := 0;
+    int s := inc() * inc();
+    PrintInt(s);
+}

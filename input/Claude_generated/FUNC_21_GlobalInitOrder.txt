@@ -1,0 +1,18 @@
+int base := 10;
+int doubled := base * 2;
+int tripled := base * 3;
+int sum := doubled + tripled;
+int product := doubled * tripled;
+
+void main()
+{
+    PrintInt(base);
+    PrintInt(doubled);
+    PrintInt(tripled);
+    PrintInt(sum);
+    PrintInt(product);
+    base := 99;
+    PrintInt(base);
+    PrintInt(doubled);
+    PrintInt(sum);
+}

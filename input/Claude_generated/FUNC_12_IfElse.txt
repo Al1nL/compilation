@@ -1,0 +1,101 @@
+int classify(int n)
+{
+    if (n < 0)
+    {
+        return 0-1;
+    }
+    if (n = 0)
+    {
+        return 0;
+    }
+    return n;
+}
+void main()
+{
+    if (1)
+    {
+        PrintInt(1);
+    }
+    if (0)
+    {
+        PrintInt(2);
+    }
+    if (1 = 0)
+    {
+        PrintInt(3);
+    }
+    if (1)
+    {
+        PrintInt(4);
+    }
+    int x := 15;
+    if (x > 10)
+    {
+        if (x > 20)
+        {
+            PrintInt(10);
+        }
+        if ((x > 20) = 0)
+        {
+            PrintInt(11);
+        }
+    }
+    int y := 25;
+    if (y < 10)
+    {
+        PrintInt(20);
+    }
+    if (y < 30)
+    {
+        if (y > 20)
+        {
+            PrintInt(21);
+        }
+    }
+    PrintInt(classify(0-5));
+    PrintInt(classify(0));
+    PrintInt(classify(10));
+    int a := 5;
+    int b := 10;
+    if (a < b)
+    {
+        if (a > 0)
+        {
+            if (b < 20)
+            {
+                PrintInt(100);
+            }
+            if ((b < 20) = 0)
+            {
+                PrintInt(101);
+            }
+        }
+        if ((a > 0) = 0)
+        {
+            PrintInt(102);
+        }
+    }
+    if ((a < b) = 0)
+    {
+        PrintInt(103);
+    }
+    int grade := 85;
+    if (grade > 90)
+    {
+        PrintInt(1);
+    }
+    if (grade > 80)
+    {
+        if ((grade > 90) = 0)
+        {
+            PrintInt(2);
+        }
+    }
+    if (grade > 70)
+    {
+        if ((grade > 80) = 0)
+        {
+            PrintInt(3);
+        }
+    }
+}

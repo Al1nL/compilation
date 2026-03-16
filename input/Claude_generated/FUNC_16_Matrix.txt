@@ -1,0 +1,81 @@
+array IntArray = int[];
+array Matrix = IntArray[];
+void fillMatrix(Matrix m, int rows, int cols)
+{
+    int i := 0;
+    while (i < rows)
+    {
+        int j := 0;
+        while (j < cols)
+        {
+            m[i][j] := i * cols + j;
+            j := j + 1;
+        }
+        i := i + 1;
+    }
+}
+void printMatrix(Matrix m, int rows, int cols)
+{
+    int i := 0;
+    while (i < rows)
+    {
+        int j := 0;
+        while (j < cols)
+        {
+            PrintInt(m[i][j]);
+            j := j + 1;
+        }
+        i := i + 1;
+    }
+}
+Matrix transposeMatrix(Matrix m, int rows, int cols)
+{
+    Matrix result := new IntArray[cols];
+    int i := 0;
+    while (i < cols)
+    {
+        result[i] := new int[rows];
+        i := i + 1;
+    }
+    i := 0;
+    while (i < rows)
+    {
+        int j := 0;
+        while (j < cols)
+        {
+            result[j][i] := m[i][j];
+            j := j + 1;
+        }
+        i := i + 1;
+    }
+    return result;
+}
+int sumMatrix(Matrix m, int rows, int cols)
+{
+    int total := 0;
+    int i := 0;
+    while (i < rows)
+    {
+        int j := 0;
+        while (j < cols)
+        {
+            total := total + m[i][j];
+            j := j + 1;
+        }
+        i := i + 1;
+    }
+    return total;
+}
+void main()
+{
+    Matrix mat := new IntArray[3];
+    mat[0] := new int[4];
+    mat[1] := new int[4];
+    mat[2] := new int[4];
+    fillMatrix(mat, 3, 4);
+    printMatrix(mat, 3, 4);
+    PrintInt(sumMatrix(mat, 3, 4));
+    Matrix transposed := transposeMatrix(mat, 3, 4);
+    printMatrix(transposed, 4, 3);
+    PrintInt(sumMatrix(transposed, 4, 3));
+}

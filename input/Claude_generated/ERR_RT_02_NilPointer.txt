@@ -1,0 +1,15 @@
+class Point
+{
+    int x := 0;
+    int y := 0;
+    int getX()
+    {
+        return x;
+    }
+}
+void main()
+{
+    Point p := nil;
+    int value := p.x;
+    PrintInt(value);
+}
