@@ -16,7 +16,7 @@ public abstract class IrCommand {
      * Default behavior: IN = OUT (no uses or defs).
      */
     public Set<Temp> computeInSet(Set<Temp> out) {
-        return new HashSet<>(out);
+        return generalComputeInSet(out);
     }
 
     /**
