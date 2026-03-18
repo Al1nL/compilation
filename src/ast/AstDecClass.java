@@ -38,11 +38,7 @@ public class AstDecClass extends AstDec {
         if (fields != null) {
             fields.printMe();
         }
-
-        AstGraphviz.getInstance().logNode(
-                serialNumber,
-                String.format("CLASS\n%s", this.name));
-
+        AstGraphviz.getInstance().logNode(serialNumber, String.format("CLASS\n%s", this.name));
         AstGraphviz.getInstance().logEdge(serialNumber, fields.serialNumber);
     }
 
@@ -103,43 +99,43 @@ public class AstDecClass extends AstDec {
         TypeClassVarDecList result = null;
         TypeClassVarDecList last = null;
         HashSet<String> addedNames = new HashSet<>();
-    
-        // FIRST LOOP: register all names, resolve vars immediately
+
+        // For each field/method in declaration order:
+        //      1. Register its signature into curr.dataMembers immediately.
+        //      2. For methods: THEN analyze the body.
         for (AstDecList it = fields; it != null; it = it.tail) {
             AstDec dec = it.head;
             String name = null;
             Type t = null;
-    
+
             if (dec instanceof AstDecVar) {
                 AstDecVar varDec = (AstDecVar) dec;
                 name = varDec.name;
-                t = varDec.semantMe(); // safe to compute immediately
+                t = varDec.semantMe();
             } else if (dec instanceof AstDecFunc) {
                 AstDecFunc funcDec = (AstDecFunc) dec;
                 name = funcDec.name;
-                t = (TypeFunction) funcDec.semantMe(); // placeholder
+                t = funcDec.buildSignature(); // register signature only, no body yet
             } else {
                 continue;
             }
-            
+
+            if (t == null) continue;
+
+            // Inheritance conflict checks
             if (parent != null) {
                 Type same = parent.findField(name);
-
                 if (same != null) {
-
                     if (!same.isSameType(t)) {
                         dec.report();
                     }
-
                     if (dec instanceof AstDecVar) {
                         System.out.format(">> ERROR class cannot define a field %s with the same name as an existing field in superclass %d\n", name, lineNumber);
                         dec.report();
                     }
-                   
-                    if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions((TypeFunction)t)) {
+                    if (!(same instanceof TypeFunction) || !((TypeFunction) same).compareFunctions((TypeFunction) t)) {
                         dec.report();
                     }
-                    
                 }
             }
 
@@ -149,9 +145,10 @@ public class AstDecClass extends AstDec {
                 dec.report();
                 continue;
             }
-    
+
             addedNames.add(name);
-    
+
+            // Add to dataMembers before analyzing the body.
             TypeClassVarDec decv = new TypeClassVarDec(t, name);
             if (result == null) {
                 result = new TypeClassVarDecList(decv, null);
@@ -161,38 +158,36 @@ public class AstDecClass extends AstDec {
                 last = last.tail;
             }
             curr.dataMembers = result;
+
+            // analyze method body after signature is registered.
+            // Only methods defined earlier are visible.
+            if (dec instanceof AstDecFunc) {
+                ((AstDecFunc) dec).analyzeBody();
+            }
         }
-    
     }
-    
+
 
     public Temp irMe(){
-        /**************************************/
-        /* [1] Begin class IR generation      */
-        /**************************************/
         Map<Integer, List<IrCommand>> newFields;
         Ir.curClass = name;
 
         if(parentName!=null){
             newFields = new HashMap<Integer, List<IrCommand>>(Ir.fieldInitIrCommands.get(parentName));
-        }
-        else{
+        } else {
             newFields = new HashMap<Integer, List<IrCommand>>();
         }
         Ir.fieldInitIrCommands.put(Ir.curClass, newFields);
 
-
-        Ir.
-            getInstance().
-            AddIrCommand(new IrCommandDeclareClass(
-                name,
-                parentName,
-                fields,
-                _MethodOffsets != null ? _MethodOffsets : new HashMap<>(),
-                _FieldCount,
-                _MethodLabels
-            ));
-        // Store method labels so AstExpCall.irMe() can resolve intra-class calls
+        Ir.getInstance().AddIrCommand(new IrCommandDeclareClass(
+            name,
+            parentName,
+            fields,
+            _MethodOffsets != null ? _MethodOffsets : new HashMap<>(),
+            _FieldCount,
+            _MethodLabels
+        ));
+       // Store method labels so AstExpCall.irMe() can resolve intra-class calls
         if (_MethodLabels != null) {
             Ir.methodLabelsMap.put(name, new HashMap<>(_MethodLabels));
         }
@@ -216,7 +211,7 @@ public class AstDecClass extends AstDec {
     }
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
-		curClass = name;
+        curClass = name;
         Map<String, Integer> newFields;
         Map<String, Integer> newMethods;
         Map<String, String> newLabels;
@@ -224,8 +219,7 @@ public class AstDecClass extends AstDec {
             newFields = new HashMap<String, Integer>(classFieldOffsets.get(parentName));
             newMethods = new HashMap<String, Integer>(classMethodOffsets.get(parentName));
             newLabels = new HashMap<String, String>(methodLabels.get(parentName));
-        }
-        else{
+        } else {
             newFields = new HashMap<String, Integer>();
             newMethods = new HashMap<String, Integer>();
             newLabels = new HashMap<String, String>();
@@ -236,7 +230,6 @@ public class AstDecClass extends AstDec {
                
         if(fields!=null){
             fields.offsetMe(offsets, classFieldOffsets.get(curClass).size(), curClass, classFieldOffsets, classMethodOffsets, methodLabels);
-
         }
         
         _MethodOffsets = new HashMap<>(classMethodOffsets.get(curClass));
@@ -244,11 +237,9 @@ public class AstDecClass extends AstDec {
         _MethodLabels = new HashMap<>(methodLabels.get(curClass));
         
         return 0;
-        
-        
-	}
+    }
+
     public void debugOffset(){
-		fields.debugOffset();
-	}
-    
+        fields.debugOffset();
+    }
 }

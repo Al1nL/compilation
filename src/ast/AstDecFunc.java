@@ -52,14 +52,96 @@ public class AstDecFunc extends AstDec {
         }
     }
 
+    /**
+     * Register the function signature (return type + param types)
+     * into the symbol table WITHOUT analyzing the body.
+     */
+    public TypeFunction buildSignature() {
+        if (name.equals("PrintInt") || name.equals("PrintString")) {
+            System.out.format(">> ERROR [%d] cannot override built-in function %s\n", lineNumber, name);
+            report();
+        }
+
+        Type baseType = SymbolTable.getInstance().find(returnType);
+        if (baseType == null) {
+            System.out.format(">> ERROR [%d] non existing return type %s\n", lineNumber, returnType);
+            report();
+        }
+
+        TypeList type_list = null;
+        TypeList cur_list = null;
+        int length = 0;
+
+        for (AstParamList it = params; it != null; it = it.tail) {
+            Type paramType = SymbolTable.getInstance().find(it.head.type);
+            if (paramType == null) {
+                System.out.format(">> ERROR [%d] non existing type %s\n", lineNumber, it.head.type);
+                report();
+            } else if (paramType == TypeVoid.getInstance()) {
+                System.out.format(">> ERROR [%d] parameter cannot be of type void %s\n", lineNumber, it.head.type);
+                report();
+            } else {
+                length++;
+                if (cur_list == null) {
+                    type_list = new TypeList(paramType, null);
+                    cur_list = type_list;
+                } else {
+                    cur_list.tail = new TypeList(paramType, null);
+                    cur_list = cur_list.tail;
+                }
+            }
+        }
+        if (type_list != null) type_list.len = length;
+
+        TypeFunction t = new TypeFunction(baseType, name, type_list);
+        SymbolTable.getInstance().enter(name, t);
+        return t;
+    }
+
+    /**
+     * Analyze the method body (signature already registered).
+     * Returns the TypeFunction (unchanged).
+     */
+    public TypeFunction analyzeBody() {
+        currentFunctionName = name;
+        Type baseType = SymbolTable.getInstance().find(returnType);
+
+        TypeFunction t = (TypeFunction) SymbolTable.getInstance().find(name);
+
+        SymbolTable.getInstance().beginScope();
+
+        // Re-enter params into the new scope
+        for (AstParamList it = params; it != null; it = it.tail) {
+            Type paramType = SymbolTable.getInstance().find(it.head.type);
+            if (paramType != null && paramType != TypeVoid.getInstance()) {
+                if (SymbolTable.getInstance().findInScope(it.head.name) != null) {
+                    System.out.format(">> ERROR [%d] duplicate parameter name %s\n", lineNumber, it.head.name);
+                    report();
+                }
+                SymbolTable.getInstance().enter(it.head.name, paramType);
+                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel, name);
+            }
+        }
+
+        ReturnCounter c = ReturnCounter.getInstance();
+        if (returnType.equals("void")) {
+            c.setCount(1);
+        } else {
+            c.setCount(0);
+        }
+
+        body.semantMe(baseType);
+        c.setCount(0);
+
+        SymbolTable.getInstance().endScope();
+        return t;
+    }
+
     public Type semantMe() {
-        currentFunctionName = name; 
+        currentFunctionName = name;
         /* Forbid overriding built-ins */
         if (name.equals("PrintInt") || name.equals("PrintString")) {
-            System.out.format(">> ERROR [%d] cannot override built-in function %s\n",
-                    lineNumber,
-                    name
-            );
+            System.out.format(">> ERROR [%d] cannot override built-in function %s\n", lineNumber, name);
             report();
         }
         TypeList type_list = null;
@@ -105,7 +187,7 @@ public class AstDecFunc extends AstDec {
                 }
 
                 SymbolTable.getInstance().enter(it.head.name, paramType);
-                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel,name);
+                it.head.var = Variable.get(it.head.name, SymbolTable.getInstance().currScopeLevel, name);
             }
         }
         if (type_list != null) {
@@ -119,7 +201,6 @@ public class AstDecFunc extends AstDec {
         ReturnCounter c = ReturnCounter.getInstance();
         if (returnType.equals("void")) {
             c.setCount(1);
-
         } else {
             c.setCount(0);
         }
@@ -130,7 +211,6 @@ public class AstDecFunc extends AstDec {
         /* End Scope */
         SymbolTable.getInstance().endScope();
 
-        /* Function is already in symbol table, just return */
         return t;
     }
 
@@ -148,35 +228,34 @@ public class AstDecFunc extends AstDec {
         Ir.currentMethodClass = curClass;
 
         String name = this.label!=null? this.label : this.name;
-        if (name.equals("main")) name = "user_main"; 
-        Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));  // emits label + saves frame
-        if (params != null) params.irMe();                           // must come first
+        if (name.equals("main")) name = "user_main";
+        else if (this.label == null) name = "_func_" + name;  // free functions: avoid MIPS reserved words
+        Ir.getInstance().AddIrCommand(new IrCommandPrologue(name, localVarCount));
+        if (params != null) params.irMe();
         AstStmtReturn.currentFunctionName = name;
         if (body != null) body.irMe();
-        Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));  // restore + jr $ra
+        Ir.getInstance().AddIrCommand(new IrCommandEpilogue(name));
         Ir.curClass = curClass;
         Ir.currentMethodClass = null;  // clear after method body
         return null;
-}
+    }
 
     public int offsetMe(Map<Variable, Integer> offsets, int curIdx, String curClass, Map<String, Map<String, Integer>> classFieldOffsets, Map<String, Map<String, Integer>> classMethodOffsets, Map<String, Map<String, String>> methodLabels){
-		if (curClass!=null){
+        if (curClass!=null){
             this.label = IrCommand.getFreshLabel(String.format("%s_%s", curClass, this.name));
             methodLabels.get(curClass).put(name, label);
             offset = classMethodOffsets.get(curClass).size();
             if(!classMethodOffsets.get(curClass).containsKey(name)){
                 classMethodOffsets.get(curClass).put(name, offset);
-            }
-            else{
+            } else {
                 offset = classMethodOffsets.get(curClass).get(name);
             }
-            
         }
         int bodyIdx=0;
         int paramIdx=-1;
         offsets = new HashMap<Variable, Integer>();
         if (curClass != null) {
-            paramIdx--; 
+            paramIdx--;
         }
         if (params != null) {
             params.offsetMe(offsets, paramIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
@@ -184,19 +263,18 @@ public class AstDecFunc extends AstDec {
         if (body != null) {
             localVarCount = body.offsetMe(offsets, bodyIdx, curClass, classFieldOffsets, classMethodOffsets, methodLabels);
         }
-        
         return 0;
-	}
+    }
 
     public void debugOffset(){
         if (offset!=null){
             System.out.println(name + " - " + offset + ":");
         }
-		if (params != null) {
+        if (params != null) {
             params.debugOffset();
         }
         if (body != null) {
             body.debugOffset();
         }
-	}
+    }
 }
