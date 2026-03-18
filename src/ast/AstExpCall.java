@@ -79,7 +79,7 @@ public class AstExpCall extends AstExp {
             curIrCommand = new IrCommandVirtualCall(dst, thisTemp, name, methodOffset, argTemps);
         } else {
             // Free-function call (or library call resolved by label)
-            String resolvedLabel = name;
+            String resolvedLabel = name.equals("main") ? "user_main" : "_func_" + name;
             if (Ir.currentMethodClass != null) {
                 Map<String, String> classLabels = Ir.methodLabelsMap.get(Ir.currentMethodClass);
                 if (classLabels != null && classLabels.containsKey(name)) {
