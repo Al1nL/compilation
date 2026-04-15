@@ -137,16 +137,16 @@ public class MipsGenerator {
         String okLow    = IrCommand.getFreshLabel("array_low_ok");
         String okHigh   = IrCommand.getFreshLabel("array_high_ok");
 
-        // 1. Null check on array pointer
+        // Null check on array pointer
         textSec.format("\tbne %s,$zero,%s\n", base, okNull);
-        textSec.format("\tla $a0,string_access_violation\n");
+        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
         textSec.format("\tli $v0,4\n");
         textSec.format("\tsyscall\n");
         textSec.format("\tli $v0,10\n");
         textSec.format("\tsyscall\n");
         textSec.format("%s:\n", okNull);
 
-        // 2. Lower-bound check: idx >= 0
+        // Lower-bound check: idx >= 0
         textSec.format("\tbge %s,$zero,%s\n", idx, okLow);
         textSec.format("\tla $a0,string_access_violation\n");
         textSec.format("\tli $v0,4\n");
@@ -155,7 +155,7 @@ public class MipsGenerator {
         textSec.format("\tsyscall\n");
         textSec.format("%s:\n", okLow);
 
-        // 3. Upper-bound check: idx < length (stored at base[0])
+        // Upper-bound check: idx < length (stored at base[0])
         textSec.format("\tlw $s0,0(%s)\n", base);       // $s0 = array length
         textSec.format("\tblt %s,$s0,%s\n", idx, okHigh);
         textSec.format("\tla $a0,string_access_violation\n");
@@ -165,7 +165,7 @@ public class MipsGenerator {
         textSec.format("\tsyscall\n");
         textSec.format("%s:\n", okHigh);
 
-        // 4. Compute element address: base + (idx+1)*4
+        // Compute element address: base + (idx+1)*4
         textSec.format("\tsll $s0,%s,2\n", idx);
         textSec.format("\taddi $s0,$s0,4\n");
         textSec.format("\tadd %s,%s,$s0\n", dst, base);
@@ -174,8 +174,6 @@ public class MipsGenerator {
     /**
      * Emits an inline null-pointer check on ptr.
      * If ptr == 0: print "Invalid Pointer Dereference" and exit.
-     * Use this when you need to check the original object pointer
-     * BEFORE doing pointer arithmetic (where the computed address would no longer be 0).
      */
     public void checkNullPtr(Temp ptr) {
         PrintWriter out = insideFunction ? textSec : globalInitSec;
@@ -228,7 +226,7 @@ public class MipsGenerator {
         textSec.format("\tli %s,1\n", dst);
         textSec.format("%s:\n", doneLabel);
     }
-    
+
     /* ===== ARITHMETIC ===== */
 
     /**
@@ -237,7 +235,6 @@ public class MipsGenerator {
      */
     private void saturate(Temp dst) {
         // saturate is only called from add/sub/mul/div which are already guarded,
-        // so we resolve the output section via the same insideFunction flag.
         PrintWriter out = insideFunction ? textSec : globalInitSec;
         String clampMin = IrCommand.getFreshLabel("sat_clampMin");
         String clampMax = IrCommand.getFreshLabel("sat_clampMax");
@@ -317,57 +314,59 @@ public class MipsGenerator {
             stringPool.put(value, strLabel);
             dataSec.format("%s: .asciiz %s\n", strLabel, value);
         }
-        
-        // CRITICAL FIX: If we are not inside a function (e.g., globals init), 
-        // the instruction MUST go to the globalInitSec, not textSec!
+
         PrintWriter out = insideFunction ? textSec : globalInitSec;
         out.format("\tla %s,%s\n", t, strLabel);
     }
 
+    /**
+     * String concatenation: dst = t1 + t2 (heap-allocated).
+    */
     public void addStrings(Temp dst, Temp t1, Temp t2) {
-        textSec.format("\tsubu $sp,$sp,16\n");
-        textSec.format("\tsw $ra,12($sp)\n");
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+
+        out.format("\tsubu $sp,$sp,16\n");
+        out.format("\tsw $ra,12($sp)\n");
         // $sp+8 is reserved for len(t1), filled below
-        textSec.format("\tsw %s,4($sp)\n", t1);
-        textSec.format("\tsw %s,0($sp)\n", t2);
+        out.format("\tsw %s,4($sp)\n", t1);
+        out.format("\tsw %s,0($sp)\n", t2);
 
         // strlen(t1) → $v0; spill result onto stack immediately
-        textSec.format("\tlw $a0,4($sp)\n");
-        textSec.format("\tjal __strlen\n");
-        textSec.format("\tsw $v0,8($sp)\n");        // len(t1) safely on stack
+        out.format("\tlw $a0,4($sp)\n");
+        out.format("\tjal __strlen\n");
+        out.format("\tsw $v0,8($sp)\n");        // len(t1) safely on stack
 
         // strlen(t2) → $v0
-        textSec.format("\tlw $a0,0($sp)\n");
-        textSec.format("\tjal __strlen\n");
+        out.format("\tlw $a0,0($sp)\n");
+        out.format("\tjal __strlen\n");
 
         // sbrk(len(t1) + len(t2) + 1) — reload len(t1) from stack
-        textSec.format("\tlw $a0,8($sp)\n");        // len(t1)
-        textSec.format("\tadd $a0,$a0,$v0\n");      // + len(t2)
-        textSec.format("\taddi $a0,$a0,1\n");       // + null terminator
-        textSec.format("\tli $v0,9\n");
-        textSec.format("\tsyscall\n");
+        out.format("\tlw $a0,8($sp)\n");        // len(t1)
+        out.format("\tadd $a0,$a0,$v0\n");      // + len(t2)
+        out.format("\taddi $a0,$a0,1\n");       // + null terminator
+        out.format("\tli $v0,9\n");
+        out.format("\tsyscall\n");
 
         // Store new buffer address into dst NOW, before any further jal clobbers $v0
-        textSec.format("\tmove %s,$v0\n", dst);
+        out.format("\tmove %s,$v0\n", dst);
 
         // strcpy(t1 → dst): fills buffer, $v0 = pointer past null byte
-        textSec.format("\tlw $a0,4($sp)\n");
-        textSec.format("\tmove $a1,%s\n", dst);
-        textSec.format("\tjal __strcpy\n");
+        out.format("\tlw $a0,4($sp)\n");
+        out.format("\tmove $a1,%s\n", dst);
+        out.format("\tjal __strcpy\n");
 
         // strcpy(t2 → $v0): appends second string right after first
-        textSec.format("\tlw $a0,0($sp)\n");
-        textSec.format("\tmove $a1,$v0\n");
-        textSec.format("\tjal __strcpy\n");
+        out.format("\tlw $a0,0($sp)\n");
+        out.format("\tmove $a1,$v0\n");
+        out.format("\tjal __strcpy\n");
 
         // Restore frame — dst already holds the concatenated string pointer
-        textSec.format("\tlw $ra,12($sp)\n");
-        textSec.format("\taddu $sp,$sp,16\n");
+        out.format("\tlw $ra,12($sp)\n");
+        out.format("\taddu $sp,$sp,16\n");
     }
 
     /**
      * String content equality: dst = (strcmp(t1,t2)==0) ? 1 : 0
-     * Uses __strcmp helper. Saves/restores $ra around the call.
      */
     public void eqStrings(Temp dst, Temp t1, Temp t2) {
         // save $ra
@@ -397,13 +396,14 @@ public class MipsGenerator {
 
     // array layout: [length][elem0][elem1]...
     public void allocateArray(Temp dst, Temp size) {
-        textSec.format("\tmove $s1,%s\n", size);   // save size before syscall
-        textSec.format("\taddi $a0,%s,1\n", size);
-        textSec.format("\tsll $a0,$a0,2\n");
-        textSec.format("\tli $v0,9\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tmove %s,$v0\n", dst);
-        textSec.format("\tsw $s1,0(%s)\n", dst);   // store saved size, not dst
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+        out.format("\tmove $s1,%s\n", size);   // save size before syscall
+        out.format("\taddi $a0,%s,1\n", size);
+        out.format("\tsll $a0,$a0,2\n");
+        out.format("\tli $v0,9\n");
+        out.format("\tsyscall\n");
+        out.format("\tmove %s,$v0\n", dst);
+        out.format("\tsw $s1,0(%s)\n", dst);   // store saved size at base[0]
     }
 
     /**
@@ -427,7 +427,6 @@ public class MipsGenerator {
 
     /**
      * Emits the vtable for a class into the .data section.
-     * Layout: className_vtable: .word method0 method1 ...
      */
     public void declareClass(String className, Map<String, Integer> methodOffsets, int fieldCount, Map<String,String> methodLabels) {
         String[] ordered = new String[methodOffsets.size()];
@@ -451,32 +450,43 @@ public class MipsGenerator {
 
     // call method of object
     public void callMethod(Temp dst, Temp object, int offset, List<Temp> args) {
+        PrintWriter out = insideFunction ? textSec : globalInitSec;
+
         String okLabel = IrCommand.getFreshLabel("reference_ok");
-        textSec.format("\tbne %s,$zero,%s\n", object, okLabel);
-        textSec.format("\tla $a0,string_invalid_ptr_dref\n");
-        textSec.format("\tli $v0,4\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("\tli $v0,10\n");
-        textSec.format("\tsyscall\n");
-        textSec.format("%s:\n", okLabel);
+        out.format("\tbne %s,$zero,%s\n", object, okLabel);
+        out.format("\tla $a0,string_invalid_ptr_dref\n");
+        out.format("\tli $v0,4\n");
+        out.format("\tsyscall\n");
+        out.format("\tli $v0,10\n");
+        out.format("\tsyscall\n");
+        out.format("%s:\n", okLabel);
 
         // Load the vtable entry into $s0 BEFORE touching the stack
-        textSec.format("\tlw $s0, 0(%s)\n", object);
-        textSec.format("\tlw $s0, %d($s0)\n", offset * 4);
+        out.format("\tlw $s0, 0(%s)\n", object);
+        out.format("\tlw $s0, %d($s0)\n", offset * 4);
+
+        // Save $ra (needed when called from _globals_init which has no full frame)
+        out.print("\tsubu $sp, $sp, 4\n");
+        out.print("\tsw $ra, 0($sp)\n");
 
         // Push args RIGHT-TO-LEFT first (last arg at lowest address)
         for (int i = args.size() - 1; i >= 0; i--) {
-            textSec.print("\tsubu $sp, $sp, 4\n");
-            textSec.format("\tsw %s, 0($sp)\n", args.get(i));
+            out.print("\tsubu $sp, $sp, 4\n");
+            out.format("\tsw %s, 0($sp)\n", args.get(i));
         }
         // Push 'this' (object) LAST so it sits at $fp+8 inside the callee
-        textSec.print("\tsubu $sp, $sp, 4\n");
-        textSec.format("\tsw %s, 0($sp)\n", object);
+        out.print("\tsubu $sp, $sp, 4\n");
+        out.format("\tsw %s, 0($sp)\n", object);
 
-        textSec.print("\tjalr $s0\n");
+        out.print("\tjalr $s0\n");
         // Pop all pushed words: object + all args
-        textSec.format("\taddu $sp, $sp, %d\n", (args.size() + 1) * 4);
-        textSec.format("\tmove %s, $v0\n", dst);
+        out.format("\taddu $sp, $sp, %d\n", (args.size() + 1) * 4);
+
+        // Restore $ra
+        out.print("\tlw $ra, 0($sp)\n");
+        out.print("\taddu $sp, $sp, 4\n");
+
+        out.format("\tmove %s, $v0\n", dst);
     }
 
     // call function with label
@@ -525,21 +535,24 @@ public class MipsGenerator {
     }
 
     public void emitEpilogue(String functionName) {
+        // Default return value = 0/nil — only reached by fall-through (missing return)
+        // Real return paths jump directly to the label below, skipping this.
+        textSec.println("\tli $v0,0");
         textSec.format("%s_epilogue:\n", functionName);
 
-        // 1. Restore T0-T9 relative to the FP
+        // Restore T0-T9 relative to the FP
         for (int i = 0; i <= 9; i++) {
             textSec.format("\tlw $t%d, %d($fp)\n", i, -((i + 1) * 4));
         }
 
-        // 2. Snap the stack pointer back to the frame pointer
+        // Snap the stack pointer back to the frame pointer
         textSec.println("\tmove $sp, $fp");
 
-        // 3. Restore RA and FP from the 8-byte header
+        // Restore RA and FP from the 8-byte header
         textSec.println("\tlw $ra, 4($sp)");
         textSec.println("\tlw $fp, 0($sp)");
 
-        // 4. Pop the 8-byte header and return
+        // Pop the 8-byte header and return
         textSec.println("\taddi $sp, $sp, 8");
         textSec.println("\tjr $ra");
     }
@@ -608,7 +621,7 @@ public class MipsGenerator {
 
     private void writePreamble() {
         // Error strings go into .data buffer
-         dataSec.print("string_access_violation: .asciiz \"Access Violation\"\n");
+        dataSec.print("string_access_violation: .asciiz \"Access Violation\"\n");
         dataSec.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
         dataSec.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
 
